@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import com.example.data.*
 import com.example.ui.theme.*
+import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.ShimmerTaskRow
+import com.example.ui.anim.ShimmerKanbanCard
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ fun TasksScreen(
     val tasksList by viewModel.allTasks.collectAsState()
     val filterCategory by viewModel.tasksFilterCategory.collectAsState()
     val filterPriority by viewModel.tasksFilterPriority.collectAsState()
+    val isTasksLoading by viewModel.isTasksLoading.collectAsState()
 
     var showKanbanBoard by remember { mutableStateOf(true) }
     var taskToTime by remember { mutableStateOf<Task?>(null) }
@@ -296,7 +300,42 @@ fun TasksScreen(
             }
         }
 
-        if (showKanbanBoard) {
+        if (isTasksLoading) {
+            if (showKanbanBoard) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    listOf("TODO", "IN PROGRESS", "DONE").forEach { col ->
+                        Column(
+                            modifier = Modifier
+                                .weight(1.0f)
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(col, color = AuraWhiteMuted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            repeat(3) {
+                                ShimmerKanbanCard()
+                            }
+                        }
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(6) {
+                        ShimmerTaskRow()
+                    }
+                }
+            }
+        } else if (showKanbanBoard) {
             KanbanBoardLayout(viewModel = viewModel, onOpenComposer = onOpenTaskComposer, onStartTimer = { taskToTime = it })
         } else {
             // Main Standard List view
@@ -513,7 +552,10 @@ fun TaskRowItem(
                 if (task.isCompleted) AuraSlateLight else AuraSlateLight.copy(alpha = 0.5f),
                 RoundedCornerShape(12.dp)
             )
-            .clickable { onClicked() }
+            .auraSpringPress(
+                cornerRadius = 12.dp,
+                onClick = onClicked
+            )
             .testTag("task_row_card_${task.id}"),
         colors = CardDefaults.cardColors(
             containerColor = if (task.isCompleted) AuraSlateCard.copy(alpha = 0.4f) else AuraCharcoalBase
@@ -606,7 +648,10 @@ fun KanbanTaskCard(
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, AuraSlateLight, RoundedCornerShape(14.dp))
-            .clickable { onClicked() },
+            .auraSpringPress(
+                cornerRadius = 14.dp,
+                onClick = onClicked
+            ),
         colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
         shape = RoundedCornerShape(14.dp)
     ) {

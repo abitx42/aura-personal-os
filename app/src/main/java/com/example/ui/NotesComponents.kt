@@ -38,6 +38,9 @@ import com.example.data.NoteVersion
 import com.example.audio.PlaybackState
 import androidx.compose.foundation.BorderStroke
 import com.example.ui.theme.*
+import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.ShimmerNoteCard
+import com.example.ui.anim.ShimmerNoteListItem
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +56,7 @@ fun NotesScreen(
     val sortVal by viewModel.notesSortOrder.collectAsState()
     val isGridView by viewModel.isNotesGridView.collectAsState()
     val notesList by viewModel.filteredNotes.collectAsState()
+    val isNotesLoading by viewModel.isNotesLoading.collectAsState()
 
     val availableCategories by viewModel.allUniqueCategories.collectAsState()
 
@@ -215,7 +219,33 @@ fun NotesScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Document List
-        if (notesList.isEmpty()) {
+        if (isNotesLoading) {
+            if (isGridView) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(6) {
+                        ShimmerNoteCard()
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(8) {
+                        ShimmerNoteListItem()
+                    }
+                }
+            }
+        } else if (notesList.isEmpty()) {
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -293,7 +323,8 @@ fun NoteCardItem(
                 if (note.isPinned) AuraCyanNeon.copy(alpha = 0.5f) else AuraSlateLight,
                 RoundedCornerShape(16.dp)
             )
-            .combinedClickable(
+            .auraSpringPress(
+                cornerRadius = 16.dp,
                 onClick = onClicked,
                 onLongClick = onTogglePinned
             )
@@ -437,7 +468,8 @@ fun NoteListItem(
                 if (note.isPinned) AuraCyanNeon.copy(alpha = 0.4f) else AuraSlateLight,
                 RoundedCornerShape(12.dp)
             )
-            .combinedClickable(
+            .auraSpringPress(
+                cornerRadius = 12.dp,
                 onClick = onClicked,
                 onLongClick = onTogglePinned
             ),

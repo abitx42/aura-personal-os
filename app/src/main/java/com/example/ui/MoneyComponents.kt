@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.*
 import com.example.ui.theme.*
+import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.ShimmerMoneyOverviewCard
+import com.example.ui.anim.ShimmerTransactionRow
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -64,6 +67,7 @@ fun MoneyTrackerScreen(
     // Money related state flows
     val accounts by viewModel.allAccounts.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
+    val isMoneyLoading by viewModel.isMoneyLoading.collectAsState()
     val investments by viewModel.allInvestments.collectAsState()
     val friends by viewModel.allFriends.collectAsState()
     val debts by viewModel.allDebts.collectAsState()
@@ -225,71 +229,83 @@ fun MoneyTrackerScreen(
                 }
 
                 // --- 2. STATS OVERVIEW CARD MATRIX ---
-                item {
-                    PremiumFinancialOverviewCard(
-                        netWorth = netWorth,
-                        available = totalAvailableBalance,
-                        invested = totalInvested,
-                        toReceive = totalToReceive,
-                        youOwe = totalYouOwe,
-                        onBalanceClick = { detailBackStack.add(MoneyDetailSection.AvailableBalancePassbook) },
-                        onInvestedClick = { detailBackStack.add(MoneyDetailSection.PortfolioInvestments) },
-                        onToReceiveClick = { detailBackStack.add(MoneyDetailSection.SplitsToReceive) },
-                        onYouOweClick = { detailBackStack.add(MoneyDetailSection.SplitsYouOwe) },
-                        onNetWorthClick = { activeSubSection = MoneySubSection.Analytics }
-                    )
-                }
+                if (isMoneyLoading) {
+                    item {
+                        ShimmerMoneyOverviewCard()
+                    }
+                    items(4) {
+                        ShimmerTransactionRow()
+                    }
+                } else {
+                    item {
+                        PremiumFinancialOverviewCard(
+                            netWorth = netWorth,
+                            available = totalAvailableBalance,
+                            invested = totalInvested,
+                            toReceive = totalToReceive,
+                            youOwe = totalYouOwe,
+                            onBalanceClick = { detailBackStack.add(MoneyDetailSection.AvailableBalancePassbook) },
+                            onInvestedClick = { detailBackStack.add(MoneyDetailSection.PortfolioInvestments) },
+                            onToReceiveClick = { detailBackStack.add(MoneyDetailSection.SplitsToReceive) },
+                            onYouOweClick = { detailBackStack.add(MoneyDetailSection.SplitsYouOwe) },
+                            onNetWorthClick = { activeSubSection = MoneySubSection.Analytics }
+                        )
+                    }
 
-                // --- 3. QUICK ENGAGEMENT TRANSIT TOOLBAR ---
-                item {
-                    QuickEngagementToolbar(
-                        onSentClick = { showQuickTransactionSheet = "SENT" },
-                        onReceivedClick = { showQuickTransactionSheet = "RECEIVED" },
-                        onInvestedClick = { showQuickTransactionSheet = "INVESTED" },
-                        onAddedCashClick = { showQuickTransactionSheet = "CASH_ADDED" }
-                    )
-                }
+                    // --- 3. QUICK ENGAGEMENT TRANSIT TOOLBAR ---
+                    item {
+                        QuickEngagementToolbar(
+                            onSentClick = { showQuickTransactionSheet = "SENT" },
+                            onReceivedClick = { showQuickTransactionSheet = "RECEIVED" },
+                            onInvestedClick = { showQuickTransactionSheet = "INVESTED" },
+                            onAddedCashClick = { showQuickTransactionSheet = "CASH_ADDED" }
+                        )
+                    }
 
-                // --- 4. NAVIGATION PILL SLIDERS ---
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState())
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        MoneySubSection.values().forEach { sub ->
-                            val isActive = activeSubSection == sub
-                            val label = when (sub) {
-                                MoneySubSection.Overview -> "Overview"
-                                MoneySubSection.Transactions -> "Ledger"
-                                MoneySubSection.FriendsSplits -> "Splits & Friends"
-                                MoneySubSection.Investments -> "Investments"
-                                MoneySubSection.SavingsGoals -> "Savings Goals"
-                                MoneySubSection.Analytics -> "Analytics Graphs"
-                                MoneySubSection.Reminders -> "Reminders"
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = if (isActive) AuraCyanNeon else AuraSlateCard,
-                                        shape = RoundedCornerShape(12.dp)
+                    // --- 4. NAVIGATION PILL SLIDERS ---
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState())
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            MoneySubSection.values().forEach { sub ->
+                                val isActive = activeSubSection == sub
+                                val label = when (sub) {
+                                    MoneySubSection.Overview -> "Overview"
+                                    MoneySubSection.Transactions -> "Ledger"
+                                    MoneySubSection.FriendsSplits -> "Splits & Friends"
+                                    MoneySubSection.Investments -> "Investments"
+                                    MoneySubSection.SavingsGoals -> "Savings Goals"
+                                    MoneySubSection.Analytics -> "Analytics Graphs"
+                                    MoneySubSection.Reminders -> "Reminders"
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (isActive) AuraCyanNeon else AuraSlateCard,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = if (isActive) Color.White else AuraSlateLight,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .auraSpringPress(
+                                            cornerRadius = 12.dp,
+                                            onClick = { activeSubSection = sub }
+                                        )
+                                        .padding(horizontal = 14.dp, vertical = 10.dp)
+                                ) {
+                                    Text(
+                                        text = label,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isActive) Color.Black else Color.White
                                     )
-                                    .border(
-                                        width = 1.dp,
-                                        color = if (isActive) Color.White else AuraSlateLight,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clickable { activeSubSection = sub }
-                                    .padding(horizontal = 14.dp, vertical = 10.dp)
-                            ) {
-                                Text(
-                                    text = label,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isActive) Color.Black else Color.White
-                                )
+                                }
                             }
                         }
                     }
@@ -657,7 +673,10 @@ fun PremiumFinancialOverviewCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onNetWorthClick() },
+                    .auraSpringPress(
+                        cornerRadius = 24.dp,
+                        onClick = onNetWorthClick
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -703,7 +722,10 @@ fun PremiumFinancialOverviewCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .clickable { onBalanceClick() }
+                            .auraSpringPress(
+                                cornerRadius = 12.dp,
+                                onClick = onBalanceClick
+                            )
                             .padding(10.dp)
                     ) {
                         Row(
@@ -722,7 +744,10 @@ fun PremiumFinancialOverviewCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .clickable { onInvestedClick() }
+                            .auraSpringPress(
+                                cornerRadius = 12.dp,
+                                onClick = onInvestedClick
+                            )
                             .padding(10.dp)
                     ) {
                         Row(
@@ -747,7 +772,10 @@ fun PremiumFinancialOverviewCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .clickable { onToReceiveClick() }
+                            .auraSpringPress(
+                                cornerRadius = 12.dp,
+                                onClick = onToReceiveClick
+                            )
                             .padding(10.dp)
                     ) {
                         Row(
@@ -766,7 +794,10 @@ fun PremiumFinancialOverviewCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .clickable { onYouOweClick() }
+                            .auraSpringPress(
+                                cornerRadius = 12.dp,
+                                onClick = onYouOweClick
+                            )
                             .padding(10.dp)
                     ) {
                         Row(

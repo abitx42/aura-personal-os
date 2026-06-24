@@ -47,6 +47,32 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         _hasSeenOnboarding.value = seen
     }
 
+    private val _isNotesLoading = MutableStateFlow(true)
+    val isNotesLoading: StateFlow<Boolean> = _isNotesLoading
+
+    private val _isTasksLoading = MutableStateFlow(true)
+    val isTasksLoading: StateFlow<Boolean> = _isTasksLoading
+
+    private val _isMoneyLoading = MutableStateFlow(true)
+    val isMoneyLoading: StateFlow<Boolean> = _isMoneyLoading
+
+    private val _isHabitsLoading = MutableStateFlow(true)
+    val isHabitsLoading: StateFlow<Boolean> = _isHabitsLoading
+
+    private val _isDashboardLoading = MutableStateFlow(true)
+    val isDashboardLoading: StateFlow<Boolean> = _isDashboardLoading
+
+    init {
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(400)
+            _isNotesLoading.value = false
+            _isTasksLoading.value = false
+            _isMoneyLoading.value = false
+            _isHabitsLoading.value = false
+            _isDashboardLoading.value = false
+        }
+    }
+
     private val _infoSheetTitle = MutableStateFlow<String?>(null)
     val infoSheetTitle: StateFlow<String?> = _infoSheetTitle
 

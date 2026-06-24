@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.*
 import com.example.ui.theme.*
+import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.ShimmerTimelineRow
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,6 +41,7 @@ fun JournalAndCalendarScreen(
     val activities by viewModel.todayActivitiesFlow.collectAsState(initial = emptyList())
     val selectedDate by viewModel.selectedJournalDate.collectAsState()
     val currentJournal by viewModel.currentJournalEntry.collectAsState()
+    val isJournalLoading by viewModel.isHabitsLoading.collectAsState()
 
     var journalText by remember(currentJournal) { mutableStateOf(currentJournal?.content ?: "") }
     var selectedMood by remember(currentJournal) { mutableStateOf(currentJournal?.mood ?: "") }
@@ -203,14 +206,17 @@ fun JournalAndCalendarScreen(
                                         color = if (chosen) Color.White else AuraSlateLight.copy(alpha = 0.3f),
                                         shape = RoundedCornerShape(8.dp)
                                     )
-                                    .clickable {
-                                        // Update VM selected date
-                                        val c = Calendar.getInstance()
-                                        c.set(Calendar.DAY_OF_MONTH, num.toInt())
-                                        val newDateStr = sdfKey.format(c.time)
-                                        viewModel.selectJournalDate(newDateStr)
-                                        viewModel.selectTaskDate(newDateStr)
-                                    },
+                                    .auraSpringPress(
+                                        cornerRadius = 8.dp,
+                                        onClick = {
+                                            // Update VM selected date
+                                            val c = Calendar.getInstance()
+                                            c.set(Calendar.DAY_OF_MONTH, num.toInt())
+                                            val newDateStr = sdfKey.format(c.time)
+                                            viewModel.selectJournalDate(newDateStr)
+                                            viewModel.selectTaskDate(newDateStr)
+                                        }
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -239,7 +245,10 @@ fun JournalAndCalendarScreen(
             Card(
                 modifier = Modifier
                     .fillModifierCompact()
-                    .clickable { isJournalExpanded = !isJournalExpanded }
+                    .auraSpringPress(
+                        cornerRadius = 16.dp,
+                        onClick = { isJournalExpanded = !isJournalExpanded }
+                    )
                     .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.3f))
@@ -411,7 +420,11 @@ fun JournalAndCalendarScreen(
         }
 
         // --- 5. ACTIVITY LIST TIMELINE PIPELINE ---
-        if (activities.isEmpty()) {
+        if (isJournalLoading) {
+            items(4) {
+                ShimmerTimelineRow()
+            }
+        } else if (activities.isEmpty()) {
             item {
                 Card(
                     modifier = Modifier

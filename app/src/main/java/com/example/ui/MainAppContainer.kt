@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import com.example.audio.PlaybackState
 import com.example.data.*
 import com.example.ui.theme.*
+import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.ShimmerDashboardGrid
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -1228,6 +1230,7 @@ fun DashboardScreen(
     val investments by viewModel.allInvestments.collectAsState()
     val debts by viewModel.allDebts.collectAsState()
     val journals by viewModel.journalEntries.collectAsState()
+    val isDashboardLoading by viewModel.isDashboardLoading.collectAsState()
 
     val todayDate = SimpleDateFormat("EEEE, dd MMM yyyy", Locale.US).format(Date())
     val todayString = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
@@ -1281,12 +1284,20 @@ fun DashboardScreen(
             }
         }
 
-        // COGNITIVE STATUS PROGRESS CARD (Clickable: Navigates to Daily Tasks)
-        item {
-            Card(
+        if (isDashboardLoading) {
+            item {
+                ShimmerDashboardGrid()
+            }
+        } else {
+            // COGNITIVE STATUS PROGRESS CARD (Clickable: Navigates to Daily Tasks)
+            item {
+                Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { viewModel.navigateTo(Section.Tasks) }
+                    .auraSpringPress(
+                        cornerRadius = 24.dp,
+                        onClick = { viewModel.navigateTo(Section.Tasks) }
+                    )
                     .border(
                         1.dp,
                         Brush.linearGradient(listOf(AuraCyanNeon.copy(alpha = 0.4f), AuraPurpleAccent.copy(alpha = 0.2f))),
@@ -1365,7 +1376,10 @@ fun DashboardScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(110.dp)
-                            .clickable { viewModel.navigateTo(Section.Notes) }
+                            .auraSpringPress(
+                                cornerRadius = 16.dp,
+                                onClick = { viewModel.navigateTo(Section.Notes) }
+                            )
                             .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
                         colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
                         shape = RoundedCornerShape(16.dp)
@@ -1396,7 +1410,10 @@ fun DashboardScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(110.dp)
-                            .clickable { viewModel.navigateTo(Section.Habits) }
+                            .auraSpringPress(
+                                cornerRadius = 16.dp,
+                                onClick = { viewModel.navigateTo(Section.Habits) }
+                            )
                             .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
                         colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
                         shape = RoundedCornerShape(16.dp)
@@ -1432,7 +1449,10 @@ fun DashboardScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(110.dp)
-                            .clickable { viewModel.navigateTo(Section.Money) }
+                            .auraSpringPress(
+                                cornerRadius = 16.dp,
+                                onClick = { viewModel.navigateTo(Section.Money) }
+                            )
                             .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
                         colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
                         shape = RoundedCornerShape(16.dp)
@@ -1463,7 +1483,10 @@ fun DashboardScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(110.dp)
-                            .clickable { viewModel.navigateTo(Section.Day) }
+                            .auraSpringPress(
+                                cornerRadius = 16.dp,
+                                onClick = { viewModel.navigateTo(Section.Day) }
+                            )
                             .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
                         colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
                         shape = RoundedCornerShape(16.dp)
@@ -1592,6 +1615,7 @@ fun DashboardScreen(
                     onStartTimer = { viewModel.startTaskTimer(task.id, 25) }
                 )
             }
+        }
         }
     }
 }
