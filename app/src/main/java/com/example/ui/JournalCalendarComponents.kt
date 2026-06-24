@@ -93,6 +93,11 @@ fun JournalAndCalendarScreen(
                         color = AuraWhiteMuted
                     )
                 }
+                AuraSectionInfoButton(
+                    viewModel = viewModel,
+                    title = "Day Section & Journal",
+                    description = "An interactive timeline displaying notes created, tasks completed, and transactions logged for any selected day. Log mood updates and express gratitude on the local offline journal."
+                )
             }
         }
 

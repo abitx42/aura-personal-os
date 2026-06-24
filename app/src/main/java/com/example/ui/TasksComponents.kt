@@ -77,45 +77,56 @@ fun TasksScreen(
                 )
             }
 
-            // View toggle switcher
             Row(
-                modifier = Modifier
-                    .background(AuraSlateCard, RoundedCornerShape(12.dp))
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(
-                    onClick = { showKanbanBoard = true },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(
-                            if (showKanbanBoard) AuraCyanNeon else Color.Transparent,
-                            RoundedCornerShape(8.dp)
-                        )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Dashboard,
-                        contentDescription = "Kanbanboard View",
-                        tint = if (showKanbanBoard) Color.Black else Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+                AuraSectionInfoButton(
+                    viewModel = viewModel,
+                    title = "Objectives Planner",
+                    description = "A dynamic cognitive energy-based Kanban board. Categorize objectives by high-energy, low-energy, or custom tags, and trigger focused sprint timers to crush goals."
+                )
 
-                IconButton(
-                    onClick = { showKanbanBoard = false },
+                // View toggle switcher
+                Row(
                     modifier = Modifier
-                        .size(36.dp)
-                        .background(
-                            if (!showKanbanBoard) AuraCyanNeon else Color.Transparent,
-                            RoundedCornerShape(8.dp)
-                        )
+                        .background(AuraSlateCard, RoundedCornerShape(12.dp))
+                        .padding(3.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FormatListBulleted,
-                        contentDescription = "Standard List view",
-                        tint = if (!showKanbanBoard) Color.Black else Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
+                    IconButton(
+                        onClick = { showKanbanBoard = true },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                if (showKanbanBoard) AuraCyanNeon else Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Dashboard,
+                            contentDescription = "Kanbanboard View",
+                            tint = if (showKanbanBoard) Color.Black else Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { showKanbanBoard = false },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                if (!showKanbanBoard) AuraCyanNeon else Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FormatListBulleted,
+                            contentDescription = "Standard List view",
+                            tint = if (!showKanbanBoard) Color.Black else Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

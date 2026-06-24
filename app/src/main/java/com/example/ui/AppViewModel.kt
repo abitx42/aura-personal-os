@@ -37,6 +37,32 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     private val prefs = application.getSharedPreferences("aura_prefs", android.content.Context.MODE_PRIVATE)
 
+    private val _hasSeenOnboarding = MutableStateFlow(
+        prefs.getBoolean("has_seen_onboarding", false)
+    )
+    val hasSeenOnboarding: StateFlow<Boolean> = _hasSeenOnboarding
+
+    fun setHasSeenOnboarding(seen: Boolean) {
+        prefs.edit().putBoolean("has_seen_onboarding", seen).apply()
+        _hasSeenOnboarding.value = seen
+    }
+
+    private val _infoSheetTitle = MutableStateFlow<String?>(null)
+    val infoSheetTitle: StateFlow<String?> = _infoSheetTitle
+
+    private val _infoSheetContent = MutableStateFlow<String?>(null)
+    val infoSheetContent: StateFlow<String?> = _infoSheetContent
+
+    fun showInfoSheet(title: String, content: String) {
+        _infoSheetTitle.value = title
+        _infoSheetContent.value = content
+    }
+
+    fun dismissInfoSheet() {
+        _infoSheetTitle.value = null
+        _infoSheetContent.value = null
+    }
+
     private val _quickCaptureIconUri = MutableStateFlow(
         prefs.getString("quick_capture_icon", "") ?: ""
     )

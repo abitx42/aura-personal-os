@@ -188,26 +188,37 @@ fun MoneyTrackerScreen(
                             )
                         }
                         
-                        // Account Badge with manual adjustment support
-                        Card(
-                            modifier = Modifier
-                                .clickable { showBalanceAdjustmentDialog = accounts.find { it.isDefault } ?: accounts.firstOrNull() }
-                                .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp)),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            AuraSectionInfoButton(
+                                viewModel = viewModel,
+                                title = "Money Ledger & Splits",
+                                description = "Track your net liquid assets, cash-flow ledgers, investment portfolios, and collaborative Splitwise-style expense split rooms. Operates entirely offline with secure local databases."
+                            )
+
+                            // Account Badge with manual adjustment support
+                            Card(
+                                modifier = Modifier
+                                    .clickable { showBalanceAdjustmentDialog = accounts.find { it.isDefault } ?: accounts.firstOrNull() }
+                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp)),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
                             ) {
-                                Box(modifier = Modifier.size(8.dp).background(AuraCyanNeon, CircleShape))
-                                Text(
-                                    text = (accounts.find { it.isDefault } ?: Account(name="Default", balance=0.0)).name.uppercase(),
-                                    fontSize = 9.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = AuraWhiteMedium
-                                )
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Box(modifier = Modifier.size(8.dp).background(AuraCyanNeon, CircleShape))
+                                    Text(
+                                        text = (accounts.find { it.isDefault } ?: Account(name="Default", balance=0.0)).name.uppercase(),
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AuraWhiteMedium
+                                    )
+                                }
                             }
                         }
                     }

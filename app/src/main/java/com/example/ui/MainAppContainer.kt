@@ -484,79 +484,129 @@ fun MainAppContainer(
                             viewModel = viewModel
                         )
                     } else {
-                        when (activeTab) {
-                            Section.Dashboard -> {
-                                DashboardScreen(
-                                    viewModel = viewModel,
-                                    onOpenNote = { note ->
-                                        viewModel.selectNote(note)
-                                        viewModel.navigateTo(Section.RichNoteEditor)
-                                    },
-                                    onOpenTask = { task ->
-                                        viewModel.selectEditTask(task)
-                                        viewModel.navigateTo(Section.DrawingWorkspace) // Task composer
+                        val mainTabs = remember {
+                            listOf(
+                                Section.Dashboard,
+                                Section.Notes,
+                                Section.Tasks,
+                                Section.Habits,
+                                Section.Day,
+                                Section.Money
+                            )
+                        }
+                        val pagerState = androidx.compose.foundation.pager.rememberPagerState(
+                            initialPage = 0,
+                            pageCount = { mainTabs.size }
+                        )
+
+                        // Keep pager in sync with programmatic state updates
+                        val targetPage = mainTabs.indexOf(activeTab)
+                        LaunchedEffect(targetPage) {
+                            if (targetPage != -1 && pagerState.currentPage != targetPage) {
+                                pagerState.animateScrollToPage(targetPage)
+                            }
+                        }
+
+                        // Sync swiping back to ViewModel state
+                        LaunchedEffect(pagerState.currentPage) {
+                            val currentSwipeSection = mainTabs[pagerState.currentPage]
+                            if (viewModel.currentSection.value != currentSwipeSection && targetPage != -1) {
+                                viewModel.navigateTo(currentSwipeSection)
+                            }
+                        }
+
+                        // Trigger tactile tick when a page change successfully commits/snaps
+                        val view = androidx.compose.ui.platform.LocalView.current
+                        LaunchedEffect(pagerState.settledPage) {
+                            com.example.ui.AuraHaptics.triggerSubtleTick(view)
+                        }
+
+                        if (activeTab !in mainTabs) {
+                            when (activeTab) {
+                                Section.RichNoteEditor -> {
+                                    val selectedNoteVal by viewModel.selectedNote.collectAsState()
+                                    NoteEditorScreen(
+                                        note = selectedNoteVal,
+                                        viewModel = viewModel,
+                                        onBack = { viewModel.navigateTo(Section.Notes) },
+                                        onOpenDrawingBoard = { data ->
+                                            workspaceDrawingData = data
+                                            isDrawingWorkspaceOpen = true
+                                        }
+                                    )
+                                }
+                                Section.DrawingWorkspace -> {
+                                    val selectedTaskVal by viewModel.selectedEditTask.collectAsState()
+                                    TaskComposerScreen(
+                                        task = selectedTaskVal,
+                                        viewModel = viewModel,
+                                        onBack = { viewModel.navigateTo(Section.Tasks) }
+                                    )
+                                }
+                                Section.SecuritySettings -> {
+                                    AppSecuritySettingsScreen(viewModel = viewModel)
+                                }
+                                else -> { /* Safety fallback */ }
+                            }
+                        } else {
+                            androidx.compose.foundation.pager.HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                                userScrollEnabled = true
+                            ) { pageIndex ->
+                                when (mainTabs[pageIndex]) {
+                                    Section.Dashboard -> {
+                                        DashboardScreen(
+                                            viewModel = viewModel,
+                                            onOpenNote = { note ->
+                                                viewModel.selectNote(note)
+                                                viewModel.navigateTo(Section.RichNoteEditor)
+                                            },
+                                            onOpenTask = { task ->
+                                                viewModel.selectEditTask(task)
+                                                viewModel.navigateTo(Section.DrawingWorkspace)
+                                            }
+                                        )
                                     }
-                                )
-                            }
-                            Section.Notes -> {
-                                NotesScreen(
-                                    viewModel = viewModel,
-                                    onOpenNoteEditor = { note ->
-                                        viewModel.selectNote(note)
-                                        viewModel.navigateTo(Section.RichNoteEditor)
-                                    },
-                                    onOpenDrawingWorkspace = { data ->
-                                        workspaceDrawingData = data
-                                        isDrawingWorkspaceOpen = true
+                                    Section.Notes -> {
+                                        NotesScreen(
+                                            viewModel = viewModel,
+                                            onOpenNoteEditor = { note ->
+                                                viewModel.selectNote(note)
+                                                viewModel.navigateTo(Section.RichNoteEditor)
+                                            },
+                                            onOpenDrawingWorkspace = { data ->
+                                                workspaceDrawingData = data
+                                                isDrawingWorkspaceOpen = true
+                                            }
+                                        )
                                     }
-                                )
-                            }
-                            Section.RichNoteEditor -> {
-                                val selectedNoteVal by viewModel.selectedNote.collectAsState()
-                                NoteEditorScreen(
-                                    note = selectedNoteVal,
-                                    viewModel = viewModel,
-                                    onBack = { viewModel.navigateTo(Section.Notes) },
-                                    onOpenDrawingBoard = { data ->
-                                        workspaceDrawingData = data
-                                        isDrawingWorkspaceOpen = true
+                                    Section.Tasks -> {
+                                        TasksScreen(
+                                            viewModel = viewModel,
+                                            onOpenTaskComposer = { task ->
+                                                viewModel.selectEditTask(task)
+                                                viewModel.navigateTo(Section.DrawingWorkspace)
+                                            }
+                                        )
                                     }
-                                )
-                            }
-                            Section.DrawingWorkspace -> { // Serves as Task Composer View state
-                                val selectedTaskVal by viewModel.selectedEditTask.collectAsState()
-                                TaskComposerScreen(
-                                    task = selectedTaskVal,
-                                    viewModel = viewModel,
-                                    onBack = { viewModel.navigateTo(Section.Tasks) }
-                                )
-                            }
-                            Section.Tasks -> {
-                                TasksScreen(
-                                    viewModel = viewModel,
-                                    onOpenTaskComposer = { task ->
-                                        viewModel.selectEditTask(task)
-                                        viewModel.navigateTo(Section.DrawingWorkspace)
+                                    Section.Habits -> {
+                                        HabitsTabScreen(viewModel = viewModel)
                                     }
-                                )
-                            }
-                            Section.Habits -> {
-                                HabitsTabScreen(viewModel = viewModel)
-                            }
-                            Section.Day -> {
-                                JournalAndCalendarScreen(
-                                    viewModel = viewModel,
-                                    onOpenDrawingWorkspace = { data ->
-                                        workspaceDrawingData = data
-                                        isDrawingWorkspaceOpen = true
+                                    Section.Day -> {
+                                        JournalAndCalendarScreen(
+                                            viewModel = viewModel,
+                                            onOpenDrawingWorkspace = { data ->
+                                                workspaceDrawingData = data
+                                                isDrawingWorkspaceOpen = true
+                                            }
+                                        )
                                     }
-                                )
-                            }
-                            Section.Money -> {
-                                MoneyTrackerScreen(viewModel = viewModel)
-                            }
-                            Section.SecuritySettings -> {
-                                AppSecuritySettingsScreen(viewModel = viewModel)
+                                    Section.Money -> {
+                                        MoneyTrackerScreen(viewModel = viewModel)
+                                    }
+                                    else -> {}
+                                }
                             }
                         }
                     }
@@ -586,6 +636,93 @@ fun MainAppContainer(
                                     .align(Alignment.BottomCenter)
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
                             )
+                        }
+                    }
+
+                    // Slide up premium Rounded Bottom Sheet for Info Architecture
+                    val infoTitle by viewModel.infoSheetTitle.collectAsState()
+                    val infoContent by viewModel.infoSheetContent.collectAsState()
+
+                    AnimatedVisibility(
+                        visible = infoTitle != null,
+                        enter = slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(350, easing = androidx.compose.animation.core.LinearOutSlowInEasing)
+                        ) + fadeIn(),
+                        exit = slideOutVertically(
+                            targetOffsetY = { it },
+                            animationSpec = tween(300, easing = androidx.compose.animation.core.FastOutLinearInEasing)
+                        ) + fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.5f))
+                                .clickable { viewModel.dismissInfoSheet() },
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(enabled = false) {} // Disable click propagation to dismiss
+                                    .padding(16.dp)
+                                    .shadow(16.dp, RoundedCornerShape(28.dp))
+                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(28.dp)),
+                                colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                                shape = RoundedCornerShape(28.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    // Handle drag indicator bar
+                                    Box(
+                                        modifier = Modifier
+                                            .width(40.dp)
+                                            .height(4.dp)
+                                            .clip(CircleShape)
+                                            .background(AuraSlateLight)
+                                    )
+
+                                    Text(
+                                        text = infoTitle ?: "About this Section",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Black,
+                                        fontSize = 18.sp,
+                                        letterSpacing = 1.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+
+                                    Text(
+                                        text = infoContent ?: "",
+                                        color = AuraWhiteMedium,
+                                        fontSize = 13.sp,
+                                        lineHeight = 20.sp,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(horizontal = 8.dp)
+                                    )
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Button(
+                                        onClick = { viewModel.dismissInfoSheet() },
+                                        colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                                        shape = RoundedCornerShape(12.dp),
+                                        modifier = Modifier.fillMaxWidth().height(44.dp)
+                                    ) {
+                                        Text(
+                                            "UNDERSTOOD",
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 12.sp,
+                                            letterSpacing = 1.sp
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1125,12 +1262,21 @@ fun DashboardScreen(
                     Text(todayDate.uppercase(), fontSize = 11.sp, color = AuraWhiteMuted)
                 }
 
-                // Quick parameters setup button
-                IconButton(
-                    onClick = { viewModel.navigateTo(Section.SecuritySettings) },
-                    modifier = Modifier.background(AuraSlateCard, CircleShape)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
+                    AuraSectionInfoButton(
+                        viewModel = viewModel,
+                        title = "Zen Workspace",
+                        description = "Your Aura central dashboard. View quick status summaries, cognitive daily completion metrics, recent offline notes, active timers, and instant security stats at a single glance."
+                    )
+                    IconButton(
+                        onClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                        modifier = Modifier.background(AuraSlateCard.copy(alpha = 0.8f), CircleShape)
+                    ) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
+                    }
                 }
             }
         }
@@ -2843,14 +2989,24 @@ fun HabitsTabScreen(
                 Text("Repetitive neurological feedback structures", fontSize = 11.sp, color = AuraWhiteMuted)
             }
 
-            Button(
-                onClick = { showCreateDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
-                shape = RoundedCornerShape(10.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Habit", tint = Color.White, modifier = Modifier.size(16.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("INSERT", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                AuraSectionInfoButton(
+                    viewModel = viewModel,
+                    title = "Habit Matrix",
+                    description = "Form atomic habits through repetitive feedback loops. Log completions, set dynamic goals with timed focus logs, and visualize completion metrics."
+                )
+                Button(
+                    onClick = { showCreateDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Habit", tint = Color.White, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("INSERT", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
 

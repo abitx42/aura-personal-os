@@ -87,7 +87,14 @@ fun NotesScreen(
                 )
             }
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AuraSectionInfoButton(
+                    viewModel = viewModel,
+                    title = "Zen Space Notebook",
+                    description = "Compose structured thoughts, customize with modern category tags, and sketch ideas directly onto an infinite pressure-sensitive vector canvas."
+                )
                 IconButton(onClick = { viewModel.toggleNotesLayout() }) {
                     Icon(
                         imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.GridView,

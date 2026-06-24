@@ -28,13 +28,23 @@ class MainActivity : ComponentActivity() {
       val viewModel: AppViewModel = viewModel()
       val themeMode by viewModel.themeMode.collectAsState()
       val themePalette by viewModel.themePalette.collectAsState()
+      val hasSeenOnboarding by viewModel.hasSeenOnboarding.collectAsState()
 
       MyApplicationTheme(themeMode = themeMode, themePalette = themePalette) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-          MainAppContainer(
+        if (!hasSeenOnboarding) {
+          com.example.ui.OnboardingScreen(
             viewModel = viewModel,
-            modifier = Modifier.padding(innerPadding)
+            onFinished = {
+              // Complete onboarding and flow to primary app deck
+            }
           )
+        } else {
+          Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            MainAppContainer(
+              viewModel = viewModel,
+              modifier = Modifier.padding(innerPadding)
+            )
+          }
         }
       }
     }
