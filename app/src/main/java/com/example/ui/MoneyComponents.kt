@@ -1533,7 +1533,27 @@ fun FriendsAndSplitsModule(
                             Spacer(modifier = Modifier.height(14.dp))
 
                             if (groupRooms.isEmpty()) {
-                                Text("No shared expense rooms configured. Create a room to manage Splitwise-style travel or room bills.", color = AuraWhiteMuted, fontSize = 11.sp)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Groups,
+                                        contentDescription = null,
+                                        tint = AuraWhiteMuted,
+                                        modifier = Modifier.size(36.dp)
+                                    )
+                                    Text(
+                                        "No shared expense rooms configured. Create a room to manage Splitwise-style travel or room bills.",
+                                        color = AuraWhiteMuted,
+                                        fontSize = 11.sp,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(horizontal = 16.dp)
+                                    )
+                                }
                             } else {
                                 groupRooms.forEach { room ->
                                     val expenses = roomExpenses.filter { it.roomId == room.id }

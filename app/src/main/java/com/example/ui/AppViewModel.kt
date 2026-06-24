@@ -116,7 +116,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val lastSyncedTime = MutableStateFlow(prefs.getString("last_synced_time", "Never") ?: "Never")
     
     val profileDisplayName = MutableStateFlow(prefs.getString("profile_display_name", "moreaboutastram@gmail.com") ?: "moreaboutastram@gmail.com")
-    val connectedDevices = MutableStateFlow<List<String>>(listOf("Google Pixel 9 Pro (This Device)", "Sony Bravia Android TV", "Desktop Chrome browser-app"))
+    val connectedDevices = MutableStateFlow<List<String>>(listOf("Google Pixel 9 Pro (This Device)"))
 
     fun updateProfileName(name: String) {
         prefs.edit().putString("profile_display_name", name).apply()
@@ -159,12 +159,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         aboutUsText.value = text
     }
     
-    private val _mockCloudBackups = MutableStateFlow<List<String>>(
-        prefs.getString("mock_backups", "2026-06-05 15:30 (Auto Backup),2026-06-04 09:12 (Auto Backup)")
-            ?.split(",")
-            ?.filter { it.isNotEmpty() }
-            ?: listOf("2026-06-05 15:30 (Auto Backup)", "2026-06-04 09:12 (Auto Backup)")
-    )
+    private val _mockCloudBackups = MutableStateFlow<List<String>>(emptyList())
     val mockCloudBackups: StateFlow<List<String>> = _mockCloudBackups
 
     fun setCloudSyncEnabled(enabled: Boolean) {
@@ -263,17 +258,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // ==========================================
     // PHASE 2 & 3: LIVE FRIEND SPLITS & EXPENSE ROOMS
     // ==========================================
-    private val _groupRooms = MutableStateFlow<List<GroupRoom>>(listOf(
-        GroupRoom("room1", "Goa Trip 2026", "🏖️", listOf("Me", "Sahil", "Rahul", "Priya")),
-        GroupRoom("room2", "Flatmates Room", "🏡", listOf("Me", "Sahil", "Aditya"))
-    ))
+    private val _groupRooms = MutableStateFlow<List<GroupRoom>>(emptyList())
     val groupRooms: StateFlow<List<GroupRoom>> = _groupRooms
 
-    private val _roomExpenses = MutableStateFlow<List<RoomExpense>>(listOf(
-        RoomExpense("exp1", "room1", "Resort Stay Day 1", 8000.0, "Sahil", mapOf("Me" to 2000.0, "Sahil" to 2000.0, "Rahul" to 2000.0, "Priya" to 2000.0)),
-        RoomExpense("exp2", "room1", "Beach Dinner & Drinks", 3200.0, "Me", mapOf("Me" to 800.0, "Sahil" to 800.0, "Rahul" to 800.0, "Priya" to 800.0)),
-        RoomExpense("exp3", "room2", "WiFi Fiber Recharge", 1200.0, "Aditya", mapOf("Me" to 400.0, "Sahil" to 400.0, "Aditya" to 400.0))
-    ))
+    private val _roomExpenses = MutableStateFlow<List<RoomExpense>>(emptyList())
     val roomExpenses: StateFlow<List<RoomExpense>> = _roomExpenses
 
     fun createGroupRoom(name: String, emoji: String, members: List<String>) {
@@ -354,11 +342,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // ==========================================
     // PHASE 4: SOCIAL HUB & REAL-TIME ACTIVITY FEED
     // ==========================================
-    private val _socialActivities = MutableStateFlow<List<SocialActivityItem>>(listOf(
-        SocialActivityItem("act1", "Sahil", "added Diner split containing ₹1800 (Dinner at Barbeque Nation)", System.currentTimeMillis() - 7200000, null, "ADD_SPLIT"),
-        SocialActivityItem("act2", "Aditya", "reacted with 👍 on \"Lunch at Cafe\"", System.currentTimeMillis() - 3600000, null, "REACTION", "👍"),
-        SocialActivityItem("act3", "Rahul", "registered pay and uploaded settlement receipt screenshot", System.currentTimeMillis() - 1800000, "screenshot_receipt.png", "SETTLE")
-    ))
+    private val _socialActivities = MutableStateFlow<List<SocialActivityItem>>(emptyList())
     val socialActivities: StateFlow<List<SocialActivityItem>> = _socialActivities
 
     fun addSocialActivity(userName: String, text: String, type: String, receiptPath: String? = null, emojiReaction: String? = null) {

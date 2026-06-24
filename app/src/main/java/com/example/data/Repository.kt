@@ -330,16 +330,10 @@ class AppRepository(val db: AppDatabase) {
     suspend fun autoPopulateDefaultAccountsIfEmpty() = withContext(Dispatchers.IO) {
         val existing = moneyDao.getAllAccounts().firstOrNull() ?: emptyList()
         if (existing.isEmpty()) {
-            moneyDao.insertAccount(Account(name = "Bank Account", balance = 25000.0, isDefault = true))
+            moneyDao.insertAccount(Account(name = "Bank Account", balance = 0.0, isDefault = true))
             moneyDao.insertAccount(Account(name = "Cash Wallet", balance = 0.0, isDefault = false))
             moneyDao.insertAccount(Account(name = "UPI Wallet", balance = 0.0, isDefault = false))
             moneyDao.insertAccount(Account(name = "Savings Account", balance = 0.0, isDefault = false))
-            
-            // Populate baseline sample friends so it feels premium from day one!
-            moneyDao.insertFriend(Friend(name = "Sahil", phone = "+919876543210", notes = "Roommate"))
-            moneyDao.insertFriend(Friend(name = "Aditya", phone = "+919988776655", notes = "Office Mate"))
-            moneyDao.insertFriend(Friend(name = "Namdev", phone = "+918877665544", notes = "College Friend"))
-            moneyDao.insertFriend(Friend(name = "Rahul", phone = "+917766554433", notes = "Gamer Buddy"))
         }
     }
 
