@@ -11,19 +11,22 @@ import kotlinx.coroutines.tasks.await
 
 class AuthManager(private val context: Context) {
 
-    private val auth by lazy {
+    private val auth: FirebaseAuth? by lazy {
         try {
-            com.google.firebase.FirebaseApp.initializeApp(context)
+            if (com.google.firebase.FirebaseApp.getApps(context).isEmpty()) {
+                com.google.firebase.FirebaseApp.initializeApp(context)
+            }
+            FirebaseAuth.getInstance()
         } catch (e: Exception) {
-            android.util.Log.e("AuthManager", "FirebaseApp init failed or already initialized", e)
+            android.util.Log.e("AuthManager", "Firebase is not initialized or configured", e)
+            null
         }
-        FirebaseAuth.getInstance()
     }
 
     // Current signed-in user (null if not signed in)
-    val currentUser: FirebaseUser? get() = auth.currentUser
-    val userId: String? get() = auth.currentUser?.uid
-    val isSignedIn: Boolean get() = auth.currentUser != null
+    val currentUser: FirebaseUser? get() = auth?.currentUser
+    val userId: String? get() = auth?.currentUser?.uid
+    val isSignedIn: Boolean get() = auth?.currentUser != null
 
     // Build the Google Sign-In intent — launch this from your Activity
     fun getSignInIntent(): Intent {
@@ -37,9 +40,10 @@ class AuthManager(private val context: Context) {
 
     // Called after Google Sign-In returns an idToken
     suspend fun signInWithGoogle(idToken: String): Boolean {
+        val currentAuth = auth ?: return false
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
-            auth.signInWithCredential(credential).await()
+            currentAuth.signInWithCredential(credential).await()
             true
         } catch (e: Exception) {
             false
@@ -47,6 +51,6 @@ class AuthManager(private val context: Context) {
     }
 
     fun signOut() {
-        auth.signOut()
+        auth?.signOut()
     }
 }
