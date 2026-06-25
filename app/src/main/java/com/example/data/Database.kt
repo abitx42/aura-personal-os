@@ -492,9 +492,10 @@ interface MoneyDao {
         Friend::class,
         Debt::class,
         SavingsGoal::class,
-        MoneyReminder::class
+        MoneyReminder::class,
+        PendingOperation::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -504,4 +505,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
     abstract fun securityDao(): SecurityDao
     abstract fun moneyDao(): MoneyDao
+    abstract fun pendingOperationDao(): PendingOperationDao
 }

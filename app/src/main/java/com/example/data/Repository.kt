@@ -20,6 +20,9 @@ class AppRepository(val db: AppDatabase) {
     private val habitDao = db.habitDao()
     private val securityDao = db.securityDao()
     private val moneyDao = db.moneyDao()
+    private val pendingDao = db.pendingOperationDao()
+
+    val pendingOperationsCount: Flow<Int> = pendingDao.getPendingCount()
 
     // Singleton provider for Ease of Constructor DI
     companion object {
@@ -76,6 +79,12 @@ class AppRepository(val db: AppDatabase) {
                 changeDescription = "Initial Version"
             )
         )
+        // Enqueue for cloud sync
+        pendingDao.insert(PendingOperation(
+            entityType = "NOTE",
+            operationType = "CREATE",
+            entitySyncId = note.syncId
+        ))
         newId
     }
 
@@ -100,10 +109,21 @@ class AppRepository(val db: AppDatabase) {
                 )
             )
         }
+        // Enqueue for cloud sync
+        pendingDao.insert(PendingOperation(
+            entityType = "NOTE",
+            operationType = "UPDATE",
+            entitySyncId = finalNote.syncId
+        ))
     }
 
     suspend fun deleteNote(note: Note) = withContext(Dispatchers.IO) {
         noteDao.deleteNote(note)
+        pendingDao.insert(PendingOperation(
+            entityType = "NOTE",
+            operationType = "DELETE",
+            entitySyncId = note.syncId
+        ))
     }
 
     suspend fun getNoteById(id: Int): Note? = withContext(Dispatchers.IO) {
@@ -142,15 +162,30 @@ class AppRepository(val db: AppDatabase) {
                 taskDao.insertSubtask(Subtask(taskId = id, title = subTitle))
             }
         }
+        pendingDao.insert(PendingOperation(
+            entityType = "TASK",
+            operationType = "CREATE",
+            entitySyncId = task.syncId
+        ))
     }
 
     suspend fun updateTask(task: Task) = withContext(Dispatchers.IO) {
         taskDao.updateTask(task)
+        pendingDao.insert(PendingOperation(
+            entityType = "TASK",
+            operationType = "UPDATE",
+            entitySyncId = task.syncId
+        ))
     }
 
     suspend fun deleteTask(task: Task) = withContext(Dispatchers.IO) {
         taskDao.deleteSubtasksByTaskId(task.id)
         taskDao.deleteTask(task)
+        pendingDao.insert(PendingOperation(
+            entityType = "TASK",
+            operationType = "DELETE",
+            entitySyncId = task.syncId
+        ))
     }
 
     suspend fun addSubtask(subtask: Subtask) = withContext(Dispatchers.IO) {
@@ -176,10 +211,20 @@ class AppRepository(val db: AppDatabase) {
 
     suspend fun saveJournalEntry(entry: JournalEntry) = withContext(Dispatchers.IO) {
         journalDao.insertJournalEntry(entry)
+        pendingDao.insert(PendingOperation(
+            entityType = "JOURNAL",
+            operationType = "CREATE",
+            entitySyncId = entry.date
+        ))
     }
 
     suspend fun deleteJournalEntry(entry: JournalEntry) = withContext(Dispatchers.IO) {
         journalDao.deleteJournalEntry(entry)
+        pendingDao.insert(PendingOperation(
+            entityType = "JOURNAL",
+            operationType = "DELETE",
+            entitySyncId = entry.date
+        ))
     }
 
     // ==========================================
@@ -193,15 +238,31 @@ class AppRepository(val db: AppDatabase) {
     }
 
     suspend fun createHabit(name: String, frequency: String = "Daily") = withContext(Dispatchers.IO) {
-        habitDao.insertHabit(Habit(name = name, frequency = frequency))
+        val habit = Habit(name = name, frequency = frequency)
+        habitDao.insertHabit(habit)
+        pendingDao.insert(PendingOperation(
+            entityType = "HABIT",
+            operationType = "CREATE",
+            entitySyncId = habit.syncId
+        ))
     }
 
     suspend fun updateHabit(habit: Habit) = withContext(Dispatchers.IO) {
         habitDao.updateHabit(habit)
+        pendingDao.insert(PendingOperation(
+            entityType = "HABIT",
+            operationType = "UPDATE",
+            entitySyncId = habit.syncId
+        ))
     }
 
     suspend fun deleteHabit(habit: Habit) = withContext(Dispatchers.IO) {
         habitDao.deleteHabit(habit)
+        pendingDao.insert(PendingOperation(
+            entityType = "HABIT",
+            operationType = "DELETE",
+            entitySyncId = habit.syncId
+        ))
     }
 
     suspend fun toggleHabitCompletion(habitId: Int, date: String, isCompleted: Boolean) = withContext(Dispatchers.IO) {
@@ -357,6 +418,11 @@ class AppRepository(val db: AppDatabase) {
             }
             moneyDao.updateAccountBalance(account.id, account.balance + (transaction.amount * netFactor))
         }
+        pendingDao.insert(PendingOperation(
+            entityType = "TRANSACTION",
+            operationType = "CREATE",
+            entitySyncId = transaction.syncId
+        ))
     }
 
     suspend fun deleteTransaction(transaction: Transaction) = withContext(Dispatchers.IO) {
@@ -371,6 +437,11 @@ class AppRepository(val db: AppDatabase) {
             moneyDao.updateAccountBalance(account.id, account.balance + (transaction.amount * netFactor))
         }
         moneyDao.deleteTransaction(transaction)
+        pendingDao.insert(PendingOperation(
+            entityType = "TRANSACTION",
+            operationType = "DELETE",
+            entitySyncId = transaction.syncId
+        ))
     }
 
     suspend fun updateTransaction(newTransaction: Transaction, oldTransaction: Transaction) = withContext(Dispatchers.IO) {
@@ -438,6 +509,11 @@ class AppRepository(val db: AppDatabase) {
 
     suspend fun createDebt(debt: Debt) = withContext(Dispatchers.IO) {
         moneyDao.insertDebt(debt)
+        pendingDao.insert(PendingOperation(
+            entityType = "DEBT",
+            operationType = "CREATE",
+            entitySyncId = debt.syncId
+        ))
     }
 
     suspend fun updateDebt(debt: Debt) = withContext(Dispatchers.IO) {
@@ -453,10 +529,20 @@ class AppRepository(val db: AppDatabase) {
                 moneyDao.updateAccountBalance(account.id, account.balance + change)
             }
         }
+        pendingDao.insert(PendingOperation(
+            entityType = "DEBT",
+            operationType = "UPDATE",
+            entitySyncId = debt.syncId
+        ))
     }
 
     suspend fun deleteDebt(debt: Debt) = withContext(Dispatchers.IO) {
         moneyDao.deleteDebt(debt)
+        pendingDao.insert(PendingOperation(
+            entityType = "DEBT",
+            operationType = "DELETE",
+            entitySyncId = debt.syncId
+        ))
     }
 
     suspend fun createSavingsGoal(goal: SavingsGoal) = withContext(Dispatchers.IO) {

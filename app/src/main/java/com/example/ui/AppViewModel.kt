@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.audio.AudioController
 import com.example.audio.PlaybackState
 import com.example.data.*
+import com.example.sync.SyncWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -34,6 +35,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     
     val authManager by lazy { com.example.auth.AuthManager(application) }
     val syncManager by lazy { com.example.sync.FirestoreSyncManager(authManager, repository.db) }
+
+    // Network monitoring
+    private val networkMonitor = NetworkMonitor(application)
+    val isOnline: StateFlow<Boolean> = networkMonitor.networkStatus
+        .map { it is NetworkStatus.Available }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    // Pending sync operations count (for UI badge)
+    val pendingOpsCount: StateFlow<Int> = repository.pendingOperationsCount
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     private val prefs = application.getSharedPreferences("aura_prefs", android.content.Context.MODE_PRIVATE)
 
@@ -71,6 +82,17 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             _isHabitsLoading.value = false
             _isDashboardLoading.value = false
         }
+
+        // Auto-sync when network becomes available
+        viewModelScope.launch {
+            networkMonitor.networkStatus.collect { status ->
+                if (status is NetworkStatus.Available && authManager.isSignedIn) {
+                    SyncWorker.enqueueOneTime(application)
+                }
+            }
+        }
+        // Schedule periodic background sync
+        SyncWorker.schedulePeriodicSync(application)
     }
 
     private val _infoSheetTitle = MutableStateFlow<String?>(null)
@@ -285,7 +307,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 lastSyncedTime.value = nowTime
                 addSocialActivity("Sync Engine", "synchronized Aura database successfully with cloud servers", "SETTLE")
             } catch (e: Exception) {
-                Log.e("AppViewModel", "Sync operation failed", e)
+                AuraErrorHandler.report("AppViewModel.triggerSyncNow", e)
                 addSocialActivity("Sync Engine", "database synchronization is offline or paused", "REACTION")
             } finally {
                 isCurrentlySyncing.value = false

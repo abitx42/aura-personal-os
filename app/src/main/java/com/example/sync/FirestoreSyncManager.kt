@@ -763,4 +763,55 @@ class FirestoreSyncManager(
             Log.e("FirestoreSyncManager", "Error syncing debts", e)
         }
     }
+
+    /**
+     * Process a single pending operation from the offline queue.
+     * Called by SyncWorker for each queued item.
+     */
+    suspend fun processPendingOperation(op: PendingOperation) {
+        when (op.entityType) {
+            "NOTE" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val note = database.noteDao().getNoteBySyncId(op.entitySyncId)
+                    if (note != null) pushNote(note)
+                }
+                "DELETE" -> softDeleteNote(op.entitySyncId)
+            }
+            "TASK" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val task = database.taskDao().getTaskBySyncId(op.entitySyncId)
+                    if (task != null) pushTask(task)
+                }
+                "DELETE" -> softDeleteTask(op.entitySyncId)
+            }
+            "JOURNAL" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val entry = database.journalDao().getJournalEntryByDate(op.entitySyncId)
+                    if (entry != null) pushJournalEntry(entry)
+                }
+                "DELETE" -> softDeleteJournalEntry(op.entitySyncId)
+            }
+            "HABIT" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val habit = database.habitDao().getHabitBySyncId(op.entitySyncId)
+                    if (habit != null) pushHabit(habit)
+                }
+                "DELETE" -> softDeleteHabit(op.entitySyncId)
+            }
+            "TRANSACTION" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val tx = database.moneyDao().getTransactionBySyncId(op.entitySyncId)
+                    if (tx != null) pushTransaction(tx)
+                }
+                "DELETE" -> softDeleteTransaction(op.entitySyncId)
+            }
+            "DEBT" -> when (op.operationType) {
+                "CREATE", "UPDATE" -> {
+                    val debt = database.moneyDao().getDebtBySyncId(op.entitySyncId)
+                    if (debt != null) pushDebt(debt)
+                }
+                "DELETE" -> softDeleteDebt(op.entitySyncId)
+            }
+        }
+    }
 }

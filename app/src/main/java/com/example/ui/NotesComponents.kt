@@ -400,7 +400,14 @@ fun NoteCardItem(
 
                     if (note.photoPath != null) {
                         androidx.compose.foundation.Image(
-                            painter = coil.compose.rememberAsyncImagePainter(note.photoPath),
+                            painter = coil.compose.rememberAsyncImagePainter(
+                                model = coil.request.ImageRequest.Builder(LocalContext.current)
+                                    .data(note.photoPath)
+                                    .size(coil.size.Size(120, 120)) // Downscale to small thumbnail size
+                                    .crossfade(true)
+                                    .memoryCacheKey("note_photo_thumb_${note.id}")
+                                    .build()
+                            ),
                             contentDescription = "Attachment preview",
                             modifier = Modifier
                                 .size(42.dp)
@@ -816,7 +823,14 @@ fun NoteEditorScreen(
             ) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     androidx.compose.foundation.Image(
-                        painter = coil.compose.rememberAsyncImagePainter(currentPhotoPath),
+                        painter = coil.compose.rememberAsyncImagePainter(
+                            model = coil.request.ImageRequest.Builder(LocalContext.current)
+                                .data(currentPhotoPath)
+                                .size(coil.size.Size(600, 400)) // Downscale full image preview
+                                .crossfade(true)
+                                .memoryCacheKey("note_full_preview_${currentPhotoPath.hashCode()}")
+                                .build()
+                        ),
                         contentDescription = "Note visual attachment",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop

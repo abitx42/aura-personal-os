@@ -58,6 +58,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
@@ -415,7 +416,14 @@ fun MainAppContainer(
                                 ) {
                                     if (quickCaptureIconUri.isNotEmpty()) {
                                         androidx.compose.foundation.Image(
-                                            painter = coil.compose.rememberAsyncImagePainter(quickCaptureIconUri),
+                                            painter = coil.compose.rememberAsyncImagePainter(
+                                                 model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
+                                                     .data(quickCaptureIconUri)
+                                                     .size(coil.size.Size(120, 120))
+                                                     .crossfade(true)
+                                                     .memoryCacheKey("quick_capture_fab")
+                                                     .build()
+                                             ),
                                             contentDescription = "Custom Quick Capture Graphic",
                                             modifier = Modifier.fillMaxSize().clip(CircleShape),
                                             contentScale = ContentScale.Crop
@@ -437,11 +445,55 @@ fun MainAppContainer(
                 },
                 containerColor = AuraObsidian
             ) { innerPadding ->
+                val isOnline by viewModel.isOnline.collectAsState()
+                val pendingOpsCount by viewModel.pendingOpsCount.collectAsState()
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(innerPadding)
                         .padding(bottom = if (activeTab != Section.RichNoteEditor && activeTab != Section.DrawingWorkspace) 76.dp else 0.dp)
                 ) {
+                    // Non-intrusive offline status banner
+                    AnimatedVisibility(
+                        visible = !isOnline,
+                        enter = slideInVertically() + fadeIn(),
+                        exit = slideOutVertically() + fadeOut(),
+                        modifier = Modifier.align(Alignment.TopCenter).zIndex(10f)
+                    ) {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(12.dp),
+                            tonalElevation = 6.dp
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Default.CloudOff,
+                                    contentDescription = "Offline",
+                                    tint = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Offline mode active",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (pendingOpsCount > 0) {
+                                    Spacer(Modifier.width(8.dp))
+                                    Badge(
+                                        containerColor = MaterialTheme.colorScheme.error,
+                                        contentColor = MaterialTheme.colorScheme.onError
+                                    ) { Text("$pendingOpsCount pending sync") }
+                                }
+                            }
+                        }
+                    }
+
                     // Elegant semi-transparent backdrop overlay when Quick Capture menu is active
                     AnimatedVisibility(
                         visible = showOverlayMenu,
@@ -947,7 +999,14 @@ fun MainAppContainer(
                                         ) {
                                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                                 androidx.compose.foundation.Image(
-                                                    painter = coil.compose.rememberAsyncImagePainter(selectedMediaUri),
+                                                    painter = coil.compose.rememberAsyncImagePainter(
+                                                     model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
+                                                         .data(selectedMediaUri)
+                                                         .size(coil.size.Size(400, 300))
+                                                         .crossfade(true)
+                                                         .memoryCacheKey("selected_media_preview_${selectedMediaUri.hashCode()}")
+                                                         .build()
+                                                 ),
                                                     contentDescription = "Preview of captured image/video",
                                                     modifier = Modifier.fillMaxSize(),
                                                     contentScale = ContentScale.Crop
@@ -1118,7 +1177,14 @@ fun MainAppContainer(
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         androidx.compose.foundation.Image(
-                                                            painter = coil.compose.rememberAsyncImagePainter(preset.second),
+                                                            painter = coil.compose.rememberAsyncImagePainter(
+                                                             model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
+                                                                 .data(preset.second)
+                                                                 .size(coil.size.Size(120, 120))
+                                                                 .crossfade(true)
+                                                                 .memoryCacheKey("preset_fab_${preset.first}")
+                                                                 .build()
+                                                         ),
                                                             contentDescription = preset.first,
                                                             modifier = Modifier.fillMaxSize().clip(CircleShape),
                                                             contentScale = ContentScale.Crop

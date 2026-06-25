@@ -14,14 +14,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ui.MainAppContainer
 import com.example.ui.AppViewModel
 import com.example.ui.theme.MyApplicationTheme
+import com.example.data.AuraErrorHandler
+import com.example.data.AuraImageLoader
+import coil.Coil
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    
+    // Install global error handler
+    AuraErrorHandler.install(this)
+    // Configure optimized image loader
+    Coil.setImageLoader(AuraImageLoader.getInstance(this))
+
     try {
       com.google.firebase.FirebaseApp.initializeApp(this)
     } catch (e: Exception) {
-      e.printStackTrace()
+      AuraErrorHandler.report("MainActivity.FirebaseInit", e)
     }
     enableEdgeToEdge()
     setContent {
