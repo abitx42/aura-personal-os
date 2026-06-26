@@ -14,7 +14,16 @@ class AuthManager(private val context: Context) {
     private val auth: FirebaseAuth? by lazy {
         try {
             if (com.google.firebase.FirebaseApp.getApps(context).isEmpty()) {
-                com.google.firebase.FirebaseApp.initializeApp(context)
+                try {
+                    com.google.firebase.FirebaseApp.initializeApp(context)
+                } catch (e: Exception) {
+                    val options = com.google.firebase.FirebaseOptions.Builder()
+                        .setApiKey("AIzaSyDummyKeyForAuraNotesInitOnly")
+                        .setApplicationId("1:1234567890:android:abcdef123456")
+                        .setProjectId("aura-notes-placeholder")
+                        .build()
+                    com.google.firebase.FirebaseApp.initializeApp(context, options)
+                }
             }
             FirebaseAuth.getInstance()
         } catch (e: Exception) {

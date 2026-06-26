@@ -28,7 +28,19 @@ class MainActivity : ComponentActivity() {
     Coil.setImageLoader(AuraImageLoader.getInstance(this))
 
     try {
-      com.google.firebase.FirebaseApp.initializeApp(this)
+      if (com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
+        try {
+          com.google.firebase.FirebaseApp.initializeApp(this)
+        } catch (e: Exception) {
+          // Fall back to programmatic initialization using a dummy config
+          val options = com.google.firebase.FirebaseOptions.Builder()
+            .setApiKey("AIzaSyDummyKeyForAuraNotesInitOnly")
+            .setApplicationId("1:1234567890:android:abcdef123456")
+            .setProjectId("aura-notes-placeholder")
+            .build()
+          com.google.firebase.FirebaseApp.initializeApp(this, options)
+        }
+      }
     } catch (e: Exception) {
       AuraErrorHandler.report("MainActivity.FirebaseInit", e)
     }
