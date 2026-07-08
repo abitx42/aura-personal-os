@@ -13,7 +13,12 @@ class AuthManager(private val context: Context) {
 
     private val auth: FirebaseAuth? by lazy {
         try {
-            if (com.google.firebase.FirebaseApp.getApps(context).isEmpty()) {
+            val isInitialized = try {
+                com.google.firebase.FirebaseApp.getInstance() != null
+            } catch (e: IllegalStateException) {
+                false
+            }
+            if (!isInitialized) {
                 try {
                     com.google.firebase.FirebaseApp.initializeApp(context)
                 } catch (e: Exception) {

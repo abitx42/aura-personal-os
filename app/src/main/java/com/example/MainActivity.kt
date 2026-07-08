@@ -28,7 +28,12 @@ class MainActivity : ComponentActivity() {
     Coil.setImageLoader(AuraImageLoader.getInstance(this))
 
     try {
-      if (com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
+      val isInitialized = try {
+        com.google.firebase.FirebaseApp.getInstance() != null
+      } catch (e: IllegalStateException) {
+        false
+      }
+      if (!isInitialized) {
         try {
           com.google.firebase.FirebaseApp.initializeApp(this)
         } catch (e: Exception) {
