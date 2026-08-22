@@ -29,6 +29,7 @@ import com.example.data.*
 import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerTimelineRow
+import com.example.ui.components.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -426,33 +427,12 @@ fun JournalAndCalendarScreen(
             }
         } else if (activities.isEmpty()) {
             item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.2f)),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.TrendingFlat,
-                            contentDescription = "Timeline empty",
-                            tint = AuraWhiteMuted,
-                            modifier = Modifier.size(36.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "No activities logged today. Check off some tasks, write notes, or log money transactions to flow chart them here!",
-                            fontSize = 12.sp,
-                            color = AuraWhiteMuted,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+                AuraEmptyState(
+                    title = "No Activities Logged Today",
+                    description = "Complete tasks, write notes, or log transactions to see your real-time activity timeline here.",
+                    icon = Icons.Default.TrendingFlat,
+                    iconTint = MaterialTheme.colorScheme.secondary
+                )
             }
         } else {
             // Flowchart timeline renderer

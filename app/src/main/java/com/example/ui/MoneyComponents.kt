@@ -36,6 +36,7 @@ import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerMoneyOverviewCard
 import com.example.ui.anim.ShimmerTransactionRow
+import com.example.ui.components.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -264,50 +265,24 @@ fun MoneyTrackerScreen(
 
                     // --- 4. NAVIGATION PILL SLIDERS ---
                     item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .horizontalScroll(rememberScrollState())
-                                .padding(vertical = 4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            MoneySubSection.values().forEach { sub ->
-                                val isActive = activeSubSection == sub
-                                val label = when (sub) {
-                                    MoneySubSection.Overview -> "Overview"
-                                    MoneySubSection.Transactions -> "Ledger"
-                                    MoneySubSection.FriendsSplits -> "Splits & Friends"
-                                    MoneySubSection.Investments -> "Investments"
-                                    MoneySubSection.SavingsGoals -> "Savings Goals"
-                                    MoneySubSection.Analytics -> "Analytics Graphs"
-                                    MoneySubSection.Reminders -> "Reminders"
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = if (isActive) AuraCyanNeon else AuraSlateCard,
-                                            shape = RoundedCornerShape(12.dp)
-                                        )
-                                        .border(
-                                            width = 1.dp,
-                                            color = if (isActive) Color.White else AuraSlateLight,
-                                            shape = RoundedCornerShape(12.dp)
-                                        )
-                                        .auraSpringPress(
-                                            cornerRadius = 12.dp,
-                                            onClick = { activeSubSection = sub }
-                                        )
-                                        .padding(horizontal = 14.dp, vertical = 10.dp)
-                                ) {
-                                    Text(
-                                        text = label,
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = if (isActive) Color.Black else Color.White
-                                    )
-                                }
+                        val subSections = MoneySubSection.values().toList()
+                        val labels = subSections.map { sub ->
+                            when (sub) {
+                                MoneySubSection.Overview -> "Overview"
+                                MoneySubSection.Transactions -> "Ledger"
+                                MoneySubSection.FriendsSplits -> "Splits & Friends"
+                                MoneySubSection.Investments -> "Investments"
+                                MoneySubSection.SavingsGoals -> "Savings Goals"
+                                MoneySubSection.Analytics -> "Analytics Graphs"
+                                MoneySubSection.Reminders -> "Reminders"
                             }
                         }
+                        AuraPeriodSelector(
+                            items = labels,
+                            selectedIndex = subSections.indexOf(activeSubSection),
+                            onItemSelected = { index -> activeSubSection = subSections[index] },
+                            accentColor = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
 
@@ -658,11 +633,16 @@ fun PremiumFinancialOverviewCard(
             .fillMaxWidth()
             .border(
                 1.dp,
-                Brush.linearGradient(listOf(AuraCyanNeon.copy(alpha = 0.5f), AuraPurpleAccent.copy(alpha = 0.5f))),
+                Brush.linearGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+                    )
+                ),
                 RoundedCornerShape(24.dp)
             ),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
     ) {
         Column(
             modifier = Modifier
@@ -683,134 +663,75 @@ fun PremiumFinancialOverviewCard(
                 Column {
                     Text(
                         text = "DYNAMIC NET WORTH",
-                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontWeight = FontWeight.Bold,
-                        color = AuraPurpleAccent,
                         letterSpacing = 1.5.sp
                     )
                     Text(
                         text = "₹${"%,.2f".format(netWorth)}",
-                        fontSize = 28.sp,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Icon(
                     imageVector = Icons.Default.Analytics,
                     contentDescription = "Dynamic balance calculation",
-                    tint = AuraCyanNeon,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(36.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Divider(color = AuraSlateLight.copy(alpha = 0.4f), thickness = 1.dp)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), thickness = 1.dp)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Aggregated breakdown quadrants
+            // Numbered Statistics 2x2 Grid using AuraNumberedStat
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // Available & Investment (Left Column)
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Available Balance Quadrant
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .auraSpringPress(
-                                cornerRadius = 12.dp,
-                                onClick = onBalanceClick
-                            )
-                            .padding(10.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Box(modifier = Modifier.size(6.dp).background(AuraCyanNeon, CircleShape))
-                            Text("AVAILABLE BALANCE", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text("₹${"%,.0f".format(available)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
+                AuraNumberedStat(
+                    index = "01",
+                    label = "Liquid Balance",
+                    value = "₹${"%,.0f".format(available)}",
+                    accentColor = MaterialTheme.colorScheme.primary,
+                    onClick = onBalanceClick,
+                    modifier = Modifier.weight(1f)
+                )
+                AuraNumberedStat(
+                    index = "02",
+                    label = "Investments",
+                    value = "₹${"%,.0f".format(invested)}",
+                    accentColor = MaterialTheme.colorScheme.tertiary,
+                    onClick = onInvestedClick,
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
-                    // Portfolio Invested Quadrant
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .auraSpringPress(
-                                cornerRadius = 12.dp,
-                                onClick = onInvestedClick
-                            )
-                            .padding(10.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Box(modifier = Modifier.size(6.dp).background(Color.Yellow, CircleShape))
-                            Text("PORTFOLIO INVESTED", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text("₹${"%,.0f".format(invested)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
-                }
+            Spacer(modifier = Modifier.height(10.dp))
 
-                // Settlements (Right Column)
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Splits to Receive Quadrant
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .auraSpringPress(
-                                cornerRadius = 12.dp,
-                                onClick = onToReceiveClick
-                            )
-                            .padding(10.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Box(modifier = Modifier.size(6.dp).background(MoodHappy, CircleShape))
-                            Text("SPLITS TO RECEIVE", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text("₹${"%,.0f".format(toReceive)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MoodHappy)
-                    }
-
-                    // Splits You Owe Quadrant
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AuraSlateLight.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                            .auraSpringPress(
-                                cornerRadius = 12.dp,
-                                onClick = onYouOweClick
-                            )
-                            .padding(10.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Box(modifier = Modifier.size(6.dp).background(Color.Red, CircleShape))
-                            Text("SPLITS YOU OWE", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text("₹${"%,.0f".format(youOwe)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Red)
-                    }
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                AuraNumberedStat(
+                    index = "03",
+                    label = "To Receive",
+                    value = "₹${"%,.0f".format(toReceive)}",
+                    accentColor = MoodHappy,
+                    onClick = onToReceiveClick,
+                    modifier = Modifier.weight(1f)
+                )
+                AuraNumberedStat(
+                    index = "04",
+                    label = "You Owe",
+                    value = "₹${"%,.0f".format(youOwe)}",
+                    accentColor = MoodSad,
+                    onClick = onYouOweClick,
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
     }
@@ -831,26 +752,28 @@ fun QuickEngagementToolbar(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val actions = listOf(
-            Triple("+ Sent", AuraPurpleAccent, onSentClick),
+            Triple("+ Sent", MaterialTheme.colorScheme.secondary, onSentClick),
             Triple("+ Recv", MoodHappy, onReceivedClick),
-            Triple("+ Portf", Color.Yellow, onInvestedClick),
-            Triple("+ Cash", AuraCyanNeon, onAddedCashClick)
+            Triple("+ Portf", MaterialTheme.colorScheme.tertiary, onInvestedClick),
+            Triple("+ Cash", MaterialTheme.colorScheme.primary, onAddedCashClick)
         )
 
         actions.forEach { (label, colorScheme, callback) ->
-            Button(
-                onClick = callback,
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = AuraSlateCard),
-                shape = RoundedCornerShape(12.dp),
-                contentPadding = PaddingValues(0.dp),
-                border = BorderStroke(1.dp, colorScheme.copy(alpha = 0.5f))
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(50.dp))
+                    .auraSpringPress(cornerRadius = 50.dp, onClick = callback)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(BorderStroke(1.dp, colorScheme.copy(alpha = 0.5f)), RoundedCornerShape(50.dp))
+                    .padding(vertical = 10.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = label, 
-                    color = colorScheme, 
-                    fontSize = 11.sp, 
-                    fontWeight = FontWeight.Black
+                    text = label,
+                    color = colorScheme,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -927,13 +850,12 @@ fun TransactionLedgerView(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (filteredList.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(Icons.Default.ReceiptLong, contentDescription = "No trans", tint = AuraWhiteMuted, modifier = Modifier.size(48.dp))
-                    Text("No transactions match search criteria", color = AuraWhiteMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 8.dp))
-                }
+                AuraEmptyState(
+                    title = "No Transactions Found",
+                    description = "No transactions match your search or filter criteria.",
+                    icon = Icons.Default.ReceiptLong,
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
             } else {
                 // Group by dates
                 val grouped = filteredList.groupBy { it.dateString }
@@ -2358,13 +2280,12 @@ fun SavingsGoalsView(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (goals.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(Icons.Default.EmojiEvents, contentDescription = "No goals", tint = AuraWhiteMuted, modifier = Modifier.size(48.dp))
-                    Text("No target plans listed. Save for gadgets or vacations.", color = AuraWhiteMuted, fontSize = 11.sp)
-                }
+                AuraEmptyState(
+                    title = "No Savings Goals Set",
+                    description = "Create target plans and track milestones for gadgets, trips, or emergency funds.",
+                    icon = Icons.Default.EmojiEvents,
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
             } else {
                 goals.forEach { gol ->
                     val percentage = if (gol.targetAmount > 0) {
@@ -2547,7 +2468,12 @@ fun VisualAnalyticsDashboard(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (categoryTotals.isEmpty()) {
-                Text("Not enough data to graph yet. Add more Sent/Received records.", color = AuraWhiteMuted, fontSize = 11.sp)
+                AuraEmptyState(
+                    title = "No Analytics Data Yet",
+                    description = "Add more transactions or investments to visualize spending share and portfolio distribution.",
+                    icon = Icons.Default.Analytics,
+                    iconTint = MaterialTheme.colorScheme.secondary
+                )
             } else {
                 Text("COGNITIVE SPENDING CATEGORY SHARE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
                 Spacer(modifier = Modifier.height(16.dp))

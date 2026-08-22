@@ -54,7 +54,7 @@ fun AuraAnimatedNavBar(
     }
 
     Surface(
-        color = AuraCharcoalBase.copy(alpha = 0.95f),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding(),
@@ -63,13 +63,13 @@ fun AuraAnimatedNavBar(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 12.dp)
+                .padding(vertical = 8.dp, horizontal = 12.dp)
         ) {
             val totalWidth = maxWidth
             val tabWidth = totalWidth / navItems.size
             val view = LocalView.current
 
-            // Animated sliding neon capsule background indicator
+            // Animated sliding capsule background indicator
             val targetX = tabWidth * activeIndex
             val animatedX by animateDpAsState(
                 targetValue = targetX,
@@ -89,12 +89,12 @@ fun AuraAnimatedNavBar(
                     .padding(horizontal = 4.dp, vertical = 2.dp)
                     .shadow(
                         elevation = 6.dp,
-                        shape = RoundedCornerShape(AuraCornerRadius.Row),
-                        ambientColor = AuraCyanNeon.copy(alpha = 0.2f),
-                        spotColor = AuraCyanNeon.copy(alpha = 0.4f)
+                        shape = RoundedCornerShape(AuraCornerRadius.Card),
+                        ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
                     )
-                    .clip(RoundedCornerShape(AuraCornerRadius.Row))
-                    .background(AuraCyanNeon.copy(alpha = 0.12f))
+                    .clip(RoundedCornerShape(AuraCornerRadius.Card))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
             )
 
             // Interactive Tabs Row
@@ -114,13 +114,13 @@ fun AuraAnimatedNavBar(
                         label = "nav_icon_scale"
                     )
 
-                    val tint = if (isSelected) AuraCyanNeon else AuraWhiteMuted
+                    val tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
 
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .height(44.dp)
-                            .clip(RoundedCornerShape(AuraCornerRadius.Row))
+                            .clip(RoundedCornerShape(AuraCornerRadius.Card))
                             .clickable(
                                 onClick = {
                                     if (!isSelected) {

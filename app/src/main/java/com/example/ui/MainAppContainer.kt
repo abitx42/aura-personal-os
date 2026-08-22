@@ -48,6 +48,7 @@ import com.example.data.*
 import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerDashboardGrid
+import com.example.ui.components.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -1352,230 +1353,143 @@ fun DashboardScreen(
 
         if (isDashboardLoading) {
             item {
-                ShimmerDashboardGrid()
+                AuraLoadingState.HubGrid()
             }
         } else {
-            // COGNITIVE STATUS PROGRESS CARD (Clickable: Navigates to Daily Tasks)
+            // COGNITIVE STATUS PROGRESS HERO CARD
             item {
                 Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .auraSpringPress(
-                        cornerRadius = 24.dp,
-                        onClick = { viewModel.navigateTo(Section.Tasks) }
-                    )
-                    .border(
-                        1.dp,
-                        Brush.linearGradient(listOf(AuraCyanNeon.copy(alpha = 0.4f), AuraPurpleAccent.copy(alpha = 0.2f))),
-                        RoundedCornerShape(24.dp)
-                    ),
-                colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.7f)),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .auraSpringPress(
+                            cornerRadius = 24.dp,
+                            onClick = { viewModel.navigateTo(Section.Tasks) }
+                        )
+                        .border(
+                            1.dp,
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+                                )
+                            ),
+                            RoundedCornerShape(24.dp)
+                        ),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)),
+                    shape = RoundedCornerShape(24.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            "DAILY COMPLETION PROGRESS",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AuraWhiteMuted,
-                            letterSpacing = 1.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "${stats.productivityPercentage}% ACHIEVED",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Black,
-                            color = AuraCyanNeon
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "${stats.todayCompletedTasksCount} objectives finished of ${stats.todayTasksCount} scheduled for today",
-                            fontSize = 11.sp,
-                            color = AuraWhiteMedium
-                        )
-                    }
-
-                    // Progress Ring Custom Canvas
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(72.dp)) {
-                        val progressSweep = animateFloatAsState(
-                            targetValue = stats.productivityPercentage.toFloat() / 100f,
-                            animationSpec = tween(1000, easing = FastOutSlowInEasing)
-                        )
-                        Canvas(modifier = Modifier.fillMaxSize()) {
-                            drawCircle(color = AuraSlateLight, style = Stroke(6.dp.toPx()))
-                            drawArc(
-                                color = AuraCyanNeon,
-                                startAngle = -90f,
-                                sweepAngle = progressSweep.value * 360f,
-                                useCenter = false,
-                                style = Stroke(6.dp.toPx())
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "DAILY OBJECTIVES PROGRESS",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "${stats.productivityPercentage}% ACHIEVED",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Black,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "${stats.todayCompletedTasksCount} objectives finished of ${stats.todayTasksCount} scheduled today",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        Text(
-                            "${stats.productivityPercentage}%",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+
+                        // Progress Ring
+                        Spacer(modifier = Modifier.width(16.dp))
+                        AuraProgressRing(
+                            progress = stats.productivityPercentage.toFloat() / 100f,
+                            mainText = "${stats.productivityPercentage}%",
+                            size = 80.dp,
+                            strokeWidth = 6.dp,
+                            progressColor = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
             }
-        }
 
-        // QUICK ENGAGEMENT GRID (100% Clickable navigation shortcuts to all sub-modules)
-        item {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Notes count card (Clickable gateway to Section.Notes)
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(110.dp)
-                            .auraSpringPress(
-                                cornerRadius = 16.dp,
-                                onClick = { viewModel.navigateTo(Section.Notes) }
-                            )
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-                        shape = RoundedCornerShape(16.dp)
+            // TOOLBOX 2-COLUMN HUB GRID
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(14.dp)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Feed, contentDescription = "Notes", tint = AuraPurpleAccent)
-                                Icon(Icons.Default.ArrowForward, contentDescription = "View", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text("Notes Ledger", fontSize = 11.sp, color = AuraWhiteMuted)
-                                Text("${stats.totalNotesCount} pgs", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
+                        AuraHubCard(
+                            title = "Notes",
+                            statText = "${stats.totalNotesCount} notes logged",
+                            icon = Icons.Default.Feed,
+                            accentColor = MaterialTheme.colorScheme.primary,
+                            onClick = { viewModel.navigateTo(Section.Notes) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AuraHubCard(
+                            title = "Tasks",
+                            statText = "${stats.todayCompletedTasksCount}/${stats.todayTasksCount} completed",
+                            icon = Icons.Default.FormatListBulleted,
+                            accentColor = MaterialTheme.colorScheme.secondary,
+                            onClick = { viewModel.navigateTo(Section.Tasks) },
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
-                    // Habits fire streaks card (Clickable gateway to Section.Habits)
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(110.dp)
-                            .auraSpringPress(
-                                cornerRadius = 16.dp,
-                                onClick = { viewModel.navigateTo(Section.Habits) }
-                            )
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-                        shape = RoundedCornerShape(16.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(14.dp)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.LocalFireDepartment, contentDescription = "Streaks count", tint = AuraCopperWarm)
-                                Icon(Icons.Default.ArrowForward, contentDescription = "View", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text("Habit Stream", fontSize = 11.sp, color = AuraWhiteMuted)
-                                Text("${stats.allTimeStreakValue} 🔥 days", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraCopperWarm)
-                            }
-                        }
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Money Ledger Net Worth card (Clickable gateway to Section.Money)
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(110.dp)
-                            .auraSpringPress(
-                                cornerRadius = 16.dp,
-                                onClick = { viewModel.navigateTo(Section.Money) }
-                            )
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(14.dp)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.MonetizationOn, contentDescription = "Financial Net Worth", tint = AuraCyanNeon)
-                                Icon(Icons.Default.ArrowForward, contentDescription = "View", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text("Money Ledger", fontSize = 11.sp, color = AuraWhiteMuted)
-                                Text("₹${"%,.0f".format(netWorth)}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
+                        AuraHubCard(
+                            title = "Habits",
+                            statText = "${stats.allTimeStreakValue} 🔥 day streak",
+                            icon = Icons.Default.LocalFireDepartment,
+                            accentColor = MaterialTheme.colorScheme.tertiary,
+                            onClick = { viewModel.navigateTo(Section.Habits) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AuraHubCard(
+                            title = "Money",
+                            statText = "₹${"%,.0f".format(netWorth)} net worth",
+                            icon = Icons.Default.Payments,
+                            accentColor = MoodHappy,
+                            onClick = { viewModel.navigateTo(Section.Money) },
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
-                    // Calendar Day/Mood card (Clickable gateway to Section.Day)
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(110.dp)
-                            .auraSpringPress(
-                                cornerRadius = 16.dp,
-                                onClick = { viewModel.navigateTo(Section.Day) }
-                            )
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-                        shape = RoundedCornerShape(16.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(14.dp)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.CalendarToday, contentDescription = "Calendar/Diary", tint = MoodContent)
-                                Icon(Icons.Default.ArrowForward, contentDescription = "View", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text("Journal/Day", fontSize = 11.sp, color = AuraWhiteMuted)
-                                Text(if (todayJournal != null) todayJournal.mood else "Not logged", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon)
-                            }
-                        }
+                        AuraHubCard(
+                            title = "Journal",
+                            statText = if (todayJournal != null) "Mood: ${todayJournal.mood}" else "Not logged today",
+                            icon = Icons.Default.CalendarToday,
+                            accentColor = MaterialTheme.colorScheme.primary,
+                            onClick = { viewModel.navigateTo(Section.Day) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AuraHubCard(
+                            title = "Canvas",
+                            statText = "Vector sketching",
+                            icon = Icons.Default.Draw,
+                            accentColor = MaterialTheme.colorScheme.secondary,
+                            onClick = {
+                                viewModel.navigateTo(Section.DrawingWorkspace)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }

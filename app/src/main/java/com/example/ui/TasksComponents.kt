@@ -34,6 +34,7 @@ import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerTaskRow
 import com.example.ui.anim.ShimmerKanbanCard
+import com.example.ui.components.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.coroutines.launch
@@ -347,11 +348,12 @@ fun TasksScreen(
 
                 if (filtered.isEmpty()) {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.HourglassDisabled, contentDescription = "Empty list", tint = AuraWhiteMuted, modifier = Modifier.size(56.dp))
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("No objectives match standard guidelines", color = Color.White, fontSize = 14.sp)
-                        }
+                        AuraEmptyState(
+                            title = "No Objectives Found",
+                            description = "No tasks match your selected filter criteria. Create a new objective to get started.",
+                            icon = Icons.Default.HourglassDisabled,
+                            iconTint = MaterialTheme.colorScheme.secondary
+                        )
                     }
                 } else {
                     LazyColumn(

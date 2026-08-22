@@ -1,17 +1,30 @@
 package com.example.ui.anim
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,6 +36,84 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+
+/**
+ * Dismissible insight card with soft gradient-glow edge treatment and smooth swipe physics.
+ */
+@Composable
+fun AuraDismissibleCard(
+    visible: Boolean,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    glowColor: Color = MaterialTheme.colorScheme.primary,
+    content: @Composable BoxScope.() -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val view = LocalView.current
+    val offsetX = remember { Animatable(0f) }
+
+    AnimatedVisibility(
+        visible = visible,
+        exit = fadeOut() + shrinkVertically(),
+        modifier = modifier
+    ) {
+        val shape = RoundedCornerShape(AuraCornerRadius.Card)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .graphicsLayer {
+                    val progress = (kotlin.math.abs(offsetX.value) / 400f).coerceIn(0f, 1f)
+                    alpha = 1f - progress * 0.7f
+                }
+                .draggable(
+                    state = rememberDraggableState { delta ->
+                        coroutineScope.launch {
+                            offsetX.snapTo(offsetX.value + delta)
+                        }
+                    },
+                    orientation = Orientation.Horizontal,
+                    onDragStopped = {
+                        if (kotlin.math.abs(offsetX.value) > 250f) {
+                            AuraHaptics.triggerConfirm(view)
+                            onDismiss()
+                        } else {
+                            offsetX.animateTo(
+                                targetValue = 0f,
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMediumLow
+                                )
+                            )
+                        }
+                    }
+                )
+                .shadow(
+                    elevation = 8.dp,
+                    shape = shape,
+                    ambientColor = glowColor.copy(alpha = 0.15f),
+                    spotColor = glowColor.copy(alpha = 0.35f)
+                )
+                .clip(shape)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            glowColor.copy(alpha = 0.6f),
+                            glowColor.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
+                    ),
+                    shape = shape
+                )
+                .padding(16.dp)
+        ) {
+            content()
+        }
+    }
+}
 
 @Composable
 fun AuraDismissibleOverlay(
@@ -50,12 +141,10 @@ fun AuraDismissibleOverlay(
                     onDragEnd = {
                         coroutineScope.launch {
                             if (offsetY.value > dismissThreshold) {
-                                // Trigger dismissal haptics and trigger callback
                                 AuraHaptics.triggerConfirm(view)
                                 onDismiss()
                                 offsetY.snapTo(0f)
                             } else {
-                                // Dynamic elastic bounce-back
                                 offsetY.animateTo(
                                     targetValue = 0f,
                                     animationSpec = spring(
@@ -73,7 +162,6 @@ fun AuraDismissibleOverlay(
                     },
                     onVerticalDrag = { change, dragAmount ->
                         change.consume()
-                        // Dragging up is heavily restricted to prevent negative offsets
                         val newOffset = max(0f, offsetY.value + dragAmount)
                         coroutineScope.launch {
                             offsetY.snapTo(newOffset)
@@ -82,17 +170,10 @@ fun AuraDismissibleOverlay(
                 )
             }
     ) {
-        // Dynamic calculated properties based on drag distance
         val currentOffset = offsetY.value
         val dragFraction = min(1f, currentOffset / 600f)
-        
-        // Dim the black scrim overlay dynamically
         val scrimAlpha = max(0f, min(0.6f, 0.6f * (1f - dragFraction)))
-        
-        // Map drag fraction to scale (1.0f down to 0.92f)
         val currentScale = 1f - (dragFraction * 0.08f)
-        
-        // Map drag fraction to corner radius (0.dp up to 24.dp)
         val currentRadius = (dragFraction * 24f).dp
 
         Box(
@@ -115,3 +196,4 @@ fun AuraDismissibleOverlay(
         }
     }
 }
+

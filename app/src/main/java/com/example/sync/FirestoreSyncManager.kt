@@ -30,7 +30,9 @@ class FirestoreSyncManager(
     }
 
     // Root document path for this user's data under users/{userId}
-    private fun userRoot() = firestore.collection("users").document(authManager.userId ?: "anonymous")
+    private fun userRoot() = firestore.collection("users").document(
+        authManager.userId?.takeIf { it.isNotBlank() } ?: "local_sandbox"
+    )
 
     // ─────────────────────────────────────────────
     // 1. NOTES SYNC

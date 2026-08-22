@@ -20,7 +20,7 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.sahil.auranotes"
+    applicationId = "com.aura.personalos"
     minSdk = 24
     targetSdk = 36
     versionCode = 1

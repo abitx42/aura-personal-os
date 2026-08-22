@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.*
+import com.example.ui.components.AuraPrimaryAction
 import kotlinx.coroutines.launch
 
 data class OnboardingPageData(
@@ -69,7 +69,7 @@ fun OnboardingScreen(
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(AuraSlateCard)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -80,13 +80,13 @@ fun OnboardingScreen(
                             Icon(
                                 imageVector = Icons.Default.Draw,
                                 contentDescription = null,
-                                tint = AuraCyanNeon,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(64.dp)
                             )
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(AuraSlateLight)
+                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                                     .padding(horizontal = 16.dp, vertical = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -95,12 +95,12 @@ fun OnboardingScreen(
                                     modifier = Modifier
                                         .size(8.dp)
                                         .clip(CircleShape)
-                                        .background(AuraCyanNeon)
+                                        .background(MaterialTheme.colorScheme.primary)
                                 )
                                 Text(
                                     "Infinite Vector Sketching",
-                                    color = Color.White,
-                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -120,7 +120,7 @@ fun OnboardingScreen(
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(AuraSlateCard)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -133,7 +133,7 @@ fun OnboardingScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(AuraSlateLight)
+                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
                                     .padding(12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -145,18 +145,18 @@ fun OnboardingScreen(
                                     Icon(
                                         imageVector = Icons.Default.CheckCircle,
                                         contentDescription = null,
-                                        tint = AuraPurpleAccent,
+                                        tint = MaterialTheme.colorScheme.secondary,
                                         modifier = Modifier.size(18.dp)
                                     )
-                                    Text("Refactor Aura core engine", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    Text("Refactor Aura core engine", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                                 }
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(AuraCopperWarm.copy(alpha = 0.2f))
+                                        .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
-                                    Text("HIGH ENERGY", color = AuraCopperWarm, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                                    Text("HIGH ENERGY", color = MaterialTheme.colorScheme.tertiary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
 
@@ -165,7 +165,7 @@ fun OnboardingScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(AuraSlateLight.copy(alpha = 0.5f))
+                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
                                     .padding(12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -177,18 +177,18 @@ fun OnboardingScreen(
                                     Icon(
                                         imageVector = Icons.Default.CheckCircle,
                                         contentDescription = null,
-                                        tint = AuraWhiteMuted,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.size(18.dp)
                                     )
-                                    Text("Review daily metrics log", color = AuraWhiteMedium, fontSize = 11.sp)
+                                    Text("Review daily metrics log", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                                 }
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(AuraCyanNeon.copy(alpha = 0.15f))
+                                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
-                                    Text("LOW ENERGY", color = AuraCyanNeon, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                                    Text("LOW ENERGY", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -207,7 +207,7 @@ fun OnboardingScreen(
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(AuraSlateCard)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -215,26 +215,26 @@ fun OnboardingScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text("AURA PASSBOOK LEDGER", color = AuraWhiteMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                            Text("AURA PASSBOOK LEDGER", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text("₹0.00", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
-                                    Text("Net Liquid Assets", color = AuraCyanNeon, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                    Text("₹0.00", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+                                    Text("Net Liquid Assets", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(AuraSlateLight)
+                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                                     .padding(horizontal = 12.dp, vertical = 4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.LockOpen, contentDescription = null, tint = AuraCopperWarm, modifier = Modifier.size(12.dp))
-                                Text("Offline-First Vault", color = AuraWhiteMedium, fontSize = 9.sp)
+                                Icon(Icons.Default.LockOpen, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(12.dp))
+                                Text("Offline-First Vault", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }
@@ -246,7 +246,7 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
     Scaffold(
-        containerColor = AuraObsidian,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
@@ -267,17 +267,17 @@ fun OnboardingScreen(
             ) {
                 Text(
                     text = "AURA",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Black,
-                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleLarge,
                     letterSpacing = 4.sp
                 )
 
                 if (pagerState.currentPage < pages.size - 1) {
                     Text(
                         text = "SKIP",
-                        color = AuraCyanNeon,
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
                         modifier = Modifier
@@ -322,9 +322,9 @@ fun OnboardingScreen(
                     // Page title and indicators
                     Text(
                         text = page.title,
-                        color = page.glowColor,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Black,
-                        fontSize = 26.sp,
+                        style = MaterialTheme.typography.headlineLarge,
                         letterSpacing = 2.sp,
                         textAlign = TextAlign.Center
                     )
@@ -333,9 +333,9 @@ fun OnboardingScreen(
 
                     Text(
                         text = page.subtitle,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center
                     )
 
@@ -343,9 +343,9 @@ fun OnboardingScreen(
 
                     Text(
                         text = page.description,
-                        color = AuraWhiteMuted,
-                        fontSize = 12.sp,
-                        lineHeight = 18.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        lineHeight = 20.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
@@ -360,7 +360,7 @@ fun OnboardingScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Page Indicator Dots
+                // Page Indicator Dots (Axio pattern: active elongated pill, inactive circles)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -368,10 +368,10 @@ fun OnboardingScreen(
                     pages.indices.forEach { idx ->
                         val isSelected = pagerState.currentPage == idx
                         val dotWidth by animateDpAsState(
-                            targetValue = if (isSelected) 24.dp else 8.dp,
+                            targetValue = if (isSelected) 28.dp else 8.dp,
                             label = "dotWidth"
                         )
-                        val dotColor = if (isSelected) pages[pagerState.currentPage].glowColor else AuraSlateLight
+                        val dotColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 
                         Box(
                             modifier = Modifier
@@ -383,7 +383,7 @@ fun OnboardingScreen(
                     }
                 }
 
-                // Interactive Primary Buttons
+                // Interactive Primary Action CTA
                 AnimatedContent(
                     targetState = pagerState.currentPage == pages.size - 1,
                     transitionSpec = {
@@ -392,85 +392,26 @@ fun OnboardingScreen(
                     label = "primaryButton"
                 ) { isLastPage ->
                     if (isLastPage) {
-                        Button(
+                        AuraPrimaryAction(
+                            text = "ENTER AURA SPACE",
+                            icon = Icons.Default.KeyboardDoubleArrowRight,
                             onClick = {
                                 viewModel.setHasSeenOnboarding(true)
                                 onFinished()
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(14.dp),
-                            contentPadding = PaddingValues(),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                                .shadow(8.dp, RoundedCornerShape(14.dp))
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.horizontalGradient(
-                                            colors = listOf(AuraCyanNeon, AuraPurpleAccent)
-                                        )
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = "ENTER AURA SPACE",
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.Black,
-                                        fontSize = 13.sp,
-                                        letterSpacing = 1.5.sp
-                                    )
-                                    Icon(
-                                        imageVector = Icons.Default.KeyboardDoubleArrowRight,
-                                        contentDescription = null,
-                                        tint = Color.Black,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
-                            }
-                        }
+                            modifier = Modifier.fillMaxWidth().height(52.dp)
+                        )
                     } else {
-                        Button(
+                        AuraPrimaryAction(
+                            text = "NEXT CONFIGURATION",
+                            icon = Icons.AutoMirrored.Filled.ArrowForward,
                             onClick = {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = AuraSlateCard
-                            ),
-                            shape = RoundedCornerShape(14.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = "NEXT CONFIGURATION",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 11.sp,
-                                    letterSpacing = 1.sp
-                                )
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = null,
-                                    tint = AuraCyanNeon,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
+                            modifier = Modifier.fillMaxWidth().height(52.dp)
+                        )
                     }
                 }
             }

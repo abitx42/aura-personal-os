@@ -44,12 +44,21 @@ class AuthManager(private val context: Context) {
 
     // Build the Google Sign-In intent — launch this from your Activity
     fun getSignInIntent(): Intent {
-        // Safe default or client ID from strings/resources/BuildConfig if needed
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("YOUR_WEB_CLIENT_ID_FROM_FIREBASE_CONSOLE") // placeholders as requested
+        val webClientId = try {
+            val resId = context.resources.getIdentifier("default_web_client_id", "string", context.packageName)
+            if (resId != 0) context.getString(resId) else "YOUR_WEB_CLIENT_ID_FROM_FIREBASE_CONSOLE"
+        } catch (e: Exception) {
+            "YOUR_WEB_CLIENT_ID_FROM_FIREBASE_CONSOLE"
+        }
+
+        val gsoBuilder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .build()
-        return GoogleSignIn.getClient(context, gso).signInIntent
+
+        if (webClientId.isNotBlank() && webClientId != "YOUR_WEB_CLIENT_ID_FROM_FIREBASE_CONSOLE") {
+            gsoBuilder.requestIdToken(webClientId)
+        }
+
+        return GoogleSignIn.getClient(context, gsoBuilder.build()).signInIntent
     }
 
     // Called after Google Sign-In returns an idToken

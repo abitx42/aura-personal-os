@@ -41,6 +41,7 @@ import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerNoteCard
 import com.example.ui.anim.ShimmerNoteListItem
+import com.example.ui.components.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -187,34 +188,14 @@ fun NotesScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         // Filter chips list
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val fullList = listOf("All") + availableCategories
-                    fullList.forEach { cat ->
-                        val isSelected = selectedCategory == cat
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { viewModel.setSelectedCategory(cat) },
-                            label = { Text(cat, fontSize = 11.sp, color = if (isSelected) Color.Black else Color.White) },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = AuraCyanNeon,
-                                containerColor = AuraSlateCard
-                            )
-                        )
-                    }
-                }
-            }
-        }
+        val fullCategoriesList = listOf("All") + availableCategories
+        AuraPeriodSelector(
+            items = fullCategoriesList,
+            selectedIndex = fullCategoriesList.indexOf(selectedCategory).coerceAtLeast(0),
+            onItemSelected = { idx -> viewModel.setSelectedCategory(fullCategoriesList[idx]) },
+            modifier = Modifier.padding(horizontal = 16.dp),
+            accentColor = MaterialTheme.colorScheme.primary
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -252,17 +233,12 @@ fun NotesScreen(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.DriveFileRenameOutline,
-                        contentDescription = "Empty Notes",
-                        tint = AuraWhiteMuted,
-                        modifier = Modifier.size(64.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text("No local notes found", color = Color.White)
-                    Text("Create a new digital tab using the floating button", fontSize = 11.sp, color = AuraWhiteMuted)
-                }
+                AuraEmptyState(
+                    title = "No Local Notes Found",
+                    description = "Create a new digital notebook or vector canvas using the action button.",
+                    icon = Icons.Default.DriveFileRenameOutline,
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
             }
         } else {
             if (isGridView) {
