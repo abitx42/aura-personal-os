@@ -67,71 +67,73 @@ fun TasksScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = "TASKS SYSTEM",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    letterSpacing = 1.sp
+                    text = "Objectives",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = AuraTheme.colors.textPrimary
                 )
                 Text(
-                    text = "${tasksList.filter { !it.isCompleted }.size} active objectives",
-                    fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    text = "${tasksList.filter { !it.isCompleted }.size} active objectives scheduled",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = AuraTheme.colors.textSecondary
                 )
             }
 
+            AuraHeaderActions(
+                onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+            )
+        }
+
+        // View toggle switcher toolbar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
+                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
+                    .padding(3.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                AuraSectionInfoButton(
-                    viewModel = viewModel,
-                    title = "Objectives Planner",
-                    description = "A dynamic cognitive energy-based Kanban board. Categorize objectives by high-energy, low-energy, or custom tags, and trigger focused sprint timers to crush goals."
-                )
-
-                // View toggle switcher
-                Row(
+                IconButton(
+                    onClick = { showKanbanBoard = true },
                     modifier = Modifier
-                        .background(AuraSlateCard, RoundedCornerShape(12.dp))
-                        .padding(3.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .size(36.dp)
+                        .background(
+                            if (showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
+                            RoundedCornerShape(8.dp)
+                        )
                 ) {
-                    IconButton(
-                        onClick = { showKanbanBoard = true },
-                        modifier = Modifier
-                            .size(36.dp)
-                            .background(
-                                if (showKanbanBoard) AuraCyanNeon else Color.Transparent,
-                                RoundedCornerShape(8.dp)
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Dashboard,
-                            contentDescription = "Kanbanboard View",
-                            tint = if (showKanbanBoard) Color.Black else Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Dashboard,
+                        contentDescription = "Kanbanboard View",
+                        tint = if (showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
 
-                    IconButton(
-                        onClick = { showKanbanBoard = false },
-                        modifier = Modifier
-                            .size(36.dp)
-                            .background(
-                                if (!showKanbanBoard) AuraCyanNeon else Color.Transparent,
-                                RoundedCornerShape(8.dp)
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FormatListBulleted,
-                            contentDescription = "Standard List view",
-                            tint = if (!showKanbanBoard) Color.Black else Color.White,
-                            modifier = Modifier.size(16.dp)
+                IconButton(
+                    onClick = { showKanbanBoard = false },
+                    modifier = Modifier
+                        .size(36.dp)
+                        .background(
+                            if (!showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
+                            RoundedCornerShape(8.dp)
                         )
-                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FormatListBulleted,
+                        contentDescription = "Standard List view",
+                        tint = if (!showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
             }
         }

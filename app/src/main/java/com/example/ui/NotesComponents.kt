@@ -77,69 +77,83 @@ fun NotesScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = "AURA NOTEBOOK",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    letterSpacing = 1.sp
+                    text = "Personal Notes",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = AuraTheme.colors.textPrimary
                 )
                 Text(
-                    text = "${notesList.size} notes stored locally",
-                    fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    text = "${notesList.size} secure notes stored offline",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = AuraTheme.colors.textSecondary
                 )
             }
 
+            AuraHeaderActions(
+                onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+            )
+        }
+
+        // Action Toolbar (Layout toggle + Sort menu + Clock)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LiveClockWidget(
+                modifier = Modifier.weight(1f),
+                initialIsAnalog = false
+            )
+
             Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AuraSectionInfoButton(
-                    viewModel = viewModel,
-                    title = "Zen Space Notebook",
-                    description = "Compose structured thoughts, customize with modern category tags, and sketch ideas directly onto an infinite pressure-sensitive vector canvas."
-                )
                 IconButton(onClick = { viewModel.toggleNotesLayout() }) {
                     Icon(
                         imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.GridView,
                         contentDescription = "Toggle Layout",
-                        tint = Color.White
+                        tint = AuraTheme.colors.textSecondary
                     )
                 }
 
                 Box {
                     IconButton(onClick = { showSortMenu = true }) {
-                        Icon(Icons.Default.Sort, contentDescription = "Sort Notes", tint = Color.White)
+                        Icon(Icons.Default.Sort, contentDescription = "Sort Notes", tint = AuraTheme.colors.textSecondary)
                     }
                     DropdownMenu(
                         expanded = showSortMenu,
                         onDismissRequest = { showSortMenu = false },
-                        modifier = Modifier.background(AuraSlateCard)
+                        modifier = Modifier.background(AuraTheme.colors.cardBackground)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Recent Modified", color = Color.White) },
+                            text = { Text("Recent Modified", color = AuraTheme.colors.textPrimary) },
                             onClick = {
                                 viewModel.setNotesSortOrder(SortOrder.ModifiedRecent)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Oldest Modified", color = Color.White) },
+                            text = { Text("Oldest Modified", color = AuraTheme.colors.textPrimary) },
                             onClick = {
                                 viewModel.setNotesSortOrder(SortOrder.ModifiedOldest)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Recent Created", color = Color.White) },
+                            text = { Text("Recent Created", color = AuraTheme.colors.textPrimary) },
                             onClick = {
                                 viewModel.setNotesSortOrder(SortOrder.CreatedRecent)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Title Alphabetical", color = Color.White) },
+                            text = { Text("Title Alphabetical", color = AuraTheme.colors.textPrimary) },
                             onClick = {
                                 viewModel.setNotesSortOrder(SortOrder.TitleAscending)
                                 showSortMenu = false
@@ -149,12 +163,6 @@ fun NotesScreen(
                 }
             }
         }
-
-        // Live Clock persistent widget at the top of note section
-        LiveClockWidget(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-            initialIsAnalog = false
-        )
 
         Spacer(modifier = Modifier.height(12.dp))
 

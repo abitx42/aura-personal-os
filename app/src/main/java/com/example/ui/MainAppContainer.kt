@@ -47,6 +47,7 @@ import com.example.audio.PlaybackState
 import com.example.data.*
 import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.ShimmerDashboardGrid
 import com.example.ui.components.*
 import kotlinx.coroutines.launch
@@ -1317,37 +1318,34 @@ fun DashboardScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Welcome Header info
+        // Welcome Header info matching reference layout
         item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding(),
+                    .statusBarsPadding()
+                    .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text("HELLO USER", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon, letterSpacing = 1.sp)
-                    Text("MY WORKSPACE", fontSize = 24.sp, fontWeight = FontWeight.Black, color = Color.White)
-                    Text(todayDate.uppercase(), fontSize = 11.sp, color = AuraWhiteMuted)
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        text = "Workspace",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AuraTheme.colors.textPrimary
+                    )
+                    Text(
+                        text = "Manage budgets, notes, objectives and focus",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AuraTheme.colors.textSecondary
+                    )
                 }
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AuraSectionInfoButton(
-                        viewModel = viewModel,
-                        title = "Zen Workspace",
-                        description = "Your Aura central dashboard. View quick status summaries, cognitive daily completion metrics, recent offline notes, active timers, and instant security stats at a single glance."
-                    )
-                    IconButton(
-                        onClick = { viewModel.navigateTo(Section.SecuritySettings) },
-                        modifier = Modifier.background(AuraSlateCard.copy(alpha = 0.8f), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
-                    }
-                }
+                AuraHeaderActions(
+                    onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                    onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                )
             }
         }
 
@@ -1608,78 +1606,59 @@ fun AuraBottomNavRow(
     viewModel: AppViewModel,
     active: Section
 ) {
+    val navItems = listOf(
+        Triple(Section.Dashboard, "Home", Icons.Outlined.Home),
+        Triple(Section.Notes, "Personal", Icons.Outlined.Person),
+        Triple(Section.Tasks, "Txn/Tasks", Icons.Outlined.FormatListBulleted),
+        Triple(Section.Money, "Accounts", Icons.Outlined.CreditCard),
+        Triple(Section.Day, "Day/More", Icons.Outlined.MoreHoriz)
+    )
+
     Surface(
-        color = AuraCharcoalBase.copy(alpha = 0.95f),
+        color = AuraTheme.colors.bottomNavBackground,
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding(),
-        tonalElevation = 8.dp
+        tonalElevation = 8.dp,
+        border = BorderStroke(0.8.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.6f))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .padding(vertical = 8.dp, horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Dashboard
-            IconButton(onClick = { viewModel.navigateTo(Section.Dashboard) }) {
-                Icon(
-                    imageVector = Icons.Default.Dashboard,
-                    contentDescription = "Workspace Dashboard",
-                    tint = if (active == Section.Dashboard) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            navItems.forEach { (section, label, icon) ->
+                val isSelected = active == section
+                val shape = RoundedCornerShape(20.dp)
 
-            // Notebook
-            IconButton(onClick = { viewModel.navigateTo(Section.Notes) }) {
-                Icon(
-                    imageVector = Icons.Default.Feed,
-                    contentDescription = "Notebook tabs",
-                    tint = if (active == Section.Notes) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Tasks Kanban
-            IconButton(onClick = { viewModel.navigateTo(Section.Tasks) }, modifier = Modifier.testTag("nav_tasks")) {
-                Icon(
-                    imageVector = Icons.Default.FormatListBulleted,
-                    contentDescription = "Tasks Kanban",
-                    tint = if (active == Section.Tasks) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Habits
-            IconButton(onClick = { viewModel.navigateTo(Section.Habits) }) {
-                Icon(
-                    imageVector = Icons.Default.LocalFireDepartment,
-                    contentDescription = "Habits check trackers",
-                    tint = if (active == Section.Habits) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Calendars & diaries
-            IconButton(onClick = { viewModel.navigateTo(Section.Day) }, modifier = Modifier.testTag("nav_journal")) {
-                Icon(
-                    imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Calendars diary logs",
-                    tint = if (active == Section.Day) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Money tracking engine
-            IconButton(onClick = { viewModel.navigateTo(Section.Money) }, modifier = Modifier.testTag("nav_money")) {
-                Icon(
-                    imageVector = Icons.Default.Payments,
-                    contentDescription = "Ledger and splits",
-                    tint = if (active == Section.Money) AuraCyanNeon else AuraWhiteMuted,
-                    modifier = Modifier.size(24.dp)
-                )
+                Column(
+                    modifier = Modifier
+                        .clip(shape)
+                        .auraSpringPress(
+                            cornerRadius = 20.dp,
+                            onClick = { viewModel.navigateTo(section) }
+                        )
+                        .background(if (isSelected) AuraTheme.colors.bottomNavActivePill else Color.Transparent)
+                        .padding(horizontal = if (isSelected) 14.dp else 10.dp, vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = label,
+                        tint = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                        fontSize = 10.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    )
+                }
             }
         }
     }

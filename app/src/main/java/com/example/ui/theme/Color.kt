@@ -2,21 +2,68 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Premium Aura Dark Palette
-var AuraObsidian = Color(0xFF0C0E12)       // Rich organic obsidian base
-var AuraCharcoalBase = Color(0xFF14171E)   // Warm charcoal-metallic surface
-var AuraSlateCard = Color(0xFF1D222E)      // Deep slate with layered depth
-var AuraSlateLight = Color(0xFF2B3244)     // Lighter slate for active outlines
+// ==========================================
+// SEMANTIC COLORS & ACCENTS (Inspired by Fintech Reference)
+// ==========================================
+val SemanticGreen = Color(0xFF00D084)          // Available, Incoming, +₹, Completed
+val SemanticGreenContainer = Color(0x2600D084) // 15% alpha green container
+val SemanticGreenDark = Color(0xFF005A36)
 
-var AuraCyanNeon = Color(0xFF00E5FF)       // Glowing digital cyan highlight
-var AuraCyanMuted = Color(0xFF0097A7)      // Deeper muted cyan
-var AuraPurpleAccent = Color(0xFF7C4DFF)   // Tech purple accent
-var AuraCopperWarm = Color(0xFFFFA726)     // Copper warning highlights
+val SemanticRed = Color(0xFFFF4D4D)            // Used, Outgoing, -₹, Debt Owed, Deletions
+val SemanticRedContainer = Color(0x26FF4D4D)   // 15% alpha red container
+val SemanticRedDark = Color(0xFF5C1B1B)
 
-var AuraWhiteMedium = Color(0xFFCFD8DC)     // Premium bone-white text body
-var AuraWhiteMuted = Color(0xFF90A4AE)      // Cyber-gray body description
+val SemanticGold = Color(0xFFFFB800)           // ✨ PRO badge, Default star, Highlights
+val SemanticGoldContainer = Color(0x33FFB800)  // 20% alpha gold container
 
-// Habits & Mood category color tags
+val RadiantOrange = Color(0xFFFF5B32)          // Signature Brand Accent
+val RadiantOrangeMuted = Color(0xFF8A2E14)
+val RadiantOrangeGlow = Color(0x33FF5B32)
+
+// ==========================================
+// BASE & SURFACE COLORS
+// ==========================================
+val DarkBackground = Color(0xFF101216)         // Rich matte dark background
+val DarkSurface = Color(0xFF16181F)            // Dock / top bar surface
+val DarkCard = Color(0xFF1D2028)               // Layered content cards
+val DarkCardBorder = Color(0xFF282B36)         // Thin subtle card outline
+
+val AmoledBackground = Color(0xFF000000)       // Pure pitch black
+val AmoledSurface = Color(0xFF0C0D11)
+val AmoledCard = Color(0xFF13151C)
+val AmoledCardBorder = Color(0xFF20232E)
+
+val LightBackground = Color(0xFFF7F8FA)        // Bone white background
+val LightSurface = Color(0xFFFFFFFF)
+val LightCard = Color(0xFFF0F2F6)
+val LightCardBorder = Color(0xFFE2E6EE)
+
+// Text Colors
+val TextWhitePrimary = Color(0xFFFFFFFF)
+val TextBoneSecondary = Color(0xFFA0A5B5)
+val TextMutedSteel = Color(0xFF6B7280)
+
+val TextDarkPrimary = Color(0xFF121417)
+val TextDarkSecondary = Color(0xFF555B6D)
+val TextDarkMuted = Color(0xFF8E95A5)
+
+// ==========================================
+// MUTABLE THEME VARS (For compatibility)
+// ==========================================
+var AuraObsidian = DarkBackground
+var AuraCharcoalBase = DarkSurface
+var AuraSlateCard = DarkCard
+var AuraSlateLight = DarkCardBorder
+
+var AuraCyanNeon = RadiantOrange
+var AuraCyanMuted = RadiantOrangeMuted
+var AuraPurpleAccent = Color(0xFF7C4DFF)
+var AuraCopperWarm = SemanticGold
+
+var AuraWhiteMedium = TextBoneSecondary
+var AuraWhiteMuted = TextMutedSteel
+
+// Mood category tags
 val MoodHappy = Color(0xFF00E676)
 val MoodCalm = Color(0xFF29B6F6)
 val MoodContent = Color(0xFFBA68C8)

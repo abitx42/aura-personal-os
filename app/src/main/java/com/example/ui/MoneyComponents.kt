@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.*
 import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
+import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.ShimmerMoneyOverviewCard
 import com.example.ui.anim.ShimmerTransactionRow
 import com.example.ui.components.*
@@ -178,54 +179,24 @@ fun MoneyTrackerScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
-                                text = "MONEY ENGINE",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White,
-                                letterSpacing = 2.sp
+                                text = "Accounts",
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = AuraTheme.colors.textPrimary
                             )
                             Text(
-                                text = "Real-time ledger, splitwise splits, portfolio tracker",
-                                fontSize = 11.sp,
-                                color = AuraWhiteMuted
+                                text = "Manage budgets and track source balances",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = AuraTheme.colors.textSecondary
                             )
                         }
                         
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            AuraSectionInfoButton(
-                                viewModel = viewModel,
-                                title = "Money Ledger & Splits",
-                                description = "Track your net liquid assets, cash-flow ledgers, investment portfolios, and collaborative Splitwise-style expense split rooms. Operates entirely offline with secure local databases."
-                            )
-
-                            // Account Badge with manual adjustment support
-                            Card(
-                                modifier = Modifier
-                                    .clickable { showBalanceAdjustmentDialog = accounts.find { it.isDefault } ?: accounts.firstOrNull() }
-                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp)),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                ) {
-                                    Box(modifier = Modifier.size(8.dp).background(AuraCyanNeon, CircleShape))
-                                    Text(
-                                        text = (accounts.find { it.isDefault } ?: Account(name="Default", balance=0.0)).name.uppercase(),
-                                        fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = AuraWhiteMedium
-                                    )
-                                }
-                            }
-                        }
+                        AuraHeaderActions(
+                            onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                            onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                        )
                     }
                 }
 
@@ -805,74 +776,187 @@ fun TransactionLedgerView(
         matchesQuery && matchesCategory && matchesType
     }
 
-    Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+// Side-by-side INCOMING vs OUTGOING summary cards matching Reference Screenshot 2
+@Composable
+fun ModernTransactionSummaryCards(
+    incoming: Double,
+    outgoing: Double,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("FINANCIAL TRANSACTION LEDGER", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon, letterSpacing = 1.sp)
-            Spacer(modifier = Modifier.height(12.dp))
+        val shape = RoundedCornerShape(AuraCornerRadius.Card)
 
-            // Search Bar & Simple Filter Tabs
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                placeholder = { Text("Search by description, merchant, notes...", color = AuraWhiteMuted, fontSize = 11.sp) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = AuraWhiteMuted) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = AuraCyanNeon,
-                    unfocusedBorderColor = AuraSlateLight,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
-                ),
-                shape = RoundedCornerShape(12.dp)
+        // INCOMING CARD
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .clip(shape)
+                .background(AuraTheme.colors.cardBackground)
+                .border(width = 1.dp, color = AuraTheme.colors.cardBorder, shape = shape)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "INCOMING",
+                style = MaterialTheme.typography.labelSmall,
+                color = AuraTheme.colors.positiveGreen,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.2.sp,
+                fontSize = 10.sp
             )
+            Text(
+                text = "₹${"%,.0f".format(incoming)}",
+                style = MaterialTheme.typography.titleLarge,
+                color = AuraTheme.colors.positiveGreen,
+                fontWeight = FontWeight.Black
+            )
+        }
 
-            Spacer(modifier = Modifier.height(12.dp))
+        // OUTGOING CARD
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .clip(shape)
+                .background(AuraTheme.colors.cardBackground)
+                .border(width = 1.dp, color = AuraTheme.colors.cardBorder, shape = shape)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "OUTGOING",
+                style = MaterialTheme.typography.labelSmall,
+                color = AuraTheme.colors.negativeRed,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.2.sp,
+                fontSize = 10.sp
+            )
+            Text(
+                text = "₹${"%,.0f".format(outgoing)}",
+                style = MaterialTheme.typography.titleLarge,
+                color = AuraTheme.colors.negativeRed,
+                fontWeight = FontWeight.Black
+            )
+        }
+    }
+}
 
-            // Category & Type sliders
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                listOf("All", "SENT", "RECEIVED", "INVESTED").forEach { t ->
-                    val isSel = filterType == t
-                    Box(
-                        modifier = Modifier
-                            .background(if (isSel) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
-                            .clickable { filterType = t }
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
-                    ) {
-                        Text(t, fontSize = 9.sp, color = if (isSel) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+// ===================================================
+// SUB-MODULE: TRANSACTION JOURNAL LEDGER
+// ===================================================
+@Composable
+fun TransactionLedgerView(
+    transactions: List<Transaction>,
+    onDeleteClick: (Transaction) -> Unit,
+    onEditClick: (Transaction) -> Unit
+) {
+    var searchQuery by remember { mutableStateOf("") }
+    var filterCategory by remember { mutableStateOf("All") }
+    var filterType by remember { mutableStateOf("All") }
+
+    val totalIncoming = transactions.filter { it.type == "RECEIVED" || it.type == "CASH_ADDED" }.sumOf { it.amount }
+    val totalOutgoing = transactions.filter { it.type == "SENT" || it.type == "INVESTED" }.sumOf { it.amount }
+
+    val filteredList = transactions.filter { tx ->
+        val matchesQuery = tx.recipientOrSender.contains(searchQuery, true) ||
+                tx.category.contains(searchQuery, true) ||
+                tx.note.contains(searchQuery, true) ||
+                tx.amount.toString().contains(searchQuery)
+        
+        val matchesCategory = filterCategory == "All" || tx.category == filterCategory
+        val matchesType = filterType == "All" || tx.type == filterType
+        
+        matchesQuery && matchesCategory && matchesType
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        // Summary Cards (INCOMING vs OUTGOING)
+        ModernTransactionSummaryCards(
+            incoming = totalIncoming,
+            outgoing = totalOutgoing
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "TRANSACTIONS",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = AuraTheme.colors.textMuted,
+                    letterSpacing = 1.2.sp
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Search Bar
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Search transactions...", color = AuraTheme.colors.textMuted, fontSize = 12.sp) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = AuraTheme.colors.textMuted) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Category & Type sliders
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    listOf("All", "SENT", "RECEIVED", "INVESTED").forEach { t ->
+                        val isSel = filterType == t
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .auraSpringPress(cornerRadius = 8.dp, onClick = { filterType = t })
+                                .background(if (isSel) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = t,
+                                fontSize = 9.sp,
+                                color = if (isSel) Color.White else AuraTheme.colors.textSecondary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            if (filteredList.isEmpty()) {
-                AuraEmptyState(
-                    title = "No Transactions Found",
-                    description = "No transactions match your search or filter criteria.",
-                    icon = Icons.Default.ReceiptLong,
-                    iconTint = MaterialTheme.colorScheme.primary
-                )
-            } else {
-                // Group by dates
-                val grouped = filteredList.groupBy { it.dateString }
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    grouped.forEach { (dateKey, list) ->
-                        Text(
-                            text = dateKey.uppercase(),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AuraWhiteMedium,
-                            letterSpacing = 1.sp
-                        )
-                        list.forEach { tx ->
+                if (filteredList.isEmpty()) {
+                    AuraEmptyState(
+                        title = "No Transactions",
+                        description = "No transactions found matching your criteria.",
+                        icon = Icons.Default.ReceiptLong,
+                        iconTint = AuraTheme.colors.accentBrand
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        filteredList.forEach { tx ->
+                            val isIncome = tx.type == "RECEIVED" || tx.type == "CASH_ADDED"
+                            val amountColor = if (isIncome) AuraTheme.colors.positiveGreen else AuraTheme.colors.negativeRed
+                            val prefix = if (isIncome) "+" else "-"
+                            val arrowIcon = if (isIncome) Icons.Default.SouthEast else Icons.Default.NorthEast
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(AuraTheme.colors.bottomNavBackground.copy(alpha = 0.6f))
+                                    .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                                    .clickable { onEditClick(tx) }
+                                    .padding(14.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -881,79 +965,71 @@ fun TransactionLedgerView(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    val icon = when (tx.type) {
-                                        "SENT" -> Icons.Default.ArrowOutward
-                                        "RECEIVED" -> Icons.Default.CallReceived
-                                        "INVESTED" -> Icons.Default.TrendingUp
-                                        else -> Icons.Default.PlusOne
-                                    }
-                                    val iconColor = when (tx.type) {
-                                        "SENT" -> AuraPurpleAccent
-                                        "RECEIVED" -> MoodHappy
-                                        "INVESTED" -> Color.Yellow
-                                        else -> AuraCyanNeon
-                                    }
+                                    // Squircle direction arrow container
                                     Box(
                                         modifier = Modifier
-                                            .size(36.dp)
-                                            .background(iconColor.copy(alpha = 0.15f), CircleShape),
+                                            .size(38.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(amountColor.copy(alpha = 0.14f)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(icon, contentDescription = tx.type, tint = iconColor, modifier = Modifier.size(16.dp))
+                                        Icon(
+                                            imageVector = arrowIcon,
+                                            contentDescription = tx.type,
+                                            tint = amountColor,
+                                            modifier = Modifier.size(18.dp)
+                                        )
                                     }
 
-                                    Column {
+                                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                         Text(
-                                            tx.recipientOrSender,
-                                            fontSize = 13.sp,
+                                            text = tx.recipientOrSender.ifBlank { "Transaction" },
+                                            style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color.White,
+                                            color = AuraTheme.colors.textPrimary,
+                                            fontSize = 14.sp,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                         Text(
-                                            "${tx.category} • ${tx.paymentMethod}",
-                                            fontSize = 9.sp,
-                                            color = AuraWhiteMuted
+                                            text = "👤 ${tx.category} · ${tx.paymentMethod.ifBlank { "Other" }}",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = AuraTheme.colors.textSecondary,
+                                            fontSize = 11.sp
                                         )
-                                        if (tx.note.isNotBlank()) {
-                                            Text(tx.note, fontSize = 9.sp, color = AuraCyanNeon, maxLines = 1)
-                                        }
                                     }
                                 }
 
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    val prefix = when (tx.type) {
-                                        "SENT", "INVESTED" -> "-"
-                                        "RECEIVED", "CASH_ADDED" -> "+"
-                                        else -> ""
+                                    Column(horizontalAlignment = Alignment.End) {
+                                        Text(
+                                            text = "$prefix₹${"%,.0f".format(tx.amount)}",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Black,
+                                            color = amountColor,
+                                            fontSize = 15.sp
+                                        )
+                                        Text(
+                                            text = tx.dateString,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = AuraTheme.colors.textMuted,
+                                            fontSize = 10.sp
+                                        )
                                     }
-                                    val color = when (tx.type) {
-                                        "SENT" -> AuraPurpleAccent
-                                        "RECEIVED" -> MoodHappy
-                                        "INVESTED" -> Color.Yellow
-                                        else -> AuraCyanNeon
-                                    }
-                                    Text(
-                                        "$prefix₹${"%,.0f".format(tx.amount)}",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = color
-                                    )
-                                    IconButton(
-                                        onClick = { onEditClick(tx) },
-                                        modifier = Modifier.size(24.dp)
-                                    ) {
-                                        Icon(Icons.Default.Edit, contentDescription = "Edit transaction", tint = AuraWhiteMuted, modifier = Modifier.size(14.dp))
-                                    }
+
                                     IconButton(
                                         onClick = { onDeleteClick(tx) },
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(28.dp)
                                     ) {
-                                        Icon(Icons.Default.DeleteOutline, contentDescription = "Delete transaction", tint = AuraWhiteMuted, modifier = Modifier.size(14.dp))
+                                        Icon(
+                                            imageVector = Icons.Default.DeleteOutline,
+                                            contentDescription = "Delete",
+                                            tint = AuraTheme.colors.negativeRed.copy(alpha = 0.7f),
+                                            modifier = Modifier.size(16.dp)
+                                        )
                                     }
                                 }
                             }
@@ -963,6 +1039,7 @@ fun TransactionLedgerView(
             }
         }
     }
+}
 }
 
 // ===================================================
@@ -2587,50 +2664,208 @@ fun VisualAnalyticsDashboard(
 
 // Mini view helper: Accounts summary
 @Composable
-fun AccountsSectionView(
-    accounts: List<Account>,
+// Modern Account Card directly inspired by Reference Screenshot 1
+@Composable
+fun ModernAccountCard(
+    account: Account,
     onAdjustBalance: (Account) -> Unit,
-    onNavigateToPassbook: (() -> Unit)? = null
+    modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = Modifier
+    val shape = RoundedCornerShape(AuraCornerRadius.Hero)
+    val usedAmount = 0.0
+    val availableAmount = account.balance
+    val progressFraction = 0f
+
+    Column(
+        modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp))
-            .let { if (onNavigateToPassbook != null) it.clickable { onNavigateToPassbook() } else it },
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha=0.3f)),
-        shape = RoundedCornerShape(16.dp)
+            .clip(shape)
+            .background(AuraTheme.colors.cardBackground)
+            .border(width = 1.dp, color = AuraTheme.colors.cardBorder, shape = shape)
+            .padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        // Top Row: Icon + Title + Default Badge + Edit Icon
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Wallet squircle icon
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.14f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalanceWallet,
+                        contentDescription = null,
+                        tint = AuraTheme.colors.accentBrand,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = account.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.textPrimary
+                        )
+                        if (account.isDefault) {
+                            AuraDefaultBadge()
+                        }
+                    }
+                    Text(
+                        text = "BANK ACCOUNT",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = AuraTheme.colors.textMuted,
+                        letterSpacing = 1.sp,
+                        fontSize = 9.sp
+                    )
+                }
+            }
+
+            // Edit button in circle
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .auraSpringPress(
+                        cornerRadius = 50.dp,
+                        onClick = { onAdjustBalance(account) }
+                    )
+                    .background(AuraTheme.colors.bottomNavBackground)
+                    .border(width = 1.dp, color = AuraTheme.colors.cardBorder, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Balance",
+                    tint = AuraTheme.colors.textSecondary,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+
+        // Middle Row: 2-Column Split (USED vs AVAILABLE)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = "USED",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AuraTheme.colors.negativeRed,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    fontSize = 10.sp
+                )
+                Text(
+                    text = "₹${"%,.0f".format(usedAmount)}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = AuraTheme.colors.negativeRed,
+                    fontWeight = FontWeight.Black
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = "AVAILABLE",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AuraTheme.colors.positiveGreen,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    fontSize = 10.sp
+                )
+                Text(
+                    text = "₹${"%,.0f".format(availableAmount)}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = AuraTheme.colors.positiveGreen,
+                    fontWeight = FontWeight.Black
+                )
+            }
+        }
+
+        // Budget usage progress track
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("MULTIPLE ACCOUNTS LEDGER", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium, letterSpacing = 1.sp)
-                if (onNavigateToPassbook != null) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowForward,
-                        contentDescription = "Open Passbook",
-                        tint = AuraCyanNeon,
-                        modifier = Modifier.size(12.dp)
-                    )
-                }
+                Text(
+                    text = "BUDGET USAGE",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AuraTheme.colors.textMuted,
+                    letterSpacing = 1.sp,
+                    fontSize = 9.sp
+                )
+                Text(
+                    text = "${(progressFraction * 100).toInt()}% Used",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AuraTheme.colors.positiveGreen,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            accounts.forEach { acct ->
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onAdjustBalance(acct) },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(6.dp).background(if (acct.isDefault) AuraCyanNeon else AuraWhiteMuted, CircleShape))
-                        Text(acct.name, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
-                    Text("₹${"%,.2f".format(acct.balance)}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
-                }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(AuraTheme.colors.bottomNavBackground)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progressFraction.coerceIn(0.01f, 1f))
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(AuraTheme.colors.positiveGreen)
+                )
             }
         }
+
+        // Footer: INCOME · PERSONAL · SHARED
+        Text(
+            text = "INCOME ₹${"%,.0f".format(availableAmount)} · PERSONAL ₹0 · SHARED ₹0",
+            style = MaterialTheme.typography.labelSmall,
+            color = AuraTheme.colors.textMuted,
+            letterSpacing = 1.sp,
+            fontSize = 9.sp
+        )
+    }
+}
+
+// Mini view helper: Accounts summary
+@Composable
+fun AccountsSectionView(
+    accounts: List<Account>,
+    onAdjustBalance: (Account) -> Unit,
+    onNavigateToPassbook: (() -> Unit)? = null
+) {
+    val defaultAccount = accounts.find { it.isDefault } ?: accounts.firstOrNull()
+    if (defaultAccount != null) {
+        ModernAccountCard(
+            account = defaultAccount,
+            onAdjustBalance = onAdjustBalance
+        )
     }
 }
 

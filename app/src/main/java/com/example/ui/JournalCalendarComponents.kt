@@ -83,24 +83,23 @@ fun JournalAndCalendarScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
-                        text = "DAY SECTION",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Black,
-                        color = Color.White,
-                        letterSpacing = 2.sp
+                        text = "Day Timeline",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AuraTheme.colors.textPrimary
                     )
                     Text(
                         text = "Real-time pipeline: What you did today",
-                        fontSize = 11.sp,
-                        color = AuraWhiteMuted
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AuraTheme.colors.textSecondary
                     )
                 }
-                AuraSectionInfoButton(
-                    viewModel = viewModel,
-                    title = "Day Section & Journal",
-                    description = "An interactive timeline displaying notes created, tasks completed, and transactions logged for any selected day. Log mood updates and express gratitude on the local offline journal."
+
+                AuraHeaderActions(
+                    onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                    onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
                 )
             }
         }

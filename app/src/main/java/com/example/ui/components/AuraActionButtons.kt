@@ -2,8 +2,14 @@ package com.example.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,16 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.auraSpringPress
+import com.example.ui.theme.AuraTheme
+import com.example.ui.theme.SemanticGold
+import com.example.ui.theme.RadiantOrange
 
 /**
  * Primary filled pill action button with spring feedback and haptics.
@@ -135,7 +143,7 @@ fun AuraSecondaryAction(
 }
 
 /**
- * Helper composable for standard paired action buttons (Primary + Secondary side by side).
+ * Standard paired action buttons (Primary + Secondary side by side).
  */
 @Composable
 fun AuraActionPair(
@@ -164,5 +172,155 @@ fun AuraActionPair(
             icon = primaryIcon,
             modifier = Modifier.weight(1f)
         )
+    }
+}
+
+/**
+ * Top Header PRO pill button inspired by reference design.
+ */
+@Composable
+fun AuraProBadge(
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(50.dp))
+            .auraSpringPress(cornerRadius = 50.dp, onClick = onClick)
+            .background(SemanticGold)
+            .padding(horizontal = 14.dp, vertical = 7.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(
+                text = "✨",
+                fontSize = 12.sp
+            )
+            Text(
+                text = "PRO",
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.Black,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 1.sp
+            )
+        }
+    }
+}
+
+/**
+ * Top Header Profile Avatar button with accent outline.
+ */
+@Composable
+fun AuraProfileAvatar(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    size: Dp = 38.dp,
+    accentColor: Color = AuraTheme.colors.accentBrand
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .auraSpringPress(cornerRadius = 50.dp, onClick = onClick)
+            .background(AuraTheme.colors.cardBackground)
+            .border(width = 1.5.dp, color = accentColor.copy(alpha = 0.6f), shape = CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Person,
+            contentDescription = "User Profile",
+            tint = accentColor,
+            modifier = Modifier.size(size * 0.55f)
+        )
+    }
+}
+
+/**
+ * Standard Header Action Cluster with PRO button + Profile Avatar.
+ */
+@Composable
+fun AuraHeaderActions(
+    onProClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        AuraProBadge(onClick = onProClick)
+        AuraProfileAvatar(onClick = onProfileClick)
+    }
+}
+
+/**
+ * Floating Action Button (FAB) in Radiant Orange with spring physics.
+ */
+@Composable
+fun AuraFloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.Default.Add,
+    contentDescription: String = "Add Item",
+    containerColor: Color = AuraTheme.colors.accentBrand,
+    contentColor: Color = Color.White
+) {
+    Box(
+        modifier = modifier
+            .size(56.dp)
+            .shadow(elevation = 12.dp, shape = CircleShape, spotColor = containerColor.copy(alpha = 0.5f))
+            .clip(CircleShape)
+            .auraSpringPress(cornerRadius = 50.dp, onClick = onClick)
+            .background(containerColor),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = contentColor,
+            modifier = Modifier.size(26.dp)
+        )
+    }
+}
+
+/**
+ * Mini tag/badge pill (e.g. ★ DEFAULT in account cards).
+ */
+@Composable
+fun AuraDefaultBadge(
+    text: String = "DEFAULT",
+    modifier: Modifier = Modifier,
+    accentColor: Color = AuraTheme.colors.accentBrand
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(accentColor.copy(alpha = 0.15f))
+            .border(width = 0.8.dp, color = accentColor.copy(alpha = 0.35f), shape = RoundedCornerShape(6.dp))
+            .padding(horizontal = 6.dp, vertical = 2.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = "★",
+                fontSize = 9.sp,
+                color = accentColor,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = text.uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                color = accentColor,
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.8.sp
+            )
+        }
     }
 }
