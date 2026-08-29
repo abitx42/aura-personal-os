@@ -212,23 +212,24 @@ fun MainAppContainer(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.padding(bottom = 12.dp)
                         ) {
-                            // Rich & Clean Frosted Card instead of messy floating text blocks
+                            // Rich & Clean Frosted Card speed dial overlay
                             AnimatedVisibility(
                                 visible = showOverlayMenu,
                                 enter = scaleIn(transformOrigin = androidx.compose.ui.graphics.TransformOrigin(1f, 1f), initialScale = 0.7f) + fadeIn(),
                                 exit = scaleOut(transformOrigin = androidx.compose.ui.graphics.TransformOrigin(1f, 1f), targetScale = 0.7f) + fadeOut()
                             ) {
+                                val menuShape = RoundedCornerShape(24.dp)
                                 Card(
-                                    shape = RoundedCornerShape(22.dp),
-                                    colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase.copy(alpha = 0.96f)),
-                                    border = BorderStroke(1.dp, Brush.linearGradient(listOf(AuraCyanNeon.copy(alpha = 0.4f), AuraPurpleAccent.copy(alpha = 0.4f)))),
+                                    shape = menuShape,
+                                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground.copy(alpha = 0.98f)),
+                                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                     modifier = Modifier
-                                        .width(180.dp)
+                                        .width(200.dp)
                                         .padding(bottom = 8.dp)
-                                        .shadow(8.dp, RoundedCornerShape(22.dp))
+                                        .shadow(16.dp, menuShape, spotColor = AuraTheme.colors.accentBrand.copy(alpha = 0.25f))
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(8.dp),
+                                        modifier = Modifier.padding(10.dp),
                                         verticalArrangement = Arrangement.spacedBy(4.dp)
                                     ) {
                                         // 1. Write Note
@@ -237,24 +238,28 @@ fun MainAppContainer(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    viewModel.selectNote(null)
-                                                    viewModel.navigateTo(Section.RichNoteEditor)
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        viewModel.selectNote(null)
+                                                        viewModel.navigateTo(Section.RichNoteEditor)
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(Icons.Default.Edit, contentDescription = null, tint = AuraCyanNeon, modifier = Modifier.size(16.dp))
+                                                Icon(Icons.Default.Edit, contentDescription = null, tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Quick Note", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Quick Note", color = AuraTheme.colors.textPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                                         }
 
                                         // 2. AudioMemo
@@ -263,23 +268,27 @@ fun MainAppContainer(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    showAudioRecordDialog = true
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        showAudioRecordDialog = true
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(AuraTheme.colors.positiveGreen.copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(Icons.Default.Mic, contentDescription = null, tint = AuraPurpleAccent, modifier = Modifier.size(16.dp))
+                                                Icon(Icons.Default.Mic, contentDescription = null, tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Voice Memo", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Voice Memo", color = AuraTheme.colors.textPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                                         }
 
                                         // 3. Take Image
@@ -288,73 +297,85 @@ fun MainAppContainer(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    showImageCaptureDialog = true
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        showImageCaptureDialog = true
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color(0xFF00FF87).copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
                                                 Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = Color(0xFF00FF87), modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Snap Image", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Snap Image", color = AuraTheme.colors.textPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                                         }
 
-                                        // 4. Add Payment
+                                        // 4. Add Payment (Income)
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    showGlobalQuickTransactionType = "RECEIVED"
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        showGlobalQuickTransactionType = "RECEIVED"
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(AuraTheme.colors.positiveGreen.copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(Icons.Default.CallReceived, contentDescription = null, tint = MoodHappy, modifier = Modifier.size(16.dp))
+                                                Icon(Icons.Default.CallReceived, contentDescription = null, tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Received ₹", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Received ₹", color = AuraTheme.colors.positiveGreen, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                                         }
 
-                                        // 5. Deduct Payment
+                                        // 5. Deduct Payment (Expense)
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    showGlobalQuickTransactionType = "SENT"
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        showGlobalQuickTransactionType = "SENT"
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(AuraTheme.colors.negativeRed.copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(Icons.Default.ArrowOutward, contentDescription = null, tint = Color(0xFFFF3E3E), modifier = Modifier.size(16.dp))
+                                                Icon(Icons.Default.ArrowOutward, contentDescription = null, tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Deducted ₹", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Spent ₹", color = AuraTheme.colors.negativeRed, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                                         }
 
                                         // 6. Customize Icon
@@ -363,23 +384,27 @@ fun MainAppContainer(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .clickable {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    showOverlayMenu = false
-                                                    showCustomIconDialog = true
-                                                }
+                                                .auraSpringPress(
+                                                    cornerRadius = 12.dp,
+                                                    onClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        showOverlayMenu = false
+                                                        showCustomIconDialog = true
+                                                    }
+                                                )
                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
                                             Box(
                                                 modifier = Modifier
-                                                    .size(30.dp)
-                                                    .background(AuraSlateCard, CircleShape),
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(AuraTheme.colors.badgeGold.copy(alpha = 0.15f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = AuraCopperWarm, modifier = Modifier.size(16.dp))
+                                                Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = AuraTheme.colors.badgeGold, modifier = Modifier.size(16.dp))
                                             }
-                                            Text("Aesthetics", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Style FAB", color = AuraTheme.colors.textMuted, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                                         }
                                     }
                                 }
@@ -1677,35 +1702,74 @@ fun SecurityPinKeypadGate(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
             .statusBarsPadding()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(Icons.Default.Lock, contentDescription = "Security Required", tint = AuraPurpleAccent, modifier = Modifier.size(56.dp))
-        Spacer(modifier = Modifier.height(12.dp))
-        Text("AURA SAFEGUARD LOCK", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White, letterSpacing = 2.sp)
-        Text("Enter local verification code PIN", fontSize = 11.sp, color = AuraWhiteMuted)
+        Box(
+            modifier = Modifier
+                .size(68.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = "Security Required",
+                tint = AuraTheme.colors.accentBrand,
+                modifier = Modifier.size(36.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "AURA SAFEGUARD LOCK",
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = AuraTheme.colors.textPrimary,
+            letterSpacing = 2.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Enter your 4-digit PIN passcode",
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 12.sp,
+            color = AuraTheme.colors.textSecondary
+        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         // Circular dot placeholders
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             for (i in 1..4) {
                 val isActive = pinText.length >= i
                 Box(
                     modifier = Modifier
                         .size(16.dp)
-                        .background(if (isActive) AuraCyanNeon else AuraSlateLight, CircleShape)
-                        .border(1.dp, if (isActive) Color.White else Color.Transparent, CircleShape)
+                        .background(
+                            color = if (isActive) AuraTheme.colors.accentBrand else AuraTheme.colors.bottomNavBackground,
+                            shape = CircleShape
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isActive) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder,
+                            shape = CircleShape
+                        )
                 )
             }
         }
 
         if (errorMessage.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(errorMessage, fontSize = 11.sp, color = Color.Red)
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.labelSmall,
+                fontSize = 12.sp,
+                color = AuraTheme.colors.negativeRed,
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         Spacer(modifier = Modifier.height(36.dp))
@@ -1719,33 +1783,55 @@ fun SecurityPinKeypadGate(
             modifier = Modifier.width(280.dp)
         ) {
             items(buttonsList) { digit ->
+                val isAction = digit == "C" || digit == "OK"
+                val shape = CircleShape
                 Box(
                     modifier = Modifier
                         .aspectRatio(1f)
-                        .background(AuraSlateCard, CircleShape)
-                        .border(1.dp, AuraSlateLight, CircleShape)
-                        .clickable {
-                            if (digit == "C") {
-                                pinText = ""
-                                errorMessage = ""
-                            } else if (digit == "OK") {
-                                if (pinText.length == 4) {
-                                    val success = viewModel.verifyPin(pinText)
-                                    if (!success) {
-                                        errorMessage = "Invalid security PIN passcode"
-                                        pinText = ""
+                        .clip(shape)
+                        .background(
+                            if (digit == "OK") AuraTheme.colors.accentBrand.copy(alpha = 0.2f)
+                            else AuraTheme.colors.cardBackground
+                        )
+                        .border(
+                            1.dp,
+                            if (digit == "OK") AuraTheme.colors.accentBrand
+                            else AuraTheme.colors.cardBorder,
+                            shape
+                        )
+                        .auraSpringPress(
+                            cornerRadius = 35.dp,
+                            onClick = {
+                                if (digit == "C") {
+                                    pinText = ""
+                                    errorMessage = ""
+                                } else if (digit == "OK") {
+                                    if (pinText.length == 4) {
+                                        val success = viewModel.verifyPin(pinText)
+                                        if (!success) {
+                                            errorMessage = "Invalid security PIN passcode"
+                                            pinText = ""
+                                        }
+                                    }
+                                } else {
+                                    if (pinText.length < 4) {
+                                        pinText += digit
                                     }
                                 }
-                            } else {
-                                if (pinText.length < 4) {
-                                    pinText += digit
-                                }
                             }
-                        }
+                        )
                         .testTag("pin_btn_$digit"),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(digit, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(
+                        text = digit,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = if (isAction) 14.sp else 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (digit == "OK") AuraTheme.colors.accentBrand
+                                else if (digit == "C") AuraTheme.colors.negativeRed
+                                else AuraTheme.colors.textPrimary
+                    )
                 }
             }
         }

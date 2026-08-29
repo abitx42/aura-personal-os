@@ -106,12 +106,14 @@ fun JournalAndCalendarScreen(
 
         // --- 2. COMPACT DYNAMIC CALENDAR (TODAY'S DATE & WEEK STRIP) ---
         item {
+            val cardShape = RoundedCornerShape(20.dp)
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
-                colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.5f)),
-                shape = RoundedCornerShape(20.dp)
+                    .clip(cardShape)
+                    .border(1.dp, AuraTheme.colors.cardBorder, cardShape),
+                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
+                shape = cardShape
             ) {
                 Row(
                     modifier = Modifier
@@ -127,38 +129,41 @@ fun JournalAndCalendarScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(54.dp)
-                                .background(AuraCyanNeon, RoundedCornerShape(12.dp)),
+                                .size(52.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(AuraTheme.colors.accentBrand),
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = dayFormat.format(todayDateObj).uppercase(),
-                                    fontSize = 20.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Black,
-                                    color = Color.Black
+                                    color = Color.White
                                 )
                                 Text(
                                     text = weekDayFormat.format(todayDateObj).take(3).uppercase(),
-                                    fontSize = 10.sp,
+                                    fontSize = 9.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = Color.White.copy(alpha = 0.9f)
                                 )
                             }
                         }
 
-                        Column {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
                                 text = weekDayFormat.format(todayDateObj).uppercase(),
+                                style = MaterialTheme.typography.titleMedium,
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
+                                fontWeight = FontWeight.Bold,
+                                color = AuraTheme.colors.textPrimary
                             )
                             Text(
                                 text = monthFormat.format(todayDateObj).uppercase(),
+                                style = MaterialTheme.typography.labelSmall,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = AuraCyanNeon,
+                                color = AuraTheme.colors.accentBrand,
                                 letterSpacing = 1.sp
                             )
                         }
@@ -169,11 +174,9 @@ fun JournalAndCalendarScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Display preceding 3 days and next 1 day for a compact horizontal scroll list
                         val cal = Calendar.getInstance()
-                        val daysToShow = mutableListOf<Triple<String, String, Boolean>>() // DayNum, DayNameShort, isSelected
+                        val daysToShow = mutableListOf<Triple<String, String, Boolean>>()
                         
-                        // Let's populate 5 days centered on today
                         cal.add(Calendar.DAY_OF_YEAR, -2)
                         val sdfKey = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                         for (i in 0 until 5) {
@@ -194,22 +197,22 @@ fun JournalAndCalendarScreen(
                         }
 
                         daysToShow.forEach { (num, name, chosen) ->
+                            val dayShape = RoundedCornerShape(10.dp)
                             Box(
                                 modifier = Modifier
-                                    .size(width = 32.dp, height = 44.dp)
+                                    .size(width = 34.dp, height = 46.dp)
+                                    .clip(dayShape)
                                     .background(
-                                        color = if (chosen) AuraCyanNeon else AuraSlateCard,
-                                        shape = RoundedCornerShape(8.dp)
+                                        color = if (chosen) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground
                                     )
                                     .border(
                                         width = 1.dp,
-                                        color = if (chosen) Color.White else AuraSlateLight.copy(alpha = 0.3f),
-                                        shape = RoundedCornerShape(8.dp)
+                                        color = if (chosen) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder.copy(alpha = 0.5f),
+                                        shape = dayShape
                                     )
                                     .auraSpringPress(
-                                        cornerRadius = 8.dp,
+                                        cornerRadius = 10.dp,
                                         onClick = {
-                                            // Update VM selected date
                                             val c = Calendar.getInstance()
                                             c.set(Calendar.DAY_OF_MONTH, num.toInt())
                                             val newDateStr = sdfKey.format(c.time)
@@ -223,13 +226,13 @@ fun JournalAndCalendarScreen(
                                     Text(
                                         text = name,
                                         fontSize = 8.sp,
-                                        color = if (chosen) Color.Black else AuraWhiteMuted,
+                                        color = if (chosen) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = num,
-                                        fontSize = 11.sp,
-                                        color = if (chosen) Color.Black else Color.White,
+                                        fontSize = 12.sp,
+                                        color = if (chosen) AuraTheme.colors.accentBrand else AuraTheme.colors.textPrimary,
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
@@ -242,18 +245,20 @@ fun JournalAndCalendarScreen(
 
         // --- 3. ACCORDION: QUICK DAILY MENTAL REFLECTIONS & JOURNALING ---
         item {
+            val accordionShape = RoundedCornerShape(16.dp)
             Card(
                 modifier = Modifier
-                    .fillModifierCompact()
+                    .fillMaxWidth()
+                    .clip(accordionShape)
                     .auraSpringPress(
                         cornerRadius = 16.dp,
                         onClick = { isJournalExpanded = !isJournalExpanded }
                     )
-                    .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.3f))
+                    .border(1.dp, AuraTheme.colors.cardBorder, accordionShape),
+                shape = accordionShape,
+                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -261,98 +266,126 @@ fun JournalAndCalendarScreen(
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Icon(Icons.Default.MenuBook, contentDescription = "Journal", tint = AuraCyanNeon, modifier = Modifier.size(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(AuraTheme.colors.accentBrand.copy(alpha = 0.14f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MenuBook,
+                                    contentDescription = "Journal",
+                                    tint = AuraTheme.colors.accentBrand,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
                             Text(
-                                "DAILY MENTAL REFLECTIONS journal",
-                                fontSize = 11.sp,
+                                text = "DAILY MENTAL REFLECTIONS",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                letterSpacing = 1.2.sp
+                                color = AuraTheme.colors.textPrimary,
+                                letterSpacing = 1.sp
                             )
                         }
                         Icon(
                             imageVector = if (isJournalExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "Expand",
-                            tint = AuraWhiteMuted,
-                            modifier = Modifier.size(16.dp)
+                            tint = AuraTheme.colors.textMuted,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
 
                     if (isJournalExpanded) {
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
                         
                         // Mood selector
-                        Text("Current Day Cognitive State:", fontSize = 10.sp, color = AuraWhiteMuted)
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "CURRENT COGNITIVE STATE",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.textMuted,
+                            letterSpacing = 1.sp
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             moodCategories.forEach { (moodName, colorsVal) ->
                                 val isSelected = selectedMood == moodName
+                                val moodShape = RoundedCornerShape(8.dp)
                                 Box(
                                     modifier = Modifier
+                                        .clip(moodShape)
                                         .background(
-                                            color = if (isSelected) colorsVal else AuraSlateCard,
-                                            shape = RoundedCornerShape(8.dp)
+                                            color = if (isSelected) colorsVal.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = if (isSelected) colorsVal else AuraTheme.colors.cardBorder.copy(alpha = 0.4f),
+                                            shape = moodShape
                                         )
                                         .clickable { selectedMood = moodName }
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
                                 ) {
                                     Text(
                                         text = moodName,
-                                        fontSize = 8.sp,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontSize = 9.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (isSelected) Color.Black else AuraWhiteMedium
+                                        color = if (isSelected) colorsVal else AuraTheme.colors.textSecondary
                                     )
                                 }
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         // Reflection input
                         OutlinedTextField(
                             value = journalText,
                             onValueChange = { journalText = it },
-                            placeholder = { Text("Log cognitive notes, workouts, ideas, mental health patterns...", color = AuraWhiteMuted, fontSize = 11.sp) },
+                            placeholder = { Text("Log cognitive notes, workouts, ideas, mental health patterns...", color = AuraTheme.colors.textMuted, fontSize = 12.sp) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 80.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraCyanNeon,
-                                unfocusedBorderColor = AuraSlateLight,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             ),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(12.dp)
                         )
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                        // Sketches/Voice actions row triggers
+                        // Action Chips
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Paintboard Trigger
                             AssistChip(
                                 onClick = { onOpenDrawingWorkspace(attachedDrawingData) },
-                                label = { Text("Canvas Paint", color = Color.White, fontSize = 10.sp) },
+                                label = { Text("Canvas Paint", color = AuraTheme.colors.textPrimary, fontSize = 10.sp) },
                                 leadingIcon = {
                                     Icon(
                                         Icons.Default.Gesture,
                                         contentDescription = "Sketches",
-                                        tint = if (attachedDrawingData != null) AuraCyanNeon else AuraWhiteMuted,
-                                        modifier = Modifier.size(12.dp)
+                                        tint = if (attachedDrawingData != null) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                        modifier = Modifier.size(14.dp)
                                     )
                                 }
                             )
 
-                            // Voice Recorder
                             val isRecordingGlobally by viewModel.isRecording.collectAsState()
                             AssistChip(
                                 onClick = {
@@ -369,7 +402,7 @@ fun JournalAndCalendarScreen(
                                 label = {
                                     Text(
                                         text = if (isRecordingGlobally) "Rec..." else "Voice",
-                                        color = Color.White,
+                                        color = AuraTheme.colors.textPrimary,
                                         fontSize = 10.sp
                                     )
                                 },
@@ -377,15 +410,16 @@ fun JournalAndCalendarScreen(
                                     Icon(
                                         imageVector = if (isRecordingGlobally) Icons.Default.FiberManualRecord else Icons.Default.Mic,
                                         contentDescription = "Mic",
-                                        tint = if (isRecordingGlobally) Color.Red else if (attachedVoicePath != null) AuraCyanNeon else AuraWhiteMuted,
-                                        modifier = Modifier.size(12.dp)
+                                        tint = if (isRecordingGlobally) AuraTheme.colors.negativeRed else if (attachedVoicePath != null) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted,
+                                        modifier = Modifier.size(14.dp)
                                     )
                                 }
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            Button(
+                            AuraPrimaryAction(
+                                text = "SAVE LOG",
                                 onClick = {
                                     viewModel.saveJournal(
                                         content = journalText,
@@ -395,12 +429,8 @@ fun JournalAndCalendarScreen(
                                     )
                                     isJournalExpanded = false
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
-                                shape = RoundedCornerShape(8.dp),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 2.dp)
-                            ) {
-                                Text("SAVE LOG", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 10.sp)
-                            }
+                                containerColor = AuraTheme.colors.accentBrand
+                            )
                         }
                     }
                 }

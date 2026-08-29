@@ -362,6 +362,14 @@ fun MoneyTrackerScreen(
                     Spacer(modifier = Modifier.height(100.dp))
                 }
             }
+
+            // Radiant Orange FAB for fast transaction entry (inspired by Reference Screenshot 1 & 2)
+            AuraFloatingActionButton(
+                onClick = { showQuickTransactionSheet = "SENT" },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 20.dp, bottom = 24.dp)
+            )
         }
     }
 
@@ -432,25 +440,39 @@ fun MoneyTrackerScreen(
     if (transactionToDelete != null) {
         AlertDialog(
             onDismissRequest = { transactionToDelete = null },
-            title = { Text("Delete Transaction", color = Color.White, fontWeight = FontWeight.Bold) },
-            text = { Text("Are you sure you want to permanently delete this transaction? This will revert its impact on your account balance.", color = AuraWhiteMedium) },
+            title = {
+                Text(
+                    text = "Delete Transaction",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = AuraTheme.colors.textPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to permanently delete this transaction? This will revert its impact on your account balance.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = AuraTheme.colors.textSecondary
+                )
+            },
             confirmButton = {
-                Button(
+                AuraPrimaryAction(
+                    text = "DELETE",
                     onClick = {
                         transactionToDelete?.let { viewModel.deleteTransaction(it) }
                         transactionToDelete = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("DELETE", color = Color.White)
-                }
+                    containerColor = AuraTheme.colors.negativeRed
+                )
             },
             dismissButton = {
-                TextButton(onClick = { transactionToDelete = null }) {
-                    Text("CANCEL", color = Color.White)
-                }
+                AuraSecondaryAction(
+                    text = "CANCEL",
+                    onClick = { transactionToDelete = null }
+                )
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground,
+            shape = RoundedCornerShape(24.dp)
         )
     }
 
@@ -460,40 +482,58 @@ fun MoneyTrackerScreen(
         var adjustVal by remember { mutableStateOf(acct.balance.toString()) }
         AlertDialog(
             onDismissRequest = { showBalanceAdjustmentDialog = null },
-            title = { Text("Update Available Balance", color = Color.White, fontWeight = FontWeight.Bold) },
-            text = {
-                OutlinedTextField(
-                    value = adjustVal,
-                    onValueChange = { adjustVal = it },
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
-                    ),
-                    label = { Text("Available Amount (₹)", color = AuraCyanNeon) },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    )
+            title = {
+                Text(
+                    text = "Update Available Balance",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = AuraTheme.colors.textPrimary,
+                    fontWeight = FontWeight.Bold
                 )
             },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Set current liquid balance for ${acct.name}:",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AuraTheme.colors.textSecondary
+                    )
+                    OutlinedTextField(
+                        value = adjustVal,
+                        onValueChange = { adjustVal = it },
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                        ),
+                        label = { Text("Available Amount (₹)", color = AuraTheme.colors.accentBrand) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
             confirmButton = {
-                TextButton(
+                AuraPrimaryAction(
+                    text = "SAVE ADJUSTMENT",
                     onClick = {
                         val amt = adjustVal.toDoubleOrNull() ?: acct.balance
                         viewModel.updateAccountBalance(acct.id, amt)
                         showBalanceAdjustmentDialog = null
-                    }
-                ) {
-                    Text("SAVE ADJUSTMENT", color = AuraCyanNeon, fontWeight = FontWeight.Black)
-                }
+                    },
+                    containerColor = AuraTheme.colors.accentBrand
+                )
             },
             dismissButton = {
-                TextButton(onClick = { showBalanceAdjustmentDialog = null }) {
-                    Text("CANCEL", color = Color.White)
-                }
+                AuraSecondaryAction(
+                    text = "CANCEL",
+                    onClick = { showBalanceAdjustmentDialog = null }
+                )
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground,
+            shape = RoundedCornerShape(24.dp)
         )
     }
 

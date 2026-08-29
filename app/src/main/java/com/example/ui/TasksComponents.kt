@@ -648,74 +648,101 @@ fun KanbanTaskCard(
     currentStage: Int,
     onStartTimer: () -> Unit
 ) {
+    val shape = RoundedCornerShape(16.dp)
+    val priorityColor = getPriorityColor(task.priority)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, AuraSlateLight, RoundedCornerShape(14.dp))
+            .clip(shape)
+            .border(1.dp, AuraTheme.colors.cardBorder, shape)
             .auraSpringPress(
-                cornerRadius = 14.dp,
+                cornerRadius = 16.dp,
                 onClick = onClicked
             ),
-        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-        shape = RoundedCornerShape(14.dp)
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
+        shape = shape
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Top Row: Category + Priority Pill
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    task.category.uppercase(),
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AuraCyanNeon,
-                    letterSpacing = 1.sp
-                )
-
-                // Date label
-                Text(task.date, fontSize = 9.sp, color = AuraWhiteMuted)
-            }
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                task.title,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // Priority color indicator
                 Box(
                     modifier = Modifier
-                        .size(6.dp)
-                        .background(getPriorityColor(task.priority), CircleShape)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(task.priority, fontSize = 10.sp, color = AuraWhiteMuted)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.14f))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = task.category.uppercase(),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AuraTheme.colors.accentBrand,
+                        letterSpacing = 0.8.sp
+                    )
+                }
 
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Icon(Icons.Default.EnergySavingsLeaf, contentDescription = "Energy", tint = AuraPurpleAccent, modifier = Modifier.size(10.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(task.energy, fontSize = 10.sp, color = AuraWhiteMuted)
-
-                if (!task.time.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Icon(Icons.Default.NotificationsActive, contentDescription = "Reminder active", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Text(task.time, fontSize = 10.sp, color = AuraCyanNeon, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(priorityColor.copy(alpha = 0.15f))
+                        .border(0.8.dp, priorityColor.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = task.priority.uppercase(),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = priorityColor,
+                        letterSpacing = 0.5.sp
+                    )
                 }
             }
 
-            // Transmitting Arrows footer
-            Spacer(modifier = Modifier.height(10.dp))
-            Divider(color = AuraSlateLight)
-            Spacer(modifier = Modifier.height(8.dp))
+            // Task Title
+            Text(
+                text = task.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = AuraTheme.colors.textPrimary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            // Energy & Reminder Metadata
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "⚡ ${task.energy}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 10.sp,
+                    color = AuraTheme.colors.textSecondary
+                )
+
+                if (!task.time.isNullOrBlank()) {
+                    Text(
+                        text = "⏰ ${task.time}",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 10.sp,
+                        color = AuraTheme.colors.accentBrand,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            // Bottom action footer
+            HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.6f), thickness = 0.8.dp)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -723,28 +750,49 @@ fun KanbanTaskCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (currentStage < 2) {
-                    IconButton(onClick = onStartTimer, modifier = Modifier.size(28.dp)) {
+                    IconButton(
+                        onClick = onStartTimer,
+                        modifier = Modifier.size(28.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.PlayCircle,
-                            contentDescription = "Start task focus timer",
-                            tint = AuraCyanNeon,
-                            modifier = Modifier.size(16.dp)
+                            contentDescription = "Start Focus Timer",
+                            tint = AuraTheme.colors.accentBrand,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 } else {
                     Spacer(modifier = Modifier.width(1.dp))
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     if (currentStage > 0) {
-                        IconButton(onClick = onRegress, modifier = Modifier.size(28.dp)) {
-                            Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Regress Column", tint = AuraWhiteMedium, modifier = Modifier.size(12.dp))
+                        IconButton(
+                            onClick = onRegress,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBackIosNew,
+                                contentDescription = "Move Left",
+                                tint = AuraTheme.colors.textSecondary,
+                                modifier = Modifier.size(12.dp)
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
                     if (currentStage < 2) {
-                        IconButton(onClick = onAdvance, modifier = Modifier.size(28.dp)) {
-                            Icon(Icons.Default.ArrowForwardIos, contentDescription = "Advance Column", tint = AuraCyanNeon, modifier = Modifier.size(12.dp))
+                        IconButton(
+                            onClick = onAdvance,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowForwardIos,
+                                contentDescription = "Move Right",
+                                tint = AuraTheme.colors.accentBrand,
+                                modifier = Modifier.size(12.dp)
+                            )
                         }
                     }
                 }
@@ -755,11 +803,11 @@ fun KanbanTaskCard(
 
 fun getPriorityColor(priority: String): Color {
     return when (priority.lowercase()) {
-        "low" -> Color(0xFF81C784)
-        "medium" -> Color(0xFFFFD54F)
-        "high" -> Color(0xFFFF8A65)
-        "urgent" -> Color(0xFFEF5350)
-        else -> Color.White
+        "urgent" -> SemanticRed
+        "high" -> RadiantOrange
+        "medium" -> SemanticGold
+        "low" -> SemanticGreen
+        else -> TextBoneSecondary
     }
 }
 

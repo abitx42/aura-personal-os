@@ -297,15 +297,17 @@ fun NoteCardItem(
     onToggleFavorite: () -> Unit
 ) {
     val sdf = remember { SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()) }
+    val shape = RoundedCornerShape(16.dp)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(156.dp)
+            .clip(shape)
             .border(
                 1.dp,
-                if (note.isPinned) AuraCyanNeon.copy(alpha = 0.5f) else AuraSlateLight,
-                RoundedCornerShape(16.dp)
+                if (note.isPinned) AuraTheme.colors.accentBrand.copy(alpha = 0.5f) else AuraTheme.colors.cardBorder,
+                shape
             )
             .auraSpringPress(
                 cornerRadius = 16.dp,
@@ -314,71 +316,89 @@ fun NoteCardItem(
             )
             .testTag("note_item_card_${note.id}"),
         colors = CardDefaults.cardColors(
-            containerColor = if (note.isPinned) AuraSlateCard else AuraCharcoalBase
+            containerColor = if (note.isPinned) AuraTheme.colors.cardBackground.copy(alpha = 0.95f) else AuraTheme.colors.cardBackground
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = shape
     ) {
         Column(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(14.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                // Top Row: Category Squircle Badge + Pin / Bookmark
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = note.category.uppercase(),
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AuraCyanNeon,
-                        letterSpacing = 1.sp
-                    )
-                    Row {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(AuraTheme.colors.accentBrand.copy(alpha = 0.14f))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = note.category.uppercase(),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.accentBrand,
+                            letterSpacing = 0.8.sp
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (note.isPinned) {
                             Icon(
                                 Icons.Default.PushPin,
                                 contentDescription = "Pinned",
-                                tint = AuraCyanNeon,
-                                modifier = Modifier.size(12.dp)
+                                tint = AuraTheme.colors.badgeGold,
+                                modifier = Modifier.size(13.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
                         }
                         if (note.isBookmarked) {
                             Icon(
                                 Icons.Default.Bookmark,
                                 contentDescription = "Bookmarked",
-                                tint = AuraPurpleAccent,
-                                modifier = Modifier.size(12.dp)
+                                tint = AuraTheme.colors.accentBrand,
+                                modifier = Modifier.size(13.dp)
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                // Title & Content
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = note.title.ifBlank { "Untitled" },
+                            style = MaterialTheme.typography.titleMedium,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White,
+                            color = AuraTheme.colors.textPrimary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(2.dp))
 
                         Text(
                             text = note.content.ifBlank { "Empty details..." },
+                            style = MaterialTheme.typography.bodySmall,
                             fontSize = 11.sp,
-                            color = AuraWhiteMuted,
+                            color = AuraTheme.colors.textSecondary,
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            lineHeight = 15.sp
                         )
                     }
 
@@ -387,7 +407,7 @@ fun NoteCardItem(
                             painter = coil.compose.rememberAsyncImagePainter(
                                 model = coil.request.ImageRequest.Builder(LocalContext.current)
                                     .data(note.photoPath)
-                                    .size(coil.size.Size(120, 120)) // Downscale to small thumbnail size
+                                    .size(coil.size.Size(120, 120))
                                     .crossfade(true)
                                     .memoryCacheKey("note_photo_thumb_${note.id}")
                                     .build()
@@ -396,13 +416,14 @@ fun NoteCardItem(
                             modifier = Modifier
                                 .size(42.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .border(1.dp, AuraSlateLight, RoundedCornerShape(8.dp)),
+                                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp)),
                             contentScale = androidx.compose.ui.layout.ContentScale.Crop
                         )
                     }
                 }
             }
 
+            // Bottom metadata row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -410,29 +431,30 @@ fun NoteCardItem(
             ) {
                 Text(
                     text = sdf.format(Date(note.lastModified)),
+                    style = MaterialTheme.typography.labelSmall,
                     fontSize = 9.sp,
-                    color = AuraWhiteMuted
+                    color = AuraTheme.colors.textMuted
                 )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     if (note.photoPath != null) {
-                        Icon(Icons.Default.PhotoCamera, contentDescription = "Media attached", tint = AuraCyanNeon, modifier = Modifier.size(12.dp))
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(Icons.Default.PhotoCamera, contentDescription = "Media attached", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(12.dp))
                     }
                     if (note.voicePath != null) {
-                        Icon(Icons.Default.VolumeUp, contentDescription = "Audio track", tint = AuraCyanNeon, modifier = Modifier.size(12.dp))
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(Icons.Default.VolumeUp, contentDescription = "Audio track", tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(12.dp))
                     }
                     if (note.drawingData != null) {
-                        Icon(Icons.Default.Edit, contentDescription = "Sketch included", tint = AuraPurpleAccent, modifier = Modifier.size(12.dp))
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(Icons.Default.Edit, contentDescription = "Sketch included", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(12.dp))
                     }
                     Icon(
                         imageVector = if (note.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = "Favorite Toggle",
-                        tint = if (note.isFavorite) Color.Red else AuraWhiteMuted,
+                        tint = if (note.isFavorite) AuraTheme.colors.negativeRed else AuraTheme.colors.textMuted,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(15.dp)
                             .clickable { onToggleFavorite() }
                     )
                 }
@@ -450,50 +472,56 @@ fun NoteListItem(
     onToggleFavorite: () -> Unit
 ) {
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+    val shape = RoundedCornerShape(14.dp)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(shape)
             .border(
                 1.dp,
-                if (note.isPinned) AuraCyanNeon.copy(alpha = 0.4f) else AuraSlateLight,
-                RoundedCornerShape(12.dp)
+                if (note.isPinned) AuraTheme.colors.accentBrand.copy(alpha = 0.4f) else AuraTheme.colors.cardBorder,
+                shape
             )
             .auraSpringPress(
-                cornerRadius = 12.dp,
+                cornerRadius = 14.dp,
                 onClick = onClicked,
                 onLongClick = onTogglePinned
             ),
-        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
-        shape = RoundedCornerShape(12.dp)
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
+        shape = shape
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     if (note.isPinned) {
-                        Icon(Icons.Default.PushPin, contentDescription = "Pinned", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(Icons.Default.PushPin, contentDescription = "Pinned", tint = AuraTheme.colors.badgeGold, modifier = Modifier.size(12.dp))
                     }
                     Text(
                         text = note.title.ifBlank { "Untitled" },
+                        style = MaterialTheme.typography.titleMedium,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(3.dp))
                 Text(
-                    text = note.content,
+                    text = note.content.ifBlank { "Empty details..." },
+                    style = MaterialTheme.typography.bodySmall,
                     fontSize = 11.sp,
-                    color = AuraWhiteMuted,
+                    color = AuraTheme.colors.textSecondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -501,20 +529,21 @@ fun NoteListItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 if (note.voicePath != null) {
-                    Icon(Icons.Default.Mic, contentDescription = "Audio track", tint = AuraCyanNeon, modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Icon(Icons.Default.Mic, contentDescription = "Audio track", tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(14.dp))
                 }
                 if (note.drawingData != null) {
-                    Icon(Icons.Default.Gesture, contentDescription = "Sketch included", tint = AuraPurpleAccent, modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Icon(Icons.Default.Gesture, contentDescription = "Sketch included", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(14.dp))
                 }
                 IconButton(onClick = onToggleFavorite, modifier = Modifier.size(24.dp)) {
                     Icon(
                         imageVector = if (note.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = "Favorite Toggle",
-                        tint = if (note.isFavorite) Color.Red else AuraWhiteMuted,
+                        tint = if (note.isFavorite) AuraTheme.colors.negativeRed else AuraTheme.colors.textMuted,
                         modifier = Modifier.size(16.dp)
                     )
                 }

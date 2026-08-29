@@ -1,9 +1,12 @@
 package com.example.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,12 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.AuraHaptics
-import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.auraSpringPress
+import com.example.ui.theme.AuraTheme
 
 /**
- * Horizontal scrollable pill selector for months/periods/filters:
- * (e.g. JUN-26 / JUL-26 / AUG-26 / SEP-26 / OCT-26).
+ * Horizontal scrollable pill selector with smooth animated state transitions
+ * and tactile haptic feedback.
  */
 @Composable
 fun AuraPeriodSelector(
@@ -33,7 +36,7 @@ fun AuraPeriodSelector(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    accentColor: Color = MaterialTheme.colorScheme.primary
+    accentColor: Color = AuraTheme.colors.accentBrand
 ) {
     val scrollState = rememberScrollState()
     val view = LocalView.current
@@ -51,12 +54,20 @@ fun AuraPeriodSelector(
             val shape = RoundedCornerShape(50.dp)
 
             val backgroundColor by animateColorAsState(
-                targetValue = if (isSelected) accentColor else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                targetValue = if (isSelected) accentColor.copy(alpha = 0.18f) else AuraTheme.colors.cardBackground,
+                animationSpec = tween(250, easing = FastOutSlowInEasing),
                 label = "period_pill_bg"
             )
 
+            val borderColor by animateColorAsState(
+                targetValue = if (isSelected) accentColor.copy(alpha = 0.6f) else AuraTheme.colors.cardBorder,
+                animationSpec = tween(250, easing = FastOutSlowInEasing),
+                label = "period_pill_border"
+            )
+
             val textColor by animateColorAsState(
-                targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                targetValue = if (isSelected) accentColor else AuraTheme.colors.textMuted,
+                animationSpec = tween(250, easing = FastOutSlowInEasing),
                 label = "period_pill_text"
             )
 
@@ -73,7 +84,8 @@ fun AuraPeriodSelector(
                         }
                     )
                     .background(backgroundColor)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .border(width = 1.dp, color = borderColor, shape = shape)
+                    .padding(horizontal = 16.dp, vertical = 9.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -81,7 +93,8 @@ fun AuraPeriodSelector(
                     style = MaterialTheme.typography.labelMedium,
                     color = textColor,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                    letterSpacing = 0.8.sp
+                    letterSpacing = 0.8.sp,
+                    fontSize = 11.sp
                 )
             }
         }
