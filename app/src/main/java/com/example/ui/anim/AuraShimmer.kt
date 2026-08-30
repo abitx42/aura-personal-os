@@ -13,13 +13,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.AuraSlateCard
-import com.example.ui.theme.AuraSlateLight
+import com.example.ui.theme.AuraTheme
 
 fun Modifier.auraShimmer(
-    baseColor: Color = AuraSlateCard,
-    highlightColor: Color = AuraSlateLight
+    baseColor: Color? = null,
+    highlightColor: Color? = null
 ): Modifier = composed {
+    val defaultBase = baseColor ?: AuraTheme.colors.cardBackground
+    val defaultHighlight = highlightColor ?: AuraTheme.colors.cardBorder
+
     val transition = rememberInfiniteTransition(label = "shimmer_transition")
     val translateAnim = transition.animateFloat(
         initialValue = -1000f,
@@ -36,9 +38,9 @@ fun Modifier.auraShimmer(
 
     val brush = Brush.linearGradient(
         colors = listOf(
-            baseColor,
-            highlightColor,
-            baseColor
+            defaultBase,
+            defaultHighlight,
+            defaultBase
         ),
         start = Offset(translateAnim.value - 200f, translateAnim.value - 200f),
         end = Offset(translateAnim.value + 200f, translateAnim.value + 200f)

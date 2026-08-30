@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.auraShimmer
+import com.example.ui.theme.AuraTheme
 
 /**
  * Standard loading shimmer placeholder states for screens and components.
@@ -23,15 +23,15 @@ object AuraLoadingState {
         modifier: Modifier = Modifier,
         height: androidx.compose.ui.unit.Dp = 120.dp
     ) {
-        val baseColor = MaterialTheme.colorScheme.surfaceVariant
-        val highlightColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .height(height)
                 .clip(RoundedCornerShape(AuraCornerRadius.Card))
-                .auraShimmer(baseColor = baseColor, highlightColor = highlightColor)
+                .auraShimmer(
+                    baseColor = AuraTheme.colors.cardBackground,
+                    highlightColor = AuraTheme.colors.cardBorder
+                )
         )
     }
 
@@ -40,9 +40,6 @@ object AuraLoadingState {
         itemCount: Int = 4,
         modifier: Modifier = Modifier
     ) {
-        val baseColor = MaterialTheme.colorScheme.surfaceVariant
-        val highlightColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-
         Column(
             modifier = modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -53,7 +50,10 @@ object AuraLoadingState {
                         .fillMaxWidth()
                         .height(68.dp)
                         .clip(RoundedCornerShape(AuraCornerRadius.Row))
-                        .auraShimmer(baseColor = baseColor, highlightColor = highlightColor),
+                        .auraShimmer(
+                            baseColor = AuraTheme.colors.cardBackground,
+                            highlightColor = AuraTheme.colors.cardBorder
+                        ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {}
             }
@@ -62,23 +62,20 @@ object AuraLoadingState {
 
     @Composable
     fun HeroOverview(modifier: Modifier = Modifier) {
-        val baseColor = MaterialTheme.colorScheme.surfaceVariant
-        val highlightColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .height(180.dp)
                 .clip(RoundedCornerShape(AuraCornerRadius.Hero))
-                .auraShimmer(baseColor = baseColor, highlightColor = highlightColor)
+                .auraShimmer(
+                    baseColor = AuraTheme.colors.cardBackground,
+                    highlightColor = AuraTheme.colors.cardBorder
+                )
         )
     }
 
     @Composable
     fun HubGrid(modifier: Modifier = Modifier) {
-        val baseColor = MaterialTheme.colorScheme.surfaceVariant
-        val highlightColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-
         Column(
             modifier = modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -93,14 +90,20 @@ object AuraLoadingState {
                             .weight(1f)
                             .height(110.dp)
                             .clip(RoundedCornerShape(AuraCornerRadius.Card))
-                            .auraShimmer(baseColor = baseColor, highlightColor = highlightColor)
+                            .auraShimmer(
+                                baseColor = AuraTheme.colors.cardBackground,
+                                highlightColor = AuraTheme.colors.cardBorder
+                            )
                     )
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .height(110.dp)
                             .clip(RoundedCornerShape(AuraCornerRadius.Card))
-                            .auraShimmer(baseColor = baseColor, highlightColor = highlightColor)
+                            .auraShimmer(
+                                baseColor = AuraTheme.colors.cardBackground,
+                                highlightColor = AuraTheme.colors.cardBorder
+                            )
                     )
                 }
             }
