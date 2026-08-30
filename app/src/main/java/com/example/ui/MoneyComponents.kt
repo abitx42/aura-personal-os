@@ -3647,17 +3647,19 @@ fun BillSplittingFormDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Split options", fontSize = 10.sp, color = AuraWhiteMedium)
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("Split options", fontSize = 11.sp, color = AuraTheme.colors.textSecondary)
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         listOf("EQUAL", "CUSTOM", "PERCENTAGE").forEach { st ->
                             val s = splitType == st
                             Box(
                                 modifier = Modifier
-                                    .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBackground)
+                                    .border(1.dp, if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { splitType = st }
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    .padding(horizontal = 10.dp, vertical = 6.dp)
                             ) {
-                                Text(st, fontSize = 8.sp, color = if (s) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+                                Text(st, fontSize = 10.sp, color = if (s) Color.White else AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -3665,7 +3667,7 @@ fun BillSplittingFormDialog(
 
                 // If CUSTOM or PERCENTAGE shows individual inputs
                 if (splitType != "EQUAL" && selectedParticipants.isNotEmpty()) {
-                    Text("Assign Custom Amounts for each participant:", fontSize = 9.sp, color = AuraWhiteMuted)
+                    Text("Assign Custom Amounts for each participant:", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                     selectedParticipants.forEach { fri ->
                         var v by remember { mutableStateOf(customSplits[fri.id] ?: "") }
                         Row(
@@ -3673,19 +3675,19 @@ fun BillSplittingFormDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Text(fri.name, color = Color.White, fontSize = 11.sp, modifier = Modifier.width(80.dp))
+                            Text(fri.name, color = AuraTheme.colors.textPrimary, fontSize = 12.sp, modifier = Modifier.width(80.dp), fontWeight = FontWeight.Medium)
                             OutlinedTextField(
                                 value = v,
                                 onValueChange = {
                                     v = it
                                     customSplits[fri.id] = it
                                 },
-                                label = { Text(if (splitType == "CUSTOM") "Amount (₹)" else "Percent (%)", fontSize = 9.sp) },
+                                label = { Text(if (splitType == "CUSTOM") "Amount (₹)" else "Percent (%)", fontSize = 10.sp) },
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = AuraCyanNeon,
-                                    unfocusedBorderColor = AuraSlateLight,
-                                    focusedTextColor = Color.White,
-                                    unfocusedTextColor = Color.White
+                                    focusedBorderColor = AuraTheme.colors.accentBrand,
+                                    unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                    focusedTextColor = AuraTheme.colors.textPrimary,
+                                    unfocusedTextColor = AuraTheme.colors.textPrimary
                                 )
                             )
                         }
@@ -3697,20 +3699,20 @@ fun BillSplittingFormDialog(
             Button(
                 onClick = {
                     val ttl = billTitle.ifBlank { "Split Bill Ledger" }
-                    val totalAmt = billAmount.toDoubleOrNull() ?: 0.0
+                    val totalAmt = billAmount.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
                     if (totalAmt > 0.0 && selectedParticipants.isNotEmpty()) {
                         // Build custom pay split matrices
                         val pays = mutableMapOf<Int, Double>()
                         when (splitType) {
                             "CUSTOM" -> {
                                 selectedParticipants.forEach { fri ->
-                                    val indVal = customSplits[fri.id]?.toDoubleOrNull() ?: 0.0
+                                    val indVal = (customSplits[fri.id]?.toDoubleOrNull() ?: 0.0).coerceAtLeast(0.0)
                                     pays[fri.id] = indVal
                                 }
                             }
                             "PERCENTAGE" -> {
                                 selectedParticipants.forEach { fri ->
-                                    val percent = customSplits[fri.id]?.toDoubleOrNull() ?: 0.0
+                                    val percent = (customSplits[fri.id]?.toDoubleOrNull() ?: 0.0).coerceAtLeast(0.0)
                                     pays[fri.id] = (percent / 100.0) * totalAmt
                                 }
                             }
@@ -3719,17 +3721,17 @@ fun BillSplittingFormDialog(
                         onSubmit(ttl, totalAmt, isYouOwe, selectedParticipants, splitType, pays)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("PERFORM SPLIT", color = Color.Black, fontWeight = FontWeight.Black)
+                Text("PERFORM SPLIT", color = Color.White, fontWeight = FontWeight.Black)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("CANCEL", color = Color.White)
+                Text("CANCEL", color = AuraTheme.colors.textSecondary)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
@@ -3745,19 +3747,19 @@ fun AddSavingsGoalFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create Savings Plan Target", color = Color.White, fontWeight = FontWeight.Bold) },
+        title = { Text("Create Savings Plan Target", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = glName,
                     onValueChange = { glName = it },
-                    label = { Text("Goal Name (e.g., Tesla CyberBike)", color = AuraCyanNeon) },
+                    label = { Text("Goal Name (e.g., Emergency Fund)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3765,13 +3767,13 @@ fun AddSavingsGoalFormDialog(
                     value = glTarget,
                     onValueChange = { glTarget = it },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                    label = { Text("Target Amount (₹)", color = AuraCyanNeon) },
+                    label = { Text("Target Amount (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3779,26 +3781,26 @@ fun AddSavingsGoalFormDialog(
                     value = glSaved,
                     onValueChange = { glSaved = it },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                    label = { Text("Initial Saved Balance (₹)", color = AuraCyanNeon) },
+                    label = { Text("Initial Saved Balance (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
                 OutlinedTextField(
                     value = glNotes,
                     onValueChange = { glNotes = it },
-                    label = { Text("Notes/Details", color = AuraCyanNeon) },
+                    label = { Text("Notes/Details", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
             }
@@ -3806,24 +3808,24 @@ fun AddSavingsGoalFormDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    val goalTgt = glTarget.toDoubleOrNull() ?: 0.0
-                    val goalSaved = glSaved.toDoubleOrNull() ?: 0.0
+                    val goalTgt = (glTarget.toDoubleOrNull() ?: 0.0).coerceAtLeast(0.0)
+                    val goalSaved = (glSaved.toDoubleOrNull() ?: 0.0).coerceAtLeast(0.0)
                     if (glName.isNotBlank() && goalTgt > 0.0) {
                         val formatSdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(System.currentTimeMillis() + 90 * 24 * 60 * 60 * 1000L)) // 90 days default
                         onSubmit(glName, goalTgt, goalSaved, formatSdf, glNotes)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("ESTABLISH GOAL", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("ESTABLISH GOAL", color = Color.White, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("CANCEL", color = Color.White)
+                Text("CANCEL", color = AuraTheme.colors.textSecondary)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
@@ -3841,19 +3843,19 @@ fun AddReminderFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Register EMI/Billing Alert Trigger", color = Color.White, fontWeight = FontWeight.Bold) },
+        title = { Text("Register EMI / Billing Alert", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = rTitle,
                     onValueChange = { rTitle = it },
-                    label = { Text("Billing Title (e.g., Netflix subscription)", color = AuraCyanNeon) },
+                    label = { Text("Billing Title (e.g., Netflix)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3861,61 +3863,37 @@ fun AddReminderFormDialog(
                     value = rAmount,
                     onValueChange = { rAmount = it },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                    label = { Text("Amount Scheduled (₹)", color = AuraCyanNeon) },
+                    label = { Text("Amount (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
-
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                    Text("Is Recurring Billing:", color = AuraWhiteMedium, fontSize = 11.sp, modifier = Modifier.weight(1f))
-                    Switch(checked = isRec, onCheckedChange = { isRec = it }, colors = SwitchDefaults.colors(checkedThumbColor = AuraCyanNeon))
-                }
-
-                if (isRec) {
-                    Column {
-                        Text("Billing Cycle Frequency", fontSize = 9.sp, color = AuraWhiteMuted)
-                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            periodicLabels.forEach { p ->
-                                val s = rRecurName == p
-                                Box(
-                                    modifier = Modifier
-                                        .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
-                                        .clickable { rRecurName = p }
-                                        .padding(horizontal = 8.dp, vertical = 6.dp)
-                                ) {
-                                    Text(p, fontSize = 9.sp, color = if (s) Color.Black else Color.White, fontWeight = FontWeight.Bold)
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    val amt = rAmount.toDoubleOrNull() ?: 0.0
-                    if (rTitle.isNotBlank() && amt > 0.0) {
-                        val futureStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000L)) // 30 days due
-                        onSubmit(rTitle, amt, futureStr, isRec, rRecurName)
+                    val amountVal = (rAmount.toDoubleOrNull() ?: 0.0).coerceAtLeast(0.0)
+                    if (rTitle.isNotBlank() && amountVal > 0.0) {
+                        val formatSdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000L))
+                        onSubmit(rTitle, amountVal, formatSdf, isRec, rRecurName)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("TRIGGER EMI TRACKER", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("ADD REMINDER", color = Color.White, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("CANCEL", color = Color.White)
+                Text("CANCEL", color = AuraTheme.colors.textSecondary)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
