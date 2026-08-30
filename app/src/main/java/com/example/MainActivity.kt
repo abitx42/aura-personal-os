@@ -61,16 +61,14 @@ class MainActivity : ComponentActivity() {
           com.example.ui.OnboardingScreen(
             viewModel = viewModel,
             onFinished = {
-              // Complete onboarding and flow to primary app deck
+              viewModel.setHasSeenOnboarding(true)
             }
           )
         } else {
-          Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            MainAppContainer(
-              viewModel = viewModel,
-              modifier = Modifier.padding(innerPadding)
-            )
-          }
+          MainAppContainer(
+            viewModel = viewModel,
+            modifier = Modifier.fillMaxSize()
+          )
         }
       }
     }

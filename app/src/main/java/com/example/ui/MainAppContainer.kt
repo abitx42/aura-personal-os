@@ -56,6 +56,7 @@ import java.util.*
 import java.io.File
 import android.net.Uri
 import android.graphics.Bitmap
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.PickVisualMediaRequest
@@ -77,7 +78,7 @@ fun MainAppContainer(
         viewModel.checkSecurityLock()
     }
 
-    Box(modifier = modifier.fillMaxSize().background(AuraObsidian)) {
+    Box(modifier = modifier.fillMaxSize().background(AuraTheme.colors.screenBackground)) {
         if (!isAppUnlocked) {
             // High-contrast Glassmorphic security lock screen
             SecurityPinKeypadGate(viewModel = viewModel)
@@ -101,6 +102,26 @@ fun MainAppContainer(
             // Sub workspace triggers
             var workspaceDrawingData by remember { mutableStateOf<String?>(null) }
             var isDrawingWorkspaceOpen by remember { mutableStateOf(false) }
+
+            // Systematic back button interception
+            val isBackHandlingRequired = showOverlayMenu || showCustomIconDialog || showImageCaptureDialog || 
+                showAudioRecordDialog || showGlobalQuickTransactionType != null || 
+                isDrawingWorkspaceOpen || editNoteItem != null || editTaskItem != null || 
+                activeTab != Section.Dashboard
+
+            BackHandler(enabled = isBackHandlingRequired) {
+                when {
+                    showOverlayMenu -> showOverlayMenu = false
+                    showCustomIconDialog -> showCustomIconDialog = false
+                    showImageCaptureDialog -> showImageCaptureDialog = false
+                    showAudioRecordDialog -> showAudioRecordDialog = false
+                    showGlobalQuickTransactionType != null -> showGlobalQuickTransactionType = null
+                    isDrawingWorkspaceOpen -> isDrawingWorkspaceOpen = false
+                    editNoteItem != null -> editNoteItem = null
+                    editTaskItem != null -> editTaskItem = null
+                    activeTab != Section.Dashboard -> viewModel.navigateTo(Section.Dashboard)
+                }
+            }
 
             var selectedMediaUri by remember { mutableStateOf<Uri?>(null) }
             val context = LocalContext.current
@@ -587,9 +608,9 @@ fun MainAppContainer(
                             }
                         }
 
-                        // Sync swiping back to ViewModel state
-                        LaunchedEffect(pagerState.currentPage) {
-                            val currentSwipeSection = mainTabs[pagerState.currentPage]
+                        // Sync swiping back to ViewModel state once page settles
+                        LaunchedEffect(pagerState.settledPage) {
+                            val currentSwipeSection = mainTabs[pagerState.settledPage]
                             if (viewModel.currentSection.value != currentSwipeSection && targetPage != -1) {
                                 viewModel.navigateTo(currentSwipeSection)
                             }
@@ -1963,17 +1984,24 @@ fun MoreHubScreen(
 // FLOATING PILL NAVIGATION DOCK (5 TABS)
 // Directly matching all Reference Screenshots
 // ==========================================
+private data class NavigationTabItem(
+    val section: Section,
+    val label: String,
+    val activeIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    val inactiveIcon: androidx.compose.ui.graphics.vector.ImageVector
+)
+
 @Composable
 fun AuraBottomNavRow(
     viewModel: AppViewModel,
     active: Section
 ) {
     val navItems = listOf(
-        Triple(Section.Dashboard, "Home", Icons.Outlined.Home),
-        Triple(Section.Notes, "Personal", Icons.Outlined.Person),
-        Triple(Section.Tasks, "Txn", Icons.Outlined.ReceiptLong),
-        Triple(Section.Money, "Accounts", Icons.Outlined.CreditCard),
-        Triple(Section.Day, "More", Icons.Outlined.MoreHoriz)
+        NavigationTabItem(Section.Dashboard, "Home", Icons.Filled.Home, Icons.Outlined.Home),
+        NavigationTabItem(Section.Notes, "Personal", Icons.Filled.Person, Icons.Outlined.Person),
+        NavigationTabItem(Section.Tasks, "Txn", Icons.Filled.ReceiptLong, Icons.Outlined.ReceiptLong),
+        NavigationTabItem(Section.Money, "Accounts", Icons.Filled.CreditCard, Icons.Outlined.CreditCard),
+        NavigationTabItem(Section.Day, "More", Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz)
     )
 
     Box(
@@ -1996,8 +2024,8 @@ fun AuraBottomNavRow(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                navItems.forEach { (section, label, icon) ->
-                    val isSelected = active == section
+                navItems.forEach { item ->
+                    val isSelected = active == item.section
                     val shape = RoundedCornerShape(22.dp)
 
                     Box(
@@ -2005,7 +2033,7 @@ fun AuraBottomNavRow(
                             .clip(shape)
                             .auraSpringPress(
                                 cornerRadius = 22.dp,
-                                onClick = { viewModel.navigateTo(section) }
+                                onClick = { viewModel.navigateTo(item.section) }
                             )
                             .background(if (isSelected) AuraTheme.colors.bottomNavActivePill else Color.Transparent)
                             .padding(horizontal = if (isSelected) 16.dp else 12.dp, vertical = 7.dp),
@@ -2016,8 +2044,8 @@ fun AuraBottomNavRow(
                             verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             Icon(
-                                imageVector = icon,
-                                contentDescription = label,
+                                imageVector = if (isSelected) item.activeIcon else item.inactiveIcon,
+                                contentDescription = item.label,
                                 tint = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                 modifier = Modifier.size(20.dp)
                             )
