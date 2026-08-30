@@ -1363,7 +1363,7 @@ fun DashboardScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -1423,15 +1423,10 @@ fun DashboardScreen(
                         )
                         .border(
                             1.dp,
-                            Brush.linearGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
-                                )
-                            ),
+                            AuraTheme.colors.cardBorder,
                             RoundedCornerShape(24.dp)
                         ),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)),
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Row(
@@ -1445,7 +1440,7 @@ fun DashboardScreen(
                             Text(
                                 "DAILY OBJECTIVES PROGRESS",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = AuraTheme.colors.textMuted,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 1.sp
                             )
@@ -1454,13 +1449,13 @@ fun DashboardScreen(
                                 text = "${stats.productivityPercentage}% ACHIEVED",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Black,
-                                color = MaterialTheme.colorScheme.primary
+                                color = AuraTheme.colors.accentBrand
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "${stats.todayCompletedTasksCount} objectives finished of ${stats.todayTasksCount} scheduled today",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = AuraTheme.colors.textSecondary
                             )
                         }
 
@@ -1471,7 +1466,7 @@ fun DashboardScreen(
                             mainText = "${stats.productivityPercentage}%",
                             size = 80.dp,
                             strokeWidth = 6.dp,
-                            progressColor = MaterialTheme.colorScheme.primary
+                            progressColor = AuraTheme.colors.accentBrand
                         )
                     }
                 }
@@ -1488,7 +1483,7 @@ fun DashboardScreen(
                             title = "Notes",
                             statText = "${stats.totalNotesCount} notes logged",
                             icon = Icons.Default.Feed,
-                            accentColor = MaterialTheme.colorScheme.primary,
+                            accentColor = AuraTheme.colors.accentBrand,
                             onClick = { viewModel.navigateTo(Section.Notes) },
                             modifier = Modifier.weight(1f)
                         )
@@ -1496,7 +1491,7 @@ fun DashboardScreen(
                             title = "Tasks",
                             statText = "${stats.todayCompletedTasksCount}/${stats.todayTasksCount} completed",
                             icon = Icons.Default.FormatListBulleted,
-                            accentColor = MaterialTheme.colorScheme.secondary,
+                            accentColor = AuraTheme.colors.accentBrand,
                             onClick = { viewModel.navigateTo(Section.Tasks) },
                             modifier = Modifier.weight(1f)
                         )
@@ -1510,7 +1505,7 @@ fun DashboardScreen(
                             title = "Habits",
                             statText = "${stats.allTimeStreakValue} 🔥 day streak",
                             icon = Icons.Default.LocalFireDepartment,
-                            accentColor = MaterialTheme.colorScheme.tertiary,
+                            accentColor = AuraTheme.colors.gold,
                             onClick = { viewModel.navigateTo(Section.Habits) },
                             modifier = Modifier.weight(1f)
                         )
@@ -1518,7 +1513,7 @@ fun DashboardScreen(
                             title = "Money",
                             statText = "₹${"%,.0f".format(netWorth)} net worth",
                             icon = Icons.Default.Payments,
-                            accentColor = MoodHappy,
+                            accentColor = AuraTheme.colors.positiveGreen,
                             onClick = { viewModel.navigateTo(Section.Money) },
                             modifier = Modifier.weight(1f)
                         )
@@ -1532,7 +1527,7 @@ fun DashboardScreen(
                             title = "Journal",
                             statText = if (todayJournal != null) "Mood: ${todayJournal.mood}" else "Not logged today",
                             icon = Icons.Default.CalendarToday,
-                            accentColor = MaterialTheme.colorScheme.primary,
+                            accentColor = AuraTheme.colors.accentBrand,
                             onClick = { viewModel.navigateTo(Section.Day) },
                             modifier = Modifier.weight(1f)
                         )
@@ -1540,7 +1535,7 @@ fun DashboardScreen(
                             title = "Canvas",
                             statText = "Vector sketching",
                             icon = Icons.Default.Draw,
-                            accentColor = MaterialTheme.colorScheme.secondary,
+                            accentColor = AuraTheme.colors.accentBrand,
                             onClick = {
                                 viewModel.navigateTo(Section.DrawingWorkspace)
                             },
