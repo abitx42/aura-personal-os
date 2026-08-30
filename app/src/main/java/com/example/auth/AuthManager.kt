@@ -74,6 +74,10 @@ class AuthManager(private val context: Context) {
     }
 
     fun signOut() {
-        auth?.signOut()
+        try {
+            auth?.signOut()
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            GoogleSignIn.getClient(context, gso).signOut()
+        } catch (_: Exception) {}
     }
 }
