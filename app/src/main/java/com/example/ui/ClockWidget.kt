@@ -122,8 +122,8 @@ fun LiveClockWidget(
                 Box(
                     modifier = Modifier
                         .size(if (isCompact) 110.dp else 160.dp)
-                        .background(AuraObsidian, CircleShape)
-                        .border(1.5.dp, AuraSlateLight, CircleShape),
+                        .background(AuraTheme.colors.cardBackground, CircleShape)
+                        .border(1.5.dp, AuraTheme.colors.cardBorder, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     AnalogClockCanvas(

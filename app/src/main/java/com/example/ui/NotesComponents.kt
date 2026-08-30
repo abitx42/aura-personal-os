@@ -63,228 +63,241 @@ fun NotesScreen(
 
     var showSortMenu by remember { mutableStateOf(false) }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
-        // App bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = "Personal Notes",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = AuraTheme.colors.textPrimary
-                )
-                Text(
-                    text = "${notesList.size} secure notes stored offline",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = AuraTheme.colors.textSecondary
-                )
-            }
-
-            AuraHeaderActions(
-                onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
-                onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
-            )
-        }
-
-        // Action Toolbar (Layout toggle + Sort menu + Clock)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LiveClockWidget(
-                modifier = Modifier.weight(1f),
-                initialIsAnalog = false
-            )
-
+            // App bar
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(onClick = { viewModel.toggleNotesLayout() }) {
-                    Icon(
-                        imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.GridView,
-                        contentDescription = "Toggle Layout",
-                        tint = AuraTheme.colors.textSecondary
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        text = "Personal Notes",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AuraTheme.colors.textPrimary
+                    )
+                    Text(
+                        text = "${notesList.size} secure notes stored offline",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AuraTheme.colors.textSecondary
                     )
                 }
 
-                Box {
-                    IconButton(onClick = { showSortMenu = true }) {
-                        Icon(Icons.Default.Sort, contentDescription = "Sort Notes", tint = AuraTheme.colors.textSecondary)
-                    }
-                    DropdownMenu(
-                        expanded = showSortMenu,
-                        onDismissRequest = { showSortMenu = false },
-                        modifier = Modifier.background(AuraTheme.colors.cardBackground)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Recent Modified", color = AuraTheme.colors.textPrimary) },
-                            onClick = {
-                                viewModel.setNotesSortOrder(SortOrder.ModifiedRecent)
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Oldest Modified", color = AuraTheme.colors.textPrimary) },
-                            onClick = {
-                                viewModel.setNotesSortOrder(SortOrder.ModifiedOldest)
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Recent Created", color = AuraTheme.colors.textPrimary) },
-                            onClick = {
-                                viewModel.setNotesSortOrder(SortOrder.CreatedRecent)
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Title Alphabetical", color = AuraTheme.colors.textPrimary) },
-                            onClick = {
-                                viewModel.setNotesSortOrder(SortOrder.TitleAscending)
-                                showSortMenu = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Search Bar
-        OutlinedTextField(
-            value = searchVal,
-            onValueChange = { viewModel.setNotesSearchQuery(it) },
-            placeholder = { Text("Search by title, tags, contents...", color = AuraWhiteMuted) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = AuraWhiteMuted) },
-            trailingIcon = {
-                if (searchVal.isNotEmpty()) {
-                    IconButton(onClick = { viewModel.setNotesSearchQuery("") }) {
-                        Icon(Icons.Default.Clear, contentDescription = "Clear", tint = Color.White)
-                    }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = AuraSlateCard,
-                unfocusedContainerColor = AuraSlateCard.copy(alpha = 0.5f),
-                focusedBorderColor = AuraCyanNeon,
-                unfocusedBorderColor = AuraSlateLight,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
-            ),
-            shape = RoundedCornerShape(16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Filter chips list
-        val fullCategoriesList = listOf("All") + availableCategories
-        AuraPeriodSelector(
-            items = fullCategoriesList,
-            selectedIndex = fullCategoriesList.indexOf(selectedCategory).coerceAtLeast(0),
-            onItemSelected = { idx -> viewModel.setSelectedCategory(fullCategoriesList[idx]) },
-            modifier = Modifier.padding(horizontal = 16.dp),
-            accentColor = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Document List
-        if (isNotesLoading) {
-            if (isGridView) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(6) {
-                        ShimmerNoteCard()
-                    }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(8) {
-                        ShimmerNoteListItem()
-                    }
-                }
-            }
-        } else if (notesList.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                AuraEmptyState(
-                    title = "No Local Notes Found",
-                    description = "Create a new digital notebook or vector canvas using the action button.",
-                    icon = Icons.Default.DriveFileRenameOutline,
-                    iconTint = MaterialTheme.colorScheme.primary
+                AuraHeaderActions(
+                    onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                    onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
                 )
             }
-        } else {
-            if (isGridView) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+
+            // Action Toolbar (Layout toggle + Sort menu + Clock)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LiveClockWidget(
+                    modifier = Modifier.weight(1f),
+                    initialIsAnalog = false
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(notesList, key = { it.id }) { note ->
-                        NoteCardItem(
-                            note = note,
-                            onClicked = { onOpenNoteEditor(note) },
-                            onTogglePinned = { viewModel.toggleNotePinned(note) },
-                            onToggleFavorite = { viewModel.toggleNoteFavorite(note) }
+                    IconButton(onClick = { viewModel.toggleNotesLayout() }) {
+                        Icon(
+                            imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.GridView,
+                            contentDescription = "Toggle Layout",
+                            tint = AuraTheme.colors.textSecondary
                         )
                     }
+
+                    Box {
+                        IconButton(onClick = { showSortMenu = true }) {
+                            Icon(Icons.Default.Sort, contentDescription = "Sort Notes", tint = AuraTheme.colors.textSecondary)
+                        }
+                        DropdownMenu(
+                            expanded = showSortMenu,
+                            onDismissRequest = { showSortMenu = false },
+                            modifier = Modifier.background(AuraTheme.colors.cardBackground)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Recent Modified", color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setNotesSortOrder(SortOrder.ModifiedRecent)
+                                    showSortMenu = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Oldest Modified", color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setNotesSortOrder(SortOrder.ModifiedOldest)
+                                    showSortMenu = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Recent Created", color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setNotesSortOrder(SortOrder.CreatedRecent)
+                                    showSortMenu = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Title Alphabetical", color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setNotesSortOrder(SortOrder.TitleAscending)
+                                    showSortMenu = false
+                                }
+                            )
+                        }
+                    }
                 }
-            } else {
-                LazyColumn(
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Search Bar
+            OutlinedTextField(
+                value = searchVal,
+                onValueChange = { viewModel.setNotesSearchQuery(it) },
+                placeholder = { Text("Search by title, tags, contents...", color = AuraTheme.colors.textMuted, fontSize = 13.sp) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = AuraTheme.colors.textMuted) },
+                trailingIcon = {
+                    if (searchVal.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.setNotesSearchQuery("") }) {
+                            Icon(Icons.Default.Clear, contentDescription = "Clear", tint = AuraTheme.colors.textPrimary)
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = AuraTheme.colors.cardBackground,
+                    unfocusedContainerColor = AuraTheme.colors.cardBackground.copy(alpha = 0.5f),
+                    focusedBorderColor = AuraTheme.colors.accentBrand,
+                    unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                    focusedTextColor = AuraTheme.colors.textPrimary,
+                    unfocusedTextColor = AuraTheme.colors.textPrimary
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Filter chips list
+            val fullCategoriesList = listOf("All") + availableCategories
+            AuraPeriodSelector(
+                items = fullCategoriesList,
+                selectedIndex = fullCategoriesList.indexOf(selectedCategory).coerceAtLeast(0),
+                onItemSelected = { idx -> viewModel.setSelectedCategory(fullCategoriesList[idx]) },
+                modifier = Modifier.padding(horizontal = 16.dp),
+                accentColor = AuraTheme.colors.accentBrand
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Document List
+            if (isNotesLoading) {
+                if (isGridView) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(6) {
+                            ShimmerNoteCard()
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(8) {
+                            ShimmerNoteListItem()
+                        }
+                    }
+                }
+            } else if (notesList.isEmpty()) {
+                Box(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    items(notesList, key = { it.id }) { note ->
-                        NoteListItem(
-                            note = note,
-                            onClicked = { onOpenNoteEditor(note) },
-                            onTogglePinned = { viewModel.toggleNotePinned(note) },
-                            onToggleFavorite = { viewModel.toggleNoteFavorite(note) }
-                        )
+                    AuraEmptyState(
+                        title = "No Local Notes Found",
+                        description = "Create a new digital notebook or vector canvas using the action button.",
+                        icon = Icons.Default.DriveFileRenameOutline,
+                        iconTint = AuraTheme.colors.accentBrand
+                    )
+                }
+            } else {
+                if (isGridView) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(notesList, key = { it.id }) { note ->
+                            NoteCardItem(
+                                note = note,
+                                onClicked = { onOpenNoteEditor(note) },
+                                onTogglePinned = { viewModel.toggleNotePinned(note) },
+                                onToggleFavorite = { viewModel.toggleNoteFavorite(note) }
+                            )
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(notesList, key = { it.id }) { note ->
+                            NoteListItem(
+                                note = note,
+                                onClicked = { onOpenNoteEditor(note) },
+                                onTogglePinned = { viewModel.toggleNotePinned(note) },
+                                onToggleFavorite = { viewModel.toggleNoteFavorite(note) }
+                            )
+                        }
                     }
                 }
             }
         }
+
+        // Radiant Orange Floating Action Button (FAB)
+        AuraFloatingActionButton(
+            onClick = { onOpenNoteEditor(null) },
+            contentDescription = "New Note",
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 80.dp, end = 20.dp)
+        )
     }
 }
 
@@ -589,10 +602,10 @@ fun NoteEditorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         // Toolbar
-        Surface(color = AuraCharcoalBase, modifier = Modifier.fillMaxWidth()) {
+        Surface(color = AuraTheme.colors.cardBackground, modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -59,7 +59,7 @@ fun DrawingCanvas(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         // Control Bar Header
         Surface(

@@ -1346,9 +1346,18 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val greeting = remember {
+                    val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+                    when {
+                        hour in 5..11 -> "Good Morning"
+                        hour in 12..16 -> "Good Afternoon"
+                        hour in 17..21 -> "Good Evening"
+                        else -> "Good Night"
+                    }
+                }
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
-                        text = "Workspace",
+                        text = greeting,
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.ExtraBold,
                         color = AuraTheme.colors.textPrimary
@@ -1807,6 +1816,29 @@ fun MoreHubScreen(
                         icon = Icons.Default.TrackChanges,
                         accentColor = AuraTheme.colors.accentBrand,
                         onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Row 4: Habits & Daily Reflections
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AuraHubCard(
+                        title = "Habits",
+                        statText = "DAILY STREAKS",
+                        icon = Icons.Default.LocalFireDepartment,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Habits) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    AuraHubCard(
+                        title = "Journal",
+                        statText = "DAILY LOG",
+                        icon = Icons.Default.CalendarToday,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Habits) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -2290,7 +2322,7 @@ fun AppSecuritySettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),

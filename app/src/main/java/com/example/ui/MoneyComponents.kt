@@ -267,7 +267,8 @@ fun MoneyTrackerScreen(
                                 AccountsSectionView(
                                     accounts = accounts,
                                     onAdjustBalance = { showBalanceAdjustmentDialog = it },
-                                    onNavigateToPassbook = { detailBackStack.add(MoneyDetailSection.AvailableBalancePassbook) }
+                                    onNavigateToPassbook = { detailBackStack.add(MoneyDetailSection.AvailableBalancePassbook) },
+                                    transactions = transactions
                                 )
 
                                 // Split Settlement overview block (Tapping card opens Splits To Receive module)
@@ -2685,12 +2686,38 @@ fun VisualAnalyticsDashboard(
 fun ModernAccountCard(
     account: Account,
     onAdjustBalance: (Account) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    transactions: List<Transaction> = emptyList()
 ) {
     val shape = RoundedCornerShape(AuraCornerRadius.Hero)
-    val usedAmount = 0.0
+    
+    // Dynamically compute real spent & income values for this account
+    val accountTxns = remember(transactions, account.id) {
+        transactions.filter { it.accountId == account.id }
+    }
+    val usedAmount = remember(accountTxns) {
+        accountTxns.filter { it.type == "SENT" || it.type == "INVESTED" }.sumOf { it.amount }
+    }
+    val incomeAmount = remember(accountTxns) {
+        accountTxns.filter { it.type == "RECEIVED" || it.type == "CASH_ADDED" }.sumOf { it.amount }
+    }
+    val personalSpent = remember(accountTxns) {
+        accountTxns.filter { it.type == "SENT" && it.category != "Shared" }.sumOf { it.amount }
+    }
+    val sharedSpent = remember(accountTxns) {
+        accountTxns.filter { it.type == "SENT" && it.category == "Shared" }.sumOf { it.amount }
+    }
+
     val availableAmount = account.balance
-    val progressFraction = 0f
+    val totalDenom = usedAmount + availableAmount
+    val progressFraction = if (totalDenom > 0.0) (usedAmount / totalDenom).toFloat().coerceIn(0f, 1f) else 0f
+    val progressPercent = (progressFraction * 100).toInt()
+
+    val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = progressFraction,
+        animationSpec = androidx.compose.animation.core.tween(durationMillis = 600, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        label = "budgetUsageProgress"
+    )
 
     Column(
         modifier = modifier
@@ -2833,9 +2860,9 @@ fun ModernAccountCard(
                     fontSize = 9.sp
                 )
                 Text(
-                    text = "${(progressFraction * 100).toInt()}% Used",
+                    text = "$progressPercent% Used",
                     style = MaterialTheme.typography.labelSmall,
-                    color = AuraTheme.colors.positiveGreen,
+                    color = if (progressPercent > 80) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen,
                     fontWeight = FontWeight.Bold,
                     fontSize = 10.sp
                 )
@@ -2850,17 +2877,17 @@ fun ModernAccountCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(progressFraction.coerceIn(0.01f, 1f))
+                        .fillMaxWidth(animatedProgress.coerceIn(0.01f, 1f))
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(3.dp))
-                        .background(AuraTheme.colors.positiveGreen)
+                        .background(if (progressPercent > 80) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen)
                 )
             }
         }
 
         // Footer: INCOME · PERSONAL · SHARED
         Text(
-            text = "INCOME ₹${"%,.0f".format(availableAmount)} · PERSONAL ₹0 · SHARED ₹0",
+            text = "INCOME ₹${"%,.0f".format(incomeAmount.ifZero(availableAmount))} · PERSONAL ₹${"%,.0f".format(personalSpent)} · SHARED ₹${"%,.0f".format(sharedSpent)}",
             style = MaterialTheme.typography.labelSmall,
             color = AuraTheme.colors.textMuted,
             letterSpacing = 1.sp,
@@ -2869,19 +2896,33 @@ fun ModernAccountCard(
     }
 }
 
+private fun Double.ifZero(default: Double): Double = if (this == 0.0) default else this
+
 // Mini view helper: Accounts summary
 @Composable
 fun AccountsSectionView(
     accounts: List<Account>,
     onAdjustBalance: (Account) -> Unit,
-    onNavigateToPassbook: (() -> Unit)? = null
+    onNavigateToPassbook: (() -> Unit)? = null,
+    transactions: List<Transaction> = emptyList()
 ) {
-    val defaultAccount = accounts.find { it.isDefault } ?: accounts.firstOrNull()
-    if (defaultAccount != null) {
-        ModernAccountCard(
-            account = defaultAccount,
-            onAdjustBalance = onAdjustBalance
+    if (accounts.isEmpty()) {
+        AuraEmptyState(
+            title = "No Accounts Found",
+            description = "Tap '+' to add your first bank account or wallet.",
+            icon = Icons.Default.AccountBalanceWallet,
+            iconTint = AuraTheme.colors.accentBrand
         )
+    } else {
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            accounts.forEach { acct ->
+                ModernAccountCard(
+                    account = acct,
+                    onAdjustBalance = onAdjustBalance,
+                    transactions = transactions
+                )
+            }
+        }
     }
 }
 

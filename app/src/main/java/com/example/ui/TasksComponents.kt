@@ -53,136 +53,153 @@ fun TasksScreen(
     var taskToTime by remember { mutableStateOf<Task?>(null) }
     var selectedTimerMinutes by remember { mutableStateOf("25") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
-        // App bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = "Objectives",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = AuraTheme.colors.textPrimary
-                )
-                Text(
-                    text = "${tasksList.filter { !it.isCompleted }.size} active objectives scheduled",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = AuraTheme.colors.textSecondary
-                )
-            }
-
-            AuraHeaderActions(
-                onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
-                onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
-            )
-        }
-
-        // View toggle switcher toolbar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            // App bar
             Row(
                 modifier = Modifier
-                    .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
-                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
-                    .padding(3.dp),
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        text = "Objectives",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AuraTheme.colors.textPrimary
+                    )
+                    Text(
+                        text = "${tasksList.filter { !it.isCompleted }.size} active objectives scheduled",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AuraTheme.colors.textSecondary
+                    )
+                }
+
+                AuraHeaderActions(
+                    onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                    onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                )
+            }
+
+            // View toggle switcher toolbar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = { showKanbanBoard = true },
+                Row(
                     modifier = Modifier
-                        .size(36.dp)
-                        .background(
-                            if (showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
-                            RoundedCornerShape(8.dp)
-                        )
+                        .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
+                        .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
+                        .padding(3.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Dashboard,
-                        contentDescription = "Kanbanboard View",
-                        tint = if (showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-
-                IconButton(
-                    onClick = { showKanbanBoard = false },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(
-                            if (!showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
-                            RoundedCornerShape(8.dp)
+                    IconButton(
+                        onClick = { showKanbanBoard = true },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                if (showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Dashboard,
+                            contentDescription = "Kanbanboard View",
+                            tint = if (showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
+                            modifier = Modifier.size(16.dp)
                         )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.FormatListBulleted,
-                        contentDescription = "Standard List view",
-                        tint = if (!showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
+                    }
 
-        // Filters controls
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            // Category tag Selector
-            var catMenuExpanded by remember { mutableStateOf(false) }
-            Box {
-                AssistChip(
-                    onClick = { catMenuExpanded = true },
-                    label = { Text("Label: $filterCategory", color = Color.White, fontSize = 11.sp) },
-                    colors = AssistChipDefaults.assistChipColors(containerColor = AuraSlateCard),
-                    border = null
-                )
-                DropdownMenu(expanded = catMenuExpanded, onDismissRequest = { catMenuExpanded = false }, modifier = Modifier.background(AuraSlateCard)) {
-                    listOf("All", "General", "Work", "Urgent Objectives", "Life").forEach { item ->
-                        DropdownMenuItem(text = { Text(item, color = Color.White) }, onClick = {
-                            viewModel.setTaskFilterCategory(item)
-                            catMenuExpanded = false
-                        })
+                    IconButton(
+                        onClick = { showKanbanBoard = false },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                if (!showKanbanBoard) AuraTheme.colors.accentBrand else Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FormatListBulleted,
+                            contentDescription = "Standard List view",
+                            tint = if (!showKanbanBoard) Color.White else AuraTheme.colors.textSecondary,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
                 }
             }
 
-            // Priority filter Selector
-            var priorityMenuExpanded by remember { mutableStateOf(false) }
-            Box {
-                AssistChip(
-                    onClick = { priorityMenuExpanded = true },
-                    label = { Text("Priority: $filterPriority", color = Color.White, fontSize = 11.sp) },
-                    colors = AssistChipDefaults.assistChipColors(containerColor = AuraSlateCard),
-                    border = null
-                )
-                DropdownMenu(expanded = priorityMenuExpanded, onDismissRequest = { priorityMenuExpanded = false }, modifier = Modifier.background(AuraSlateCard)) {
-                    listOf("All", "Low", "Medium", "High", "Urgent").forEach { item ->
-                        DropdownMenuItem(text = { Text(item, color = Color.White) }, onClick = {
-                            viewModel.setTaskFilterPriority(item)
-                            priorityMenuExpanded = false
-                        })
+            // Filters controls
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // Category tag Selector
+                var catMenuExpanded by remember { mutableStateOf(false) }
+                Box {
+                    AssistChip(
+                        onClick = { catMenuExpanded = true },
+                        label = { Text("Label: $filterCategory", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
+                        colors = AssistChipDefaults.assistChipColors(containerColor = AuraTheme.colors.cardBackground),
+                        border = AssistChipDefaults.assistChipBorder(borderColor = AuraTheme.colors.cardBorder)
+                    )
+                    DropdownMenu(
+                        expanded = catMenuExpanded,
+                        onDismissRequest = { catMenuExpanded = false },
+                        modifier = Modifier.background(AuraTheme.colors.cardBackground)
+                    ) {
+                        listOf("All", "General", "Work", "Urgent Objectives", "Life").forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(item, color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setTaskFilterCategory(item)
+                                    catMenuExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Priority filter Selector
+                var priorityMenuExpanded by remember { mutableStateOf(false) }
+                Box {
+                    AssistChip(
+                        onClick = { priorityMenuExpanded = true },
+                        label = { Text("Priority: $filterPriority", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
+                        colors = AssistChipDefaults.assistChipColors(containerColor = AuraTheme.colors.cardBackground),
+                        border = AssistChipDefaults.assistChipBorder(borderColor = AuraTheme.colors.cardBorder)
+                    )
+                    DropdownMenu(
+                        expanded = priorityMenuExpanded,
+                        onDismissRequest = { priorityMenuExpanded = false },
+                        modifier = Modifier.background(AuraTheme.colors.cardBackground)
+                    ) {
+                        listOf("All", "Low", "Medium", "High", "Urgent").forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(item, color = AuraTheme.colors.textPrimary) },
+                                onClick = {
+                                    viewModel.setTaskFilterPriority(item)
+                                    priorityMenuExpanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }
-        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -429,12 +446,22 @@ fun TasksScreen(
             },
             dismissButton = {
                 TextButton(onClick = { taskToTime = null }) {
-                    Text("CANCEL", color = Color.White)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary)
                 }
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
+
+    // Radiant Orange Floating Action Button (FAB)
+    AuraFloatingActionButton(
+        onClick = { onOpenTaskComposer(null) },
+        contentDescription = "New Objective",
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(bottom = 80.dp, end = 20.dp)
+    )
+}
 }
 
 @Composable
@@ -836,10 +863,10 @@ fun TaskComposerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         // App header bar
-        Surface(color = AuraCharcoalBase, modifier = Modifier.fillMaxWidth()) {
+        Surface(color = AuraTheme.colors.cardBackground, modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
