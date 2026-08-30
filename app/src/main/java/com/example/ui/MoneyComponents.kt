@@ -708,7 +708,7 @@ fun PremiumFinancialOverviewCard(
                     index = "01",
                     label = "Liquid Balance",
                     value = "₹${"%,.0f".format(available)}",
-                    accentColor = MaterialTheme.colorScheme.primary,
+                    accentColor = AuraTheme.colors.accentBrand,
                     onClick = onBalanceClick,
                     modifier = Modifier.weight(1f)
                 )
@@ -716,7 +716,7 @@ fun PremiumFinancialOverviewCard(
                     index = "02",
                     label = "Investments",
                     value = "₹${"%,.0f".format(invested)}",
-                    accentColor = MaterialTheme.colorScheme.tertiary,
+                    accentColor = AuraTheme.colors.gold,
                     onClick = onInvestedClick,
                     modifier = Modifier.weight(1f)
                 )
@@ -732,7 +732,7 @@ fun PremiumFinancialOverviewCard(
                     index = "03",
                     label = "To Receive",
                     value = "₹${"%,.0f".format(toReceive)}",
-                    accentColor = MoodHappy,
+                    accentColor = AuraTheme.colors.positiveGreen,
                     onClick = onToReceiveClick,
                     modifier = Modifier.weight(1f)
                 )
@@ -740,7 +740,7 @@ fun PremiumFinancialOverviewCard(
                     index = "04",
                     label = "You Owe",
                     value = "₹${"%,.0f".format(youOwe)}",
-                    accentColor = MoodSad,
+                    accentColor = AuraTheme.colors.negativeRed,
                     onClick = onYouOweClick,
                     modifier = Modifier.weight(1f)
                 )
