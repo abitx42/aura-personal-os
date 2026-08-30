@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.ui.AuraHaptics
+import com.example.ui.theme.AuraTheme
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -45,7 +46,7 @@ fun AuraDismissibleCard(
     visible: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    glowColor: Color = MaterialTheme.colorScheme.primary,
+    glowColor: Color = AuraTheme.colors.accentBrand,
     content: @Composable BoxScope.() -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -96,16 +97,10 @@ fun AuraDismissibleCard(
                     spotColor = glowColor.copy(alpha = 0.35f)
                 )
                 .clip(shape)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(AuraTheme.colors.cardBackground)
                 .border(
                     width = 1.dp,
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            glowColor.copy(alpha = 0.6f),
-                            glowColor.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                        )
-                    ),
+                    color = AuraTheme.colors.cardBorder,
                     shape = shape
                 )
                 .padding(16.dp)

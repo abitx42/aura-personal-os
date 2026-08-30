@@ -60,7 +60,7 @@ fun Modifier.auraSpringPress(
             interactionSource = interactionSource,
             indication = null,
             onClick = {
-                AuraHaptics.triggerConfirm(view)
+                AuraHaptics.triggerSelection(view)
                 onClick()
             },
             onLongClick = onLongClick

@@ -53,7 +53,7 @@ fun AuraAnimatedNavBar(
     }
 
     Surface(
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        color = AuraTheme.colors.bottomNavBackground,
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding(),
@@ -89,11 +89,11 @@ fun AuraAnimatedNavBar(
                     .shadow(
                         elevation = 6.dp,
                         shape = RoundedCornerShape(AuraCornerRadius.Card),
-                        ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+                        ambientColor = AuraTheme.colors.accentBrand.copy(alpha = 0.2f),
+                        spotColor = AuraTheme.colors.accentBrand.copy(alpha = 0.35f)
                     )
                     .clip(RoundedCornerShape(AuraCornerRadius.Card))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                    .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f))
             )
 
             // Interactive Tabs Row
@@ -113,7 +113,7 @@ fun AuraAnimatedNavBar(
                         label = "nav_icon_scale"
                     )
 
-                    val tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    val tint = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted
 
                     Box(
                         modifier = Modifier
