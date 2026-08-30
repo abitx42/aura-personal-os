@@ -762,8 +762,8 @@ fun MainAppContainer(
                                     .clickable(enabled = false) {} // Disable click propagation to dismiss
                                     .padding(16.dp)
                                     .shadow(16.dp, RoundedCornerShape(28.dp))
-                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(28.dp)),
-                                colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(28.dp)),
+                                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                                 shape = RoundedCornerShape(28.dp)
                             ) {
                                 Column(
@@ -779,12 +779,12 @@ fun MainAppContainer(
                                             .width(40.dp)
                                             .height(4.dp)
                                             .clip(CircleShape)
-                                            .background(AuraSlateLight)
+                                            .background(AuraTheme.colors.cardBorder)
                                     )
 
                                     Text(
                                         text = infoTitle ?: "About this Section",
-                                        color = Color.White,
+                                        color = AuraTheme.colors.textPrimary,
                                         fontWeight = FontWeight.Black,
                                         fontSize = 18.sp,
                                         letterSpacing = 1.sp,
@@ -793,7 +793,7 @@ fun MainAppContainer(
 
                                     Text(
                                         text = infoContent ?: "",
-                                        color = AuraWhiteMedium,
+                                        color = AuraTheme.colors.textSecondary,
                                         fontSize = 13.sp,
                                         lineHeight = 20.sp,
                                         textAlign = TextAlign.Center,
@@ -804,7 +804,7 @@ fun MainAppContainer(
 
                                     Button(
                                         onClick = { viewModel.dismissInfoSheet() },
-                                        colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                         shape = RoundedCornerShape(12.dp),
                                         modifier = Modifier.fillMaxWidth().height(44.dp)
                                     ) {
@@ -865,9 +865,9 @@ fun MainAppContainer(
                         },
                         title = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Mic, contentDescription = null, tint = Color.Red, modifier = Modifier.size(24.dp))
+                                Icon(Icons.Default.Mic, contentDescription = null, tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("AUDIO QUICK CAPTURE", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("AUDIO QUICK CAPTURE", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             }
                         },
                         text = {
@@ -886,18 +886,18 @@ fun MainAppContainer(
                                         modifier = Modifier
                                             .size(60.dp)
                                             .scale(pulseScale2.value)
-                                            .background(Color.Red.copy(alpha = 0.15f), CircleShape)
+                                            .background(AuraTheme.colors.negativeRed.copy(alpha = 0.15f), CircleShape)
                                     )
                                     Box(
                                         modifier = Modifier
                                             .size(65.dp)
                                             .scale(pulseScale1.value)
-                                            .background(Color.Red.copy(alpha = 0.25f), CircleShape)
+                                            .background(AuraTheme.colors.negativeRed.copy(alpha = 0.25f), CircleShape)
                                     )
                                     Box(
                                         modifier = Modifier
                                             .size(50.dp)
-                                            .background(Color.Red, CircleShape),
+                                            .background(AuraTheme.colors.negativeRed, CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
@@ -915,14 +915,14 @@ fun MainAppContainer(
                                     text = timeString,
                                     fontSize = 28.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = AuraTheme.colors.textPrimary
                                 )
 
                                 Spacer(modifier = Modifier.height(6.dp))
 
                                 Text(
                                     "Speak clearly. The audio is automatically saved.",
-                                    color = AuraWhiteMuted,
+                                    color = AuraTheme.colors.textSecondary,
                                     fontSize = 11.sp,
                                     textAlign = TextAlign.Center
                                 )
@@ -949,7 +949,7 @@ fun MainAppContainer(
                                     showAudioRecordDialog = false
                                 }
                             ) {
-                                Text("SAVE & STOP", color = AuraCyanNeon, fontWeight = FontWeight.Bold)
+                                Text("SAVE & STOP", color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                             }
                         },
                         dismissButton = {
@@ -959,10 +959,10 @@ fun MainAppContainer(
                                     showAudioRecordDialog = false
                                 }
                             ) {
-                                Text("DISCARD & CANCEL", color = Color.White)
+                                Text("DISCARD & CANCEL", color = AuraTheme.colors.textSecondary)
                             }
                         },
-                        containerColor = AuraCharcoalBase
+                        containerColor = AuraTheme.colors.cardBackground
                     )
                 }
 
@@ -978,9 +978,9 @@ fun MainAppContainer(
                         },
                         title = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = AuraCyanNeon, modifier = Modifier.size(24.dp))
+                                Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("CAPTURE MEDIA NOTE", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("CAPTURE MEDIA NOTE", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             }
                         },
                         text = {
@@ -989,7 +989,7 @@ fun MainAppContainer(
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 item {
-                                    Text("Select how you want to capture or import your image/video:", color = AuraWhiteMuted, fontSize = 11.sp)
+                                    Text("Select how you want to capture or import your image/video:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                                 }
 
                                 item {
@@ -1005,25 +1005,25 @@ fun MainAppContainer(
                                                     mediaPickerLauncher.launch("image/* video/*")
                                                 }
                                             },
-                                            colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                             modifier = Modifier.weight(1f)
                                         ) {
-                                            Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = Color.Black, modifier = Modifier.size(16.dp))
+                                            Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                                             Spacer(modifier = Modifier.width(4.dp))
-                                            Text("Shoot Photo", color = Color.Black, fontSize = 11.sp)
+                                            Text("Shoot Photo", color = Color.White, fontSize = 11.sp)
                                         }
 
                                         Button(
                                             onClick = {
                                                 mediaPickerLauncher.launch("image/* video/*")
                                             },
-                                            colors = ButtonDefaults.buttonColors(containerColor = AuraSlateCard),
-                                            border = BorderStroke(1.dp, AuraSlateLight),
+                                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                                            border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                             modifier = Modifier.weight(1f)
                                         ) {
-                                            Icon(Icons.Default.Image, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                                            Icon(Icons.Default.Image, contentDescription = null, tint = AuraTheme.colors.textPrimary, modifier = Modifier.size(16.dp))
                                             Spacer(modifier = Modifier.width(4.dp))
-                                            Text("Choose Gallery", color = Color.White, fontSize = 11.sp)
+                                            Text("Choose Gallery", color = AuraTheme.colors.textPrimary, fontSize = 11.sp)
                                         }
                                     }
                                 }
@@ -1035,8 +1035,8 @@ fun MainAppContainer(
                                                 .fillMaxWidth()
                                                 .height(150.dp)
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .border(1.dp, AuraCyanNeon, RoundedCornerShape(12.dp)),
-                                            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase)
+                                                .border(1.dp, AuraTheme.colors.accentBrand, RoundedCornerShape(12.dp)),
+                                            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                                         ) {
                                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                                 androidx.compose.foundation.Image(
@@ -1059,7 +1059,7 @@ fun MainAppContainer(
                                                         .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(4.dp))
                                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                                 ) {
-                                                    Text("Captured/Chosen", color = AuraCyanNeon, fontSize = 9.sp)
+                                                    Text("Captured/Chosen", color = AuraTheme.colors.accentBrand, fontSize = 9.sp)
                                                 }
                                             }
                                         }
@@ -1070,10 +1070,15 @@ fun MainAppContainer(
                                     OutlinedTextField(
                                         value = noteTitleState,
                                         onValueChange = { noteTitleState = it },
-                                        placeholder = { Text("Note Title", color = AuraWhiteMuted) },
-                                        label = { Text("Title", color = AuraCyanNeon) },
+                                        placeholder = { Text("Note Title", color = AuraTheme.colors.textMuted) },
+                                        label = { Text("Title", color = AuraTheme.colors.accentBrand) },
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight)
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                            focusedTextColor = AuraTheme.colors.textPrimary,
+                                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                                        )
                                     )
                                 }
 
@@ -1081,10 +1086,15 @@ fun MainAppContainer(
                                     OutlinedTextField(
                                         value = noteContentState,
                                         onValueChange = { noteContentState = it },
-                                        placeholder = { Text("Add any details or transcription here...", color = AuraWhiteMuted) },
-                                        label = { Text("Memos / Details", color = AuraCyanNeon) },
+                                        placeholder = { Text("Add any details or transcription here...", color = AuraTheme.colors.textMuted) },
+                                        label = { Text("Memos / Details", color = AuraTheme.colors.accentBrand) },
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight)
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                            focusedTextColor = AuraTheme.colors.textPrimary,
+                                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                                        )
                                     )
                                 }
                             }
@@ -1110,7 +1120,7 @@ fun MainAppContainer(
                             ) {
                                 Text(
                                     "SAVE NOTE",
-                                    color = if (selectedMediaUri != null) AuraCyanNeon else AuraWhiteMuted,
+                                    color = if (selectedMediaUri != null) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -1122,10 +1132,10 @@ fun MainAppContainer(
                                     showImageCaptureDialog = false
                                 }
                             ) {
-                                Text("CANCEL", color = Color.White)
+                                Text("CANCEL", color = AuraTheme.colors.textSecondary)
                             }
                         },
-                        containerColor = AuraCharcoalBase
+                        containerColor = AuraTheme.colors.cardBackground
                     )
                 }
 
