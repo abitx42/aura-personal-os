@@ -62,14 +62,15 @@ fun OnboardingScreen(
                 subtitle = "Mindful Journaling & Infinite Canvas",
                 description = "Compose structured thoughts, customize with modern category tags, and sketch ideas directly onto an infinite pressure-sensitive vector canvas.",
                 icon = Icons.Default.EditNote,
-                glowColor = AuraCyanNeon,
+                glowColor = Color(0xFFFF5B32),
                 visualContent = {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(24.dp))
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -80,13 +81,14 @@ fun OnboardingScreen(
                             Icon(
                                 imageVector = Icons.Default.Draw,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = AuraTheme.colors.accentBrand,
                                 modifier = Modifier.size(64.dp)
                             )
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                                    .background(AuraTheme.colors.bottomNavBackground)
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                                     .padding(horizontal = 16.dp, vertical = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -95,11 +97,11 @@ fun OnboardingScreen(
                                     modifier = Modifier
                                         .size(8.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primary)
+                                        .background(AuraTheme.colors.accentBrand)
                                 )
                                 Text(
                                     "Infinite Vector Sketching",
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    color = AuraTheme.colors.textPrimary,
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -113,14 +115,15 @@ fun OnboardingScreen(
                 subtitle = "Energy-Based Goal Planning",
                 description = "Categorize plans based on your cognitive energy (High, Medium, or Low). Set recurring routines and complete objectives without clutter.",
                 icon = Icons.Default.TaskAlt,
-                glowColor = AuraPurpleAccent,
+                glowColor = Color(0xFFFFB800),
                 visualContent = {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(24.dp))
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -133,7 +136,8 @@ fun OnboardingScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+                                    .background(AuraTheme.colors.bottomNavBackground)
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                                     .padding(12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -145,18 +149,18 @@ fun OnboardingScreen(
                                     Icon(
                                         imageVector = Icons.Default.CheckCircle,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.secondary,
+                                        tint = AuraTheme.colors.positiveGreen,
                                         modifier = Modifier.size(18.dp)
                                     )
-                                    Text("Refactor Aura core engine", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
+                                    Text("Refactor Aura core engine", color = AuraTheme.colors.textPrimary, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                                 }
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f))
+                                        .background(AuraTheme.colors.gold.copy(alpha = 0.2f))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
-                                    Text("HIGH ENERGY", color = MaterialTheme.colorScheme.tertiary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text("HIGH ENERGY", color = AuraTheme.colors.gold, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
 
@@ -165,7 +169,8 @@ fun OnboardingScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
+                                    .background(AuraTheme.colors.bottomNavBackground)
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                                     .padding(12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -177,18 +182,18 @@ fun OnboardingScreen(
                                     Icon(
                                         imageVector = Icons.Default.CheckCircle,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        tint = AuraTheme.colors.textMuted,
                                         modifier = Modifier.size(18.dp)
                                     )
-                                    Text("Review daily metrics log", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                                    Text("Review daily metrics log", color = AuraTheme.colors.textSecondary, style = MaterialTheme.typography.bodySmall)
                                 }
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
-                                    Text("LOW ENERGY", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text("LOW ENERGY", color = AuraTheme.colors.accentBrand, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -200,14 +205,15 @@ fun OnboardingScreen(
                 subtitle = "Unified Ledgers & Splitwise Rooms",
                 description = "Track accounts dynamically, log multi-currency cash flows, and organize collaborative split rooms with zero cloud dependency.",
                 icon = Icons.Default.Paid,
-                glowColor = AuraCopperWarm,
+                glowColor = Color(0xFF00D084),
                 visualContent = {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(24.dp))
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -215,26 +221,27 @@ fun OnboardingScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text("AURA PASSBOOK LEDGER", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                            Text("AURA PASSBOOK LEDGER", color = AuraTheme.colors.textMuted, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text("₹0.00", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
-                                    Text("Net Liquid Assets", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text("₹0.00", color = AuraTheme.colors.textPrimary, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+                                    Text("Net Liquid Assets", color = AuraTheme.colors.accentBrand, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                                    .background(AuraTheme.colors.bottomNavBackground)
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .padding(horizontal = 12.dp, vertical = 4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.LockOpen, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(12.dp))
-                                Text("Offline-First Vault", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                                Icon(Icons.Default.LockOpen, contentDescription = null, tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(12.dp))
+                                Text("Offline-First Vault", color = AuraTheme.colors.textSecondary, style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }
@@ -246,7 +253,7 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = AuraTheme.colors.screenBackground,
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
@@ -267,7 +274,7 @@ fun OnboardingScreen(
             ) {
                 Text(
                     text = "AURA",
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = AuraTheme.colors.textPrimary,
                     fontWeight = FontWeight.Black,
                     style = MaterialTheme.typography.titleLarge,
                     letterSpacing = 4.sp
@@ -276,7 +283,7 @@ fun OnboardingScreen(
                 if (pagerState.currentPage < pages.size - 1) {
                     Text(
                         text = "SKIP",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AuraTheme.colors.accentBrand,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -322,7 +329,7 @@ fun OnboardingScreen(
                     // Page title and indicators
                     Text(
                         text = page.title,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AuraTheme.colors.accentBrand,
                         fontWeight = FontWeight.Black,
                         style = MaterialTheme.typography.headlineLarge,
                         letterSpacing = 2.sp,
@@ -333,7 +340,7 @@ fun OnboardingScreen(
 
                     Text(
                         text = page.subtitle,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = AuraTheme.colors.textPrimary,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center
@@ -343,7 +350,7 @@ fun OnboardingScreen(
 
                     Text(
                         text = page.description,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = AuraTheme.colors.textSecondary,
                         style = MaterialTheme.typography.bodyMedium,
                         lineHeight = 20.sp,
                         textAlign = TextAlign.Center,
@@ -371,7 +378,7 @@ fun OnboardingScreen(
                             targetValue = if (isSelected) 28.dp else 8.dp,
                             label = "dotWidth"
                         )
-                        val dotColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                        val dotColor = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder
 
                         Box(
                             modifier = Modifier
@@ -399,7 +406,8 @@ fun OnboardingScreen(
                                 viewModel.setHasSeenOnboarding(true)
                                 onFinished()
                             },
-                            modifier = Modifier.fillMaxWidth().height(52.dp)
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            containerColor = AuraTheme.colors.accentBrand
                         )
                     } else {
                         AuraPrimaryAction(
@@ -410,7 +418,8 @@ fun OnboardingScreen(
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth().height(52.dp)
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            containerColor = AuraTheme.colors.accentBrand
                         )
                     }
                 }
