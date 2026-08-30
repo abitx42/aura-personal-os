@@ -64,6 +64,7 @@ class FirestoreSyncManager(
             userRoot().collection("notes").document(note.syncId)
                 .set(data, SetOptions.merge())
                 .await()
+            database.noteDao().updateNote(note.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing note", e)
         }
@@ -118,6 +119,7 @@ class FirestoreSyncManager(
             userRoot().collection("tasks").document(task.syncId)
                 .set(data, SetOptions.merge())
                 .await()
+            database.taskDao().updateTask(task.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing task", e)
         }
@@ -168,6 +170,7 @@ class FirestoreSyncManager(
             userRoot().collection("journal_entries").document(entry.date)
                 .set(data, SetOptions.merge())
                 .await()
+            database.journalDao().insertJournalEntry(entry.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing journal entry", e)
         }
@@ -215,6 +218,7 @@ class FirestoreSyncManager(
             userRoot().collection("habits").document(habit.syncId)
                 .set(data, SetOptions.merge())
                 .await()
+            database.habitDao().updateHabit(habit.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing habit", e)
         }
@@ -269,6 +273,7 @@ class FirestoreSyncManager(
             userRoot().collection("money_transactions").document(tx.syncId)
                 .set(data, SetOptions.merge())
                 .await()
+            database.moneyDao().updateTransaction(tx.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing transaction", e)
         }
@@ -321,6 +326,7 @@ class FirestoreSyncManager(
             userRoot().collection("money_debts").document(debt.syncId)
                 .set(data, SetOptions.merge())
                 .await()
+            database.moneyDao().updateDebt(debt.copy(isSynced = true))
         } catch (e: Exception) {
             Log.e("FirestoreSyncManager", "Failed pushing debt entry", e)
         }
