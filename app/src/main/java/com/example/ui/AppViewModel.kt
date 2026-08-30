@@ -1234,13 +1234,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun settleDebt(debt: Debt, amountPaid: Double) {
         viewModelScope.launch {
-            val remaining = debt.remainingAmount - amountPaid
+            val actualPaid = minOf(amountPaid, debt.remainingAmount)
+            val remaining = (debt.remainingAmount - amountPaid).coerceAtLeast(0.0)
             if (remaining <= 0.0) {
                 repository.updateDebt(debt.copy(remainingAmount = 0.0, status = "PAID"))
                 repository.createTransaction(
                     Transaction(
                         type = if (debt.isYouOwe) "SENT" else "RECEIVED",
-                        amount = debt.totalAmount,
+                        amount = actualPaid,
                         recipientOrSender = debt.friendName,
                         category = "Split Settlement",
                         note = "Settled debt: ${debt.title}",
@@ -1253,7 +1254,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 repository.createTransaction(
                     Transaction(
                         type = if (debt.isYouOwe) "SENT" else "RECEIVED",
-                        amount = amountPaid,
+                        amount = actualPaid,
                         recipientOrSender = debt.friendName,
                         category = "Split Settlement",
                         note = "Partial Settlement of ${debt.title}",
