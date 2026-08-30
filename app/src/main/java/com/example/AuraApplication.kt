@@ -9,6 +9,7 @@ class AuraApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         try {
+            AuraErrorHandler.install(this)
             val isInitialized = try {
                 FirebaseApp.getInstance() != null
             } catch (e: IllegalStateException) {
