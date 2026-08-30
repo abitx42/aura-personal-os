@@ -39,21 +39,21 @@ fun DrawingCanvas(
         viewModel.deserializeDrawing(initialData).toMutableStateList()
     }
 
-    var selectedColorHex by remember { mutableStateOf("#00E5FF") } // Neon Cyan Default
+    var selectedColorHex by remember { mutableStateOf("#FF5B32") } // Aura Accent Brand Default
     var selectedWidth by remember { mutableStateOf(6f) }
     var isEraserActive by remember { mutableStateOf(false) }
     var isGridActive by remember { mutableStateOf(true) }
 
     // Track active points drawn in current motion cycle
     val currentPoints = remember { mutableStateListOf<FloatPair>() }
-    val redoStrokes = remember { mutableStateListOf<DrawingStroke>() }
+    val redoStrokes = remember { mutableStateListOf<SketchStroke>() }
 
     val colorsMap = listOf(
         "#FF5B32" to AuraTheme.colors.accentBrand,
         "#00D084" to AuraTheme.colors.positiveGreen,
         "#FF4D4D" to AuraTheme.colors.negativeRed,
         "#FFB800" to AuraTheme.colors.gold,
-        "#7C4DFF" to AuraPurpleAccent,
+        "#7C4DFF" to Color(0xFF7C4DFF),
         "#FFFFFF" to Color.White
     )
 
@@ -189,7 +189,7 @@ fun DrawingCanvas(
                                     .background(colorVal, CircleShape)
                                     .border(
                                         width = if (selectedColorHex == hexStr && !isEraserActive) 2.5.dp else 1.dp,
-                                        color = if (selectedColorHex == hexStr && !isEraserActive) Color.White else Color.Transparent,
+                                        color = if (selectedColorHex == hexStr && !isEraserActive) AuraTheme.colors.accentBrand else Color.Transparent,
                                         shape = CircleShape
                                     )
                             )
@@ -201,14 +201,14 @@ fun DrawingCanvas(
                         onClick = { isEraserActive = !isEraserActive },
                         modifier = Modifier
                             .background(
-                                color = if (isEraserActive) AuraPurpleAccent else Color.Transparent,
+                                color = if (isEraserActive) AuraTheme.colors.accentBrand else Color.Transparent,
                                 shape = CircleShape
                             )
                     ) {
                         Icon(
                             imageVector = Icons.Default.BorderColor,
                             contentDescription = "Eraser toggle",
-                            tint = if (isEraserActive) Color.White else AuraWhiteMuted
+                            tint = if (isEraserActive) Color.White else AuraTheme.colors.textMuted
                         )
                     }
                 }
@@ -220,20 +220,20 @@ fun DrawingCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Brush Width", fontSize = 11.sp, color = AuraWhiteMuted, modifier = Modifier.width(80.dp))
+                    Text("Brush Width", fontSize = 11.sp, color = AuraTheme.colors.textMuted, modifier = Modifier.width(80.dp))
                     Slider(
                         value = selectedWidth,
                         onValueChange = { selectedWidth = it },
                         valueRange = 2f..40f,
                         colors = SliderDefaults.colors(
-                            thumbColor = AuraCyanNeon,
-                            activeTrackColor = AuraCyanNeon,
-                            inactiveTrackColor = AuraSlateLight
+                            thumbColor = AuraTheme.colors.accentBrand,
+                            activeTrackColor = AuraTheme.colors.accentBrand,
+                            inactiveTrackColor = AuraTheme.colors.cardBorder
                         ),
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("${selectedWidth.toInt()}px", fontSize = 11.sp, color = Color.White, modifier = Modifier.width(36.dp))
+                    Text("${selectedWidth.toInt()}px", fontSize = 11.sp, color = AuraTheme.colors.textPrimary, modifier = Modifier.width(36.dp))
                 }
             }
         }
@@ -244,8 +244,8 @@ fun DrawingCanvas(
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(16.dp)
-                .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp))
-                .background(AuraCharcoalBase, RoundedCornerShape(16.dp))
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp))
+                .background(AuraTheme.colors.cardBackground, RoundedCornerShape(16.dp))
                 .pointerInteropFilter { motionEvent ->
                     val x = motionEvent.x
                     val y = motionEvent.y
