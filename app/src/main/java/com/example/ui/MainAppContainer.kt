@@ -3418,7 +3418,7 @@ fun HabitsTabScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         Row(
             modifier = Modifier
@@ -3429,8 +3429,8 @@ fun HabitsTabScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("HABIT MATRIX", fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color.White, letterSpacing = 1.sp)
-                Text("Repetitive neurological feedback structures", fontSize = 11.sp, color = AuraWhiteMuted)
+                Text("HABIT MATRIX", fontSize = 18.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary, letterSpacing = 1.sp)
+                Text("Repetitive neurological feedback structures", fontSize = 11.sp, color = AuraTheme.colors.textSecondary)
             }
 
             Row(
@@ -3444,7 +3444,7 @@ fun HabitsTabScreen(
                 )
                 Button(
                     onClick = { showCreateDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Habit", tint = Color.White, modifier = Modifier.size(16.dp))
@@ -3466,8 +3466,8 @@ fun HabitsTabScreen(
                      modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp)
-                        .border(1.dp, AuraPurpleAccent, RoundedCornerShape(14.dp)),
-                    colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                        .border(1.dp, AuraTheme.colors.accentBrand, RoundedCornerShape(14.dp)),
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                     shape = RoundedCornerShape(14.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
@@ -3480,7 +3480,7 @@ fun HabitsTabScreen(
                                 Icon(
                                     imageVector = Icons.Default.HourglassEmpty,
                                     contentDescription = "Active Habit Timer",
-                                    tint = AuraPurpleAccent,
+                                    tint = AuraTheme.colors.accentBrand,
                                     modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
@@ -3488,7 +3488,7 @@ fun HabitsTabScreen(
                                     text = "ACTIVE HABIT FOCUS PRACTICE",
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = AuraPurpleAccent,
+                                    color = AuraTheme.colors.accentBrand,
                                     letterSpacing = 1.sp
                                 )
                             }
@@ -3496,7 +3496,7 @@ fun HabitsTabScreen(
                                 onClick = { viewModel.resetHabitTimer() },
                                 modifier = Modifier.size(24.dp)
                             ) {
-                                Icon(Icons.Default.Close, contentDescription = "Close Timer", tint = Color.Red, modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.Close, contentDescription = "Close Timer", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(14.dp))
                             }
                         }
 
@@ -3506,7 +3506,7 @@ fun HabitsTabScreen(
                             text = timedHabit.name,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = AuraTheme.colors.textPrimary
                         )
 
                         Spacer(modifier = Modifier.height(6.dp))
@@ -3524,7 +3524,7 @@ fun HabitsTabScreen(
                                 text = formattedTime,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Black,
-                                color = AuraPurpleAccent,
+                                color = AuraTheme.colors.accentBrand,
                                 style = androidx.compose.ui.text.TextStyle(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
                             )
 
@@ -3537,7 +3537,7 @@ fun HabitsTabScreen(
                                             viewModel.resumeHabitTimer()
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = if (isHabitTimerRunning) AuraCopperWarm else AuraPurpleAccent),
+                                    colors = ButtonDefaults.buttonColors(containerColor = if (isHabitTimerRunning) AuraTheme.colors.gold else AuraTheme.colors.accentBrand),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                 ) {
@@ -3558,11 +3558,11 @@ fun HabitsTabScreen(
 
                                 OutlinedButton(
                                     onClick = { viewModel.resetHabitTimer() },
-                                    border = BorderStroke(1.dp, AuraSlateLight),
+                                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                 ) {
-                                    Text("RESET", fontSize = 9.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text("RESET", fontSize = 9.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -3573,11 +3573,11 @@ fun HabitsTabScreen(
 
         TabRow(
             selectedTabIndex = if (selectedTabFreq == "Daily") 0 else 1,
-            containerColor = AuraCharcoalBase,
-            contentColor = AuraCyanNeon
+            containerColor = AuraTheme.colors.cardBackground,
+            contentColor = AuraTheme.colors.accentBrand
         ) {
-            Tab(selected = selectedTabFreq == "Daily", onClick = { selectedTabFreq = "Daily" }, text = { Text("DAILY LOOPS", fontSize = 12.sp, fontWeight = FontWeight.Bold) })
-            Tab(selected = selectedTabFreq == "Weekly", onClick = { selectedTabFreq = "Weekly" }, text = { Text("WEEKLY LOOPS", fontSize = 12.sp, fontWeight = FontWeight.Bold) })
+            Tab(selected = selectedTabFreq == "Daily", onClick = { selectedTabFreq = "Daily" }, text = { Text("DAILY LOOPS", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (selectedTabFreq == "Daily") AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted) })
+            Tab(selected = selectedTabFreq == "Weekly", onClick = { selectedTabFreq = "Weekly" }, text = { Text("WEEKLY LOOPS", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (selectedTabFreq == "Weekly") AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted) })
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -3587,9 +3587,9 @@ fun HabitsTabScreen(
         if (filteredHabits.isEmpty()) {
             Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.LocalFireDepartment, contentDescription = "Empty habits", tint = AuraWhiteMuted, modifier = Modifier.size(56.dp))
+                    Icon(Icons.Default.LocalFireDepartment, contentDescription = "Empty habits", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(56.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("No local habits configured inside Aura matrix", color = Color.White, fontSize = 13.sp)
+                    Text("No local habits configured inside Aura matrix", color = AuraTheme.colors.textSecondary, fontSize = 13.sp)
                 }
             }
         } else {
@@ -3613,8 +3613,8 @@ fun HabitsTabScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(14.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp)),
+                        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Row(
@@ -3632,7 +3632,7 @@ fun HabitsTabScreen(
                                     Icon(
                                         imageVector = if (isDoneToday) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                         contentDescription = "Complete Habit for today",
-                                        tint = if (isDoneToday) MoodHappy else AuraWhiteMuted,
+                                        tint = if (isDoneToday) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted,
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }
@@ -3644,7 +3644,7 @@ fun HabitsTabScreen(
                                         text = habit.name,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (isDoneToday) AuraWhiteMuted else Color.White
+                                        color = if (isDoneToday) AuraTheme.colors.textMuted else AuraTheme.colors.textPrimary
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Row(
