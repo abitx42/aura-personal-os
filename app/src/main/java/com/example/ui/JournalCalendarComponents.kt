@@ -175,7 +175,7 @@ fun JournalAndCalendarScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val cal = Calendar.getInstance()
-                        val daysToShow = mutableListOf<Triple<String, String, Boolean>>()
+                        val daysToShow = mutableListOf<Triple<String, String, String>>()
                         
                         cal.add(Calendar.DAY_OF_YEAR, -2)
                         val sdfKey = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -192,11 +192,12 @@ fun JournalAndCalendarScreen(
                                 Calendar.SATURDAY -> "Sa"
                                 else -> ""
                             }
-                            daysToShow.add(Triple(dNum, dName, selectedDate == key))
+                            daysToShow.add(Triple(dNum, dName, key))
                             cal.add(Calendar.DAY_OF_YEAR, 1)
                         }
 
-                        daysToShow.forEach { (num, name, chosen) ->
+                        daysToShow.forEach { (num, name, dateKey) ->
+                            val chosen = selectedDate == dateKey
                             val dayShape = RoundedCornerShape(10.dp)
                             Box(
                                 modifier = Modifier
@@ -213,11 +214,8 @@ fun JournalAndCalendarScreen(
                                     .auraSpringPress(
                                         cornerRadius = 10.dp,
                                         onClick = {
-                                            val c = Calendar.getInstance()
-                                            c.set(Calendar.DAY_OF_MONTH, num.toInt())
-                                            val newDateStr = sdfKey.format(c.time)
-                                            viewModel.selectJournalDate(newDateStr)
-                                            viewModel.selectTaskDate(newDateStr)
+                                            viewModel.selectJournalDate(dateKey)
+                                            viewModel.selectTaskDate(dateKey)
                                         }
                                     ),
                                 contentAlignment = Alignment.Center
