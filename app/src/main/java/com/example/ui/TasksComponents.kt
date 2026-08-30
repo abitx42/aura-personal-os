@@ -483,12 +483,12 @@ fun KanbanBoardLayout(
         // Tab controls for mobile screen sliding columns
         TabRow(
             selectedTabIndex = currentColumnSelected,
-            containerColor = AuraCharcoalBase,
-            contentColor = AuraCyanNeon,
+            containerColor = AuraTheme.colors.cardBackground,
+            contentColor = AuraTheme.colors.accentBrand,
             indicator = { tabPositions ->
                 TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[currentColumnSelected]),
-                    color = AuraCyanNeon
+                    color = AuraTheme.colors.accentBrand
                 )
             }
         ) {
@@ -496,7 +496,7 @@ fun KanbanBoardLayout(
                 Tab(
                     selected = idx == currentColumnSelected,
                     onClick = { currentColumnSelected = idx },
-                    text = { Text(colTitle, fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+                    text = { Text(colTitle, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (idx == currentColumnSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted) }
                 )
             }
         }
@@ -526,9 +526,9 @@ fun KanbanBoardLayout(
             if (columnTasks.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Duo, contentDescription = "None", tint = AuraWhiteMuted, modifier = Modifier.size(48.dp))
+                        Icon(Icons.Default.Duo, contentDescription = "None", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(48.dp))
                         Spacer(modifier = Modifier.height(10.dp))
-                        Text("No objectives in this cycle", fontSize = 13.sp, color = AuraWhiteMuted)
+                        Text("No objectives in this cycle", fontSize = 13.sp, color = AuraTheme.colors.textMuted)
                     }
                 }
             } else {
@@ -580,7 +580,7 @@ fun TaskRowItem(
             .scale(scaleVal)
             .border(
                 1.dp,
-                if (task.isCompleted) AuraSlateLight else AuraSlateLight.copy(alpha = 0.5f),
+                if (task.isCompleted) AuraTheme.colors.cardBorder.copy(alpha = 0.5f) else AuraTheme.colors.cardBorder,
                 RoundedCornerShape(12.dp)
             )
             .auraSpringPress(
@@ -589,7 +589,7 @@ fun TaskRowItem(
             )
             .testTag("task_row_card_${task.id}"),
         colors = CardDefaults.cardColors(
-            containerColor = if (task.isCompleted) AuraSlateCard.copy(alpha = 0.4f) else AuraCharcoalBase
+            containerColor = if (task.isCompleted) AuraTheme.colors.cardBackground.copy(alpha = 0.5f) else AuraTheme.colors.cardBackground
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -606,7 +606,7 @@ fun TaskRowItem(
                     Icon(
                         imageVector = if (task.isCompleted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                         contentDescription = "Completed checkbox",
-                        tint = if (task.isCompleted) AuraCyanNeon else AuraWhiteMuted,
+                        tint = if (task.isCompleted) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -618,7 +618,7 @@ fun TaskRowItem(
                         text = task.title,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (task.isCompleted) AuraWhiteMuted else Color.White,
+                        color = if (task.isCompleted) AuraTheme.colors.textMuted else AuraTheme.colors.textPrimary,
                         textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -635,14 +635,14 @@ fun TaskRowItem(
                         }
 
                         // Energy level badge
-                        Text(task.energy, fontSize = 9.sp, color = AuraPurpleAccent)
+                        Text(task.energy, fontSize = 9.sp, color = AuraTheme.colors.textSecondary)
 
                         // Alarm Badge
                         if (!task.time.isNullOrBlank()) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.NotificationsActive, contentDescription = "Reminder active", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
+                                Icon(Icons.Default.NotificationsActive, contentDescription = "Reminder active", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
                                 Spacer(modifier = Modifier.width(2.dp))
-                                Text(task.time, fontSize = 9.sp, color = AuraCyanNeon, fontWeight = FontWeight.Bold)
+                                Text(task.time, fontSize = 9.sp, color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -655,7 +655,7 @@ fun TaskRowItem(
                         Icon(
                             imageVector = Icons.Default.PlayCircle,
                             contentDescription = "Start Timer",
-                            tint = AuraCyanNeon,
+                            tint = AuraTheme.colors.accentBrand,
                             modifier = Modifier.size(20.dp)
                         )
                     }
