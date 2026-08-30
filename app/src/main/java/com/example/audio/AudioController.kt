@@ -86,6 +86,11 @@ class AudioController(private val context: Context) {
             }
         } catch (e: Exception) {
             Log.e("AudioController", "Error stopping recorder", e)
+            // If recording was stopped too quickly, delete invalid zero-byte file
+            try {
+                currentFilePath?.let { File(it).delete() }
+                currentFilePath = null
+            } catch (_: Exception) {}
         } finally {
             mediaRecorder = null
             _isRecording.value = false
