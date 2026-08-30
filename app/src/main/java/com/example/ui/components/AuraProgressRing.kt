@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.anim.AuraAnimTiming
+import com.example.ui.theme.AuraTheme
 
 /**
  * Animated circular progress ring with centered prominent metric and subtle track.
@@ -34,8 +35,8 @@ fun AuraProgressRing(
     badgeText: String? = null,
     size: Dp = 160.dp,
     strokeWidth: Dp = 10.dp,
-    progressColor: Color = MaterialTheme.colorScheme.primary,
-    trackColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+    progressColor: Color = AuraTheme.colors.accentBrand,
+    trackColor: Color = AuraTheme.colors.cardBorder
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
@@ -95,7 +96,7 @@ fun AuraProgressRing(
             Text(
                 text = mainText,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = AuraTheme.colors.textPrimary,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 maxLines = 1
@@ -106,7 +107,7 @@ fun AuraProgressRing(
                 Text(
                     text = subText,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = AuraTheme.colors.textSecondary,
                     textAlign = TextAlign.Center,
                     maxLines = 1
                 )

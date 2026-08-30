@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.ui.theme.AuraTheme
 
 /**
  * Standard empty state composable used across all modules.
@@ -28,7 +29,7 @@ fun AuraEmptyState(
     description: String,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Outlined.Inbox,
-    iconTint: Color = MaterialTheme.colorScheme.primary,
+    iconTint: Color = AuraTheme.colors.accentBrand,
     actionButton: (@Composable () -> Unit)? = null
 ) {
     Column(
@@ -60,7 +61,7 @@ fun AuraEmptyState(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AuraTheme.colors.textPrimary,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -71,7 +72,7 @@ fun AuraEmptyState(
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AuraTheme.colors.textSecondary,
             textAlign = TextAlign.Center
         )
 

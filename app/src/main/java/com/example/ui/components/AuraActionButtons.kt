@@ -40,8 +40,8 @@ fun AuraPrimaryAction(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     enabled: Boolean = true,
-    containerColor: Color = MaterialTheme.colorScheme.primary,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary
+    containerColor: Color = AuraTheme.colors.accentBrand,
+    contentColor: Color = Color.White
 ) {
     val shape = RoundedCornerShape(50.dp) // Pill shape
 
@@ -95,8 +95,8 @@ fun AuraSecondaryAction(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     enabled: Boolean = true,
-    outlineColor: Color = MaterialTheme.colorScheme.outline,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface
+    outlineColor: Color = AuraTheme.colors.cardBorder,
+    contentColor: Color = AuraTheme.colors.textPrimary
 ) {
     val shape = RoundedCornerShape(50.dp) // Pill shape
 
@@ -110,7 +110,7 @@ fun AuraSecondaryAction(
                     Modifier
                 }
             )
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .background(AuraTheme.colors.bottomNavBackground)
             .border(
                 width = 1.5.dp,
                 color = if (enabled) outlineColor else outlineColor.copy(alpha = 0.3f),
@@ -187,7 +187,7 @@ fun AuraProBadge(
         modifier = modifier
             .clip(RoundedCornerShape(50.dp))
             .auraSpringPress(cornerRadius = 50.dp, onClick = onClick)
-            .background(SemanticGold)
+            .background(AuraTheme.colors.gold)
             .padding(horizontal = 14.dp, vertical = 7.dp),
         contentAlignment = Alignment.Center
     ) {
