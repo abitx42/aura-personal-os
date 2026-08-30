@@ -2781,15 +2781,15 @@ fun AppSecuritySettingsScreen(
 
         // 1. PIN LOCK CARD
         Card(
-            modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase)
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     "SECURITY CONFIRMATION",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraCyanNeon,
+                    color = AuraTheme.colors.accentBrand,
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -2799,14 +2799,14 @@ fun AppSecuritySettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Enable PIN Lock Passcode", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text("Prompts keypad gate upon launching Aura safeguard", fontSize = 11.sp, color = AuraWhiteMuted)
+                        Text("Enable PIN Lock Passcode", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                        Text("Prompts keypad gate upon launching Aura safeguard", fontSize = 11.sp, color = AuraTheme.colors.textSecondary)
                     }
 
                     Switch(
                         checked = isEnabled,
                         onCheckedChange = { isEnabled = it },
-                        colors = SwitchDefaults.colors(checkedThumbColor = AuraCyanNeon, checkedTrackColor = AuraCyanNeon.copy(alpha = 0.5f))
+                        colors = SwitchDefaults.colors(checkedThumbColor = AuraTheme.colors.accentBrand, checkedTrackColor = AuraTheme.colors.accentBrand.copy(alpha = 0.5f))
                     )
                 }
 
@@ -2814,12 +2814,24 @@ fun AppSecuritySettingsScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = pinValue,
-                        onValueChange = { if (it.length <= 4) pinValue = it },
-                        placeholder = { Text("Enter 4-character PIN", color = AuraWhiteMuted) },
-                        label = { Text("Security passcode", color = AuraCyanNeon) },
+                        onValueChange = { input ->
+                            if (input.length <= 4 && input.all { it.isDigit() }) {
+                                pinValue = input
+                            }
+                        },
+                        placeholder = { Text("Enter 4-digit PIN", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Security passcode", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight),
-                        shape = RoundedCornerShape(10.dp)
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.NumberPassword
+                        )
                     )
                 }
 
@@ -2827,16 +2839,21 @@ fun AppSecuritySettingsScreen(
 
                 Button(
                     onClick = {
-                        viewModel.configurePin(
-                            pin = if (isEnabled) pinValue else null,
-                            enabled = isEnabled
-                        )
+                        if (isEnabled && pinValue.length < 4) {
+                            android.widget.Toast.makeText(context, "PIN code must be exactly 4 digits.", android.widget.Toast.LENGTH_SHORT).show()
+                        } else {
+                            viewModel.configurePin(
+                                pin = if (isEnabled) pinValue else null,
+                                enabled = isEnabled
+                            )
+                            android.widget.Toast.makeText(context, "Security policies updated successfully.", android.widget.Toast.LENGTH_SHORT).show()
+                        }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text("Apply Security Policies", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text("Apply Security Policies", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
         }
