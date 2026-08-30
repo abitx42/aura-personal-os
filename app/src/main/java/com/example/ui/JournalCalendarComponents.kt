@@ -441,7 +441,7 @@ fun JournalAndCalendarScreen(
                 text = "DAY FLOW CHART PIPELINE",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = AuraPurpleAccent,
+                color = AuraTheme.colors.accentBrand,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -458,7 +458,7 @@ fun JournalAndCalendarScreen(
                     title = "No Activities Logged Today",
                     description = "Complete tasks, write notes, or log transactions to see your real-time activity timeline here.",
                     icon = Icons.Default.TrendingFlat,
-                    iconTint = MaterialTheme.colorScheme.secondary
+                    iconTint = AuraTheme.colors.textMuted
                 )
             }
         } else {
@@ -481,15 +481,15 @@ fun JournalAndCalendarScreen(
                             modifier = Modifier
                                 .width(2.dp)
                                 .fillMaxHeight()
-                                .background(AuraSlateLight.copy(alpha = 0.4f))
+                                .background(AuraTheme.colors.cardBorder)
                         )
 
                         // Circular Node symbol
                         val nodeColor = when (act.type) {
-                            "NOTE" -> AuraCyanNeon
-                            "TASK" -> AuraPurpleAccent
-                            "TRANSACTION" -> MoodHappy
-                            else -> Color.White
+                            "NOTE" -> AuraTheme.colors.accentBrand
+                            "TASK" -> AuraTheme.colors.gold
+                            "TRANSACTION" -> AuraTheme.colors.positiveGreen
+                            else -> AuraTheme.colors.textPrimary
                         }
                         val nodeIcon = when (act.type) {
                             "NOTE" -> Icons.Default.Notes
@@ -501,7 +501,7 @@ fun JournalAndCalendarScreen(
                         Box(
                             modifier = Modifier
                                 .size(28.dp)
-                                .background(AuraObsidian, CircleShape)
+                                .background(AuraTheme.colors.screenBackground, CircleShape)
                                 .border(2.dp, nodeColor, CircleShape)
                                 .padding(2.dp),
                             contentAlignment = Alignment.Center
@@ -520,8 +520,8 @@ fun JournalAndCalendarScreen(
                         modifier = Modifier
                             .weight(1f)
                             .padding(bottom = 12.dp)
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.5f), RoundedCornerShape(14.dp)),
-                        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.3f)),
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp)),
+                        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
@@ -534,7 +534,7 @@ fun JournalAndCalendarScreen(
                                     text = act.title,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
-                                    color = Color.White,
+                                    color = AuraTheme.colors.textPrimary,
                                     modifier = Modifier.weight(1f),
                                     textDecoration = if (act.isDone) TextDecoration.LineThrough else null
                                 )
@@ -542,7 +542,7 @@ fun JournalAndCalendarScreen(
                                     text = act.time.uppercase(),
                                     fontSize = 9.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = AuraCyanNeon,
+                                    color = AuraTheme.colors.accentBrand,
                                     modifier = Modifier.padding(start = 10.dp)
                                 )
                             }
@@ -552,7 +552,7 @@ fun JournalAndCalendarScreen(
                             Text(
                                 text = act.description,
                                 fontSize = 11.sp,
-                                color = AuraWhiteMedium
+                                color = AuraTheme.colors.textSecondary
                             )
 
                             if (!act.extraInfo.isNullOrBlank()) {
@@ -563,13 +563,14 @@ fun JournalAndCalendarScreen(
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .background(AuraSlateLight, RoundedCornerShape(6.dp))
+                                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(6.dp))
+                                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(6.dp))
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         Text(
                                             text = act.extraInfo,
                                             fontSize = 8.sp,
-                                            color = Color.White,
+                                            color = AuraTheme.colors.textMuted,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
