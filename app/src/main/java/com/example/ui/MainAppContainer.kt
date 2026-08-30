@@ -1558,17 +1558,17 @@ fun DashboardScreen(
                         "RECENT NOTEBOOK REVISIONS",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = AuraWhiteMuted,
+                        color = AuraTheme.colors.textMuted,
                         letterSpacing = 1.sp
                     )
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("VIEW ALL", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon)
-                        Icon(Icons.Default.ArrowForward, contentDescription = "Notes", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
+                        Text("VIEW ALL", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.accentBrand)
+                        Icon(Icons.Default.ArrowForward, contentDescription = "Notes", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 if (notesList.isEmpty()) {
-                    Text("Draft digital text tabs or scribble drawings in notes.", fontSize = 11.sp, color = AuraWhiteMuted)
+                    Text("Draft digital text tabs or scribble drawings in notes.", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
                 } else {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -1579,18 +1579,18 @@ fun DashboardScreen(
                                 modifier = Modifier
                                     .width(160.dp)
                                     .height(110.dp)
-                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(14.dp))
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp))
                                     .clickable { onOpenNote(note) },
-                                colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f)),
+                                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                                 shape = RoundedCornerShape(14.dp)
                             ) {
                                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
                                     Column {
-                                        Text(note.title.ifBlank { "Untitled" }, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                        Text(note.title.ifBlank { "Untitled" }, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                         Spacer(modifier = Modifier.height(2.dp))
-                                        Text(note.content, fontSize = 10.sp, color = AuraWhiteMuted, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                        Text(note.content, fontSize = 10.sp, color = AuraTheme.colors.textSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                     }
-                                    Text(note.category.uppercase(), fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
+                                    Text(note.category.uppercase(), fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
                                 }
                             }
                         }
@@ -1610,12 +1610,12 @@ fun DashboardScreen(
                     "TODAY OBJECTIVES PREVIEW",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMuted,
+                    color = AuraTheme.colors.textMuted,
                     letterSpacing = 1.sp
                 )
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("MANAGE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon)
-                    Icon(Icons.Default.ArrowForward, contentDescription = "Tasks", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
+                    Text("MANAGE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.accentBrand)
+                    Icon(Icons.Default.ArrowForward, contentDescription = "Tasks", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
                 }
             }
         }
@@ -1626,14 +1626,14 @@ fun DashboardScreen(
         if (todayTasks.isEmpty()) {
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(14.dp)),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.1f)),
+                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp)),
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                     shape = RoundedCornerShape(14.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.DoneAll, contentDescription = "All done", tint = AuraWhiteMuted)
+                        Icon(Icons.Default.DoneAll, contentDescription = "All done", tint = AuraTheme.colors.textMuted)
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text("No objectives planned for today", fontSize = 12.sp, color = AuraWhiteMuted)
+                        Text("No objectives planned for today", fontSize = 12.sp, color = AuraTheme.colors.textMuted)
                     }
                 }
             }
