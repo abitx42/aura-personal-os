@@ -274,99 +274,98 @@ class AppRepository(val db: AppDatabase) {
     }
 
     // High performance streak calculator for local UI integration
-    fun calculateHabitStreaks(logs: List<HabitLog>): HabitStreak = {
+    fun calculateHabitStreaks(logs: List<HabitLog>): HabitStreak {
         if (logs.isEmpty()) {
-            HabitStreak(0, 0)
-        } else {
-            val sdf = SimpleDateFormat("yyyy-MM-DD", Locale.US)
-            val dates = logs.mapNotNull {
-                try {
-                    val d = sdf.parse(it.completionDate)
-                    val cal = Calendar.getInstance()
-                    if (d != null) {
-                        cal.time = d
-                        // truncate to pure day
-                        cal.set(Calendar.HOUR_OF_DAY, 0)
-                        cal.set(Calendar.MINUTE, 0)
-                        cal.set(Calendar.SECOND, 0)
-                        cal.set(Calendar.MILLISECOND, 0)
-                        cal.timeInMillis
-                    } else null
-                } catch (e: Exception) {
-                    null
-                }
-            }.distinct().sortedDescending()
-
-            if (dates.isEmpty()) {
-                HabitStreak(0, 0)
-            } else {
-                var currentStreak = 0
-                var maxStreak = 0
-                var tempStreak = 0
-
-                val todayCal = Calendar.getInstance()
-                todayCal.set(Calendar.HOUR_OF_DAY, 0)
-                todayCal.set(Calendar.MINUTE, 0)
-                todayCal.set(Calendar.SECOND, 0)
-                todayCal.set(Calendar.MILLISECOND, 0)
-                val todayMs = todayCal.timeInMillis
-                val yesterdayMs = todayMs - 24 * 60 * 60 * 1000L
-
-                // check if most recent completion is today or yesterday
-                val mostRecent = dates[0]
-                val eligibleForCurrentStreak = mostRecent == todayMs || mostRecent == yesterdayMs
-
-                var prevTime = dates[0]
-                tempStreak = 1
-                maxStreak = 1
-
-                for (i in 1 until dates.size) {
-                    val currTime = dates[i]
-                    val diff = prevTime - currTime
-                    val oneDay = 24 * 60 * 60 * 1000L
-                    
-                    if (diff <= oneDay + 1000L && diff >= oneDay - 1000L) {
-                        tempStreak++
-                        if (tempStreak > maxStreak) {
-                            maxStreak = tempStreak
-                        }
-                    } else if (diff > oneDay) {
-                        tempStreak = 1
-                    }
-                    prevTime = currTime
-                }
-
-                currentStreak = if (eligibleForCurrentStreak) {
-                    // re-calculate consecutive items starting from the most recent
-                    var streakCount = 1
-                    var expectedMs = dates[0]
-                    var broken = false
-                    for (i in 1 until dates.size) {
-                        val expectedPrev = expectedMs - 24 * 60 * 60 * 1000L
-                        val actual = dates[i]
-                        if (actual == expectedPrev) {
-                            streakCount++
-                            expectedMs = actual
-                        } else {
-                            if (actual < expectedPrev) {
-                                broken = true
-                                break
-                            }
-                        }
-                    }
-                    streakCount
-                } else {
-                    0
-                }
-
-                if (currentStreak > maxStreak) {
-                    maxStreak = currentStreak
-                }
-
-                HabitStreak(currentStreak, maxStreak)
-            }
+            return HabitStreak(0, 0)
         }
-    }()
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val dates = logs.mapNotNull {
+            try {
+                val d = sdf.parse(it.completionDate)
+                val cal = Calendar.getInstance()
+                if (d != null) {
+                    cal.time = d
+                    // truncate to pure day
+                    cal.set(Calendar.HOUR_OF_DAY, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+                    cal.timeInMillis
+                } else null
+            } catch (e: Exception) {
+                null
+            }
+        }.distinct().sortedDescending()
+
+        if (dates.isEmpty()) {
+            return HabitStreak(0, 0)
+        }
+
+        var currentStreak = 0
+        var maxStreak = 0
+        var tempStreak = 0
+
+        val todayCal = Calendar.getInstance()
+        todayCal.set(Calendar.HOUR_OF_DAY, 0)
+        todayCal.set(Calendar.MINUTE, 0)
+        todayCal.set(Calendar.SECOND, 0)
+        todayCal.set(Calendar.MILLISECOND, 0)
+        val todayMs = todayCal.timeInMillis
+        val yesterdayMs = todayMs - 24 * 60 * 60 * 1000L
+
+        // check if most recent completion is today or yesterday
+        val mostRecent = dates[0]
+        val eligibleForCurrentStreak = mostRecent == todayMs || mostRecent == yesterdayMs
+
+        var prevTime = dates[0]
+        tempStreak = 1
+        maxStreak = 1
+
+        for (i in 1 until dates.size) {
+            val currTime = dates[i]
+            val diff = prevTime - currTime
+            val oneDay = 24 * 60 * 60 * 1000L
+            
+            if (diff <= oneDay + 1000L && diff >= oneDay - 1000L) {
+                tempStreak++
+                if (tempStreak > maxStreak) {
+                    maxStreak = tempStreak
+                }
+            } else if (diff > oneDay) {
+                tempStreak = 1
+            }
+            prevTime = currTime
+        }
+
+        currentStreak = if (eligibleForCurrentStreak) {
+            // re-calculate consecutive items starting from the most recent
+            var streakCount = 1
+            var expectedMs = dates[0]
+            var broken = false
+            for (i in 1 until dates.size) {
+                val expectedPrev = expectedMs - 24 * 60 * 60 * 1000L
+                val actual = dates[i]
+                if (actual == expectedPrev) {
+                    streakCount++
+                    expectedMs = actual
+                } else {
+                    if (actual < expectedPrev) {
+                        broken = true
+                        break
+                    }
+                }
+            }
+            streakCount
+        } else {
+            0
+        }
+
+        if (currentStreak > maxStreak) {
+            maxStreak = currentStreak
+        }
+
+        return HabitStreak(currentStreak, maxStreak)
+    }
 
     // ==========================================
     // SECURITY CONFIG OPERATIONS
