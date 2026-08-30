@@ -616,18 +616,23 @@ fun NoteEditorScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = {
-                        // Auto save on back click
-                        viewModel.saveDraftNote(title, content, category, tags, currentVoicePath, currentDrawingData, isBookmarked, currentPhotoPath)
+                        // Auto save on back click if note has content
+                        val finalTitle = if (title.isBlank() && content.isNotBlank()) {
+                            content.lines().firstOrNull { it.isNotBlank() }?.take(30) ?: "Untitled Note"
+                        } else title
+                        if (finalTitle.isNotBlank() || content.isNotBlank()) {
+                            viewModel.saveDraftNote(finalTitle, content, category, tags, currentVoicePath, currentDrawingData, isBookmarked, currentPhotoPath)
+                        }
                         onBack()
                     }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AuraTheme.colors.textPrimary)
                     }
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = if (note == null) "NEW NOTE" else "EDIT NOTE",
                         fontSize = 14.sp,
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -638,7 +643,7 @@ fun NoteEditorScreen(
                         Icon(
                             imageVector = if (isPreviewMode) Icons.Default.EditNote else Icons.Default.Visibility,
                             contentDescription = "Toggle Preview",
-                            tint = if (isPreviewMode) AuraCyanNeon else Color.White
+                            tint = if (isPreviewMode) AuraTheme.colors.accentBrand else AuraTheme.colors.textSecondary
                         )
                     }
 
@@ -647,34 +652,37 @@ fun NoteEditorScreen(
                         Icon(
                             imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                             contentDescription = "Smart Bookmarking Highlight",
-                            tint = if (isBookmarked) AuraPurpleAccent else Color.White
+                            tint = if (isBookmarked) AuraTheme.colors.gold else AuraTheme.colors.textSecondary
                         )
                     }
 
                     // Version history trigger
                     if (note != null) {
                         IconButton(onClick = { showVersionsSheet = true }) {
-                            Icon(Icons.Default.History, contentDescription = "Version Snapshots", tint = Color.White)
+                            Icon(Icons.Default.History, contentDescription = "Version Snapshots", tint = AuraTheme.colors.textSecondary)
                         }
                     }
 
                     Button(
                         onClick = {
-                            viewModel.saveDraftNote(title, content, category, tags, currentVoicePath, currentDrawingData, isBookmarked, currentPhotoPath)
+                            val finalTitle = if (title.isBlank() && content.isNotBlank()) {
+                                content.lines().firstOrNull { it.isNotBlank() }?.take(30) ?: "Untitled Note"
+                            } else title
+                            viewModel.saveDraftNote(finalTitle, content, category, tags, currentVoicePath, currentDrawingData, isBookmarked, currentPhotoPath)
                             onBack()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
                     ) {
-                        Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Save", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
         }
 
         // Sub Bar: Configuration tags
-        Surface(color = AuraSlateCard, modifier = Modifier.fillMaxWidth()) {
+        Surface(color = AuraTheme.colors.cardBackground, modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -684,24 +692,24 @@ fun NoteEditorScreen(
             ) {
                 // Category Tag Configuration
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Label:", fontSize = 11.sp, color = AuraWhiteMuted)
+                    Text("Label:", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
                     Spacer(modifier = Modifier.width(8.dp))
                     Box {
                         var expandedCat by remember { mutableStateOf(false) }
                         AssistChip(
                             onClick = { expandedCat = true },
-                            label = { Text(category, fontSize = 11.sp, color = Color.White) },
-                            colors = AssistChipDefaults.assistChipColors(containerColor = AuraCharcoalBase),
-                            border = null
+                            label = { Text(category, fontSize = 11.sp, color = AuraTheme.colors.textPrimary) },
+                            colors = AssistChipDefaults.assistChipColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                            border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                         )
                         DropdownMenu(
                             expanded = expandedCat,
                             onDismissRequest = { expandedCat = false },
-                            modifier = Modifier.background(AuraSlateCard)
+                            modifier = Modifier.background(AuraTheme.colors.cardBackground)
                         ) {
                             listOf("Personal", "Work", "Study", "Ideas", "Journal").forEach { itemCat ->
                                 DropdownMenuItem(
-                                    text = { Text(itemCat, color = Color.White) },
+                                    text = { Text(itemCat, color = AuraTheme.colors.textPrimary) },
                                     onClick = {
                                         category = itemCat
                                         expandedCat = false
@@ -716,16 +724,16 @@ fun NoteEditorScreen(
                 OutlinedTextField(
                     value = tags,
                     onValueChange = { tags = it },
-                    placeholder = { Text("tags separated by comma", fontSize = 11.sp, color = AuraWhiteMuted) },
+                    placeholder = { Text("tags separated by comma", fontSize = 11.sp, color = AuraTheme.colors.textMuted) },
                     modifier = Modifier
                         .width(180.dp)
                         .height(46.dp),
-                    textStyle = MaterialTheme.typography.bodySmall.copy(color = Color.White),
+                    textStyle = MaterialTheme.typography.bodySmall.copy(color = AuraTheme.colors.textPrimary),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = AuraCharcoalBase,
-                        unfocusedContainerColor = AuraCharcoalBase,
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight
+                        focusedContainerColor = AuraTheme.colors.bottomNavBackground,
+                        unfocusedContainerColor = AuraTheme.colors.bottomNavBackground,
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )

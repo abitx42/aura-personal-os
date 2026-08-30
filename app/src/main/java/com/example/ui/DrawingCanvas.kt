@@ -46,13 +46,14 @@ fun DrawingCanvas(
 
     // Track active points drawn in current motion cycle
     val currentPoints = remember { mutableStateListOf<FloatPair>() }
+    val redoStrokes = remember { mutableStateListOf<DrawingStroke>() }
 
     val colorsMap = listOf(
-        "#00E5FF" to AuraCyanNeon,
+        "#FF5B32" to AuraTheme.colors.accentBrand,
+        "#00D084" to AuraTheme.colors.positiveGreen,
+        "#FF4D4D" to AuraTheme.colors.negativeRed,
+        "#FFB800" to AuraTheme.colors.gold,
         "#7C4DFF" to AuraPurpleAccent,
-        "#FFA726" to AuraCopperWarm,
-        "#00E676" to Color(0xFF00E676),
-        "#EF5350" to Color(0xFFEF5350),
         "#FFFFFF" to Color.White
     )
 
@@ -63,7 +64,7 @@ fun DrawingCanvas(
     ) {
         // Control Bar Header
         Surface(
-            color = AuraCharcoalBase,
+            color = AuraTheme.colors.cardBackground,
             modifier = Modifier.fillMaxWidth(),
             tonalElevation = 4.dp
         ) {
@@ -77,13 +78,14 @@ fun DrawingCanvas(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AuraTheme.colors.textPrimary)
                     }
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "SKETCHPAD",
                         fontSize = 16.sp,
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
+                        fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
@@ -93,14 +95,16 @@ fun DrawingCanvas(
                         Icon(
                             imageVector = Icons.Default.GridOn,
                             contentDescription = "Grid lines",
-                            tint = if (isGridActive) AuraCyanNeon else AuraWhiteMuted
+                            tint = if (isGridActive) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted
                         )
                     }
 
+                    // Undo
                     IconButton(
                         onClick = {
                             if (loadedStrokes.isNotEmpty()) {
-                                loadedStrokes.removeAt(loadedStrokes.size - 1)
+                                val removed = loadedStrokes.removeAt(loadedStrokes.size - 1)
+                                redoStrokes.add(removed)
                             }
                         },
                         enabled = loadedStrokes.isNotEmpty()
@@ -108,15 +112,33 @@ fun DrawingCanvas(
                         Icon(
                             Icons.Default.Undo,
                             contentDescription = "Undo",
-                            tint = if (loadedStrokes.isNotEmpty()) Color.White else AuraWhiteMuted
+                            tint = if (loadedStrokes.isNotEmpty()) AuraTheme.colors.textPrimary else AuraTheme.colors.textMuted
+                        )
+                    }
+
+                    // Redo
+                    IconButton(
+                        onClick = {
+                            if (redoStrokes.isNotEmpty()) {
+                                val restored = redoStrokes.removeAt(redoStrokes.size - 1)
+                                loadedStrokes.add(restored)
+                            }
+                        },
+                        enabled = redoStrokes.isNotEmpty()
+                    ) {
+                        Icon(
+                            Icons.Default.Redo,
+                            contentDescription = "Redo",
+                            tint = if (redoStrokes.isNotEmpty()) AuraTheme.colors.textPrimary else AuraTheme.colors.textMuted
                         )
                     }
 
                     IconButton(onClick = {
                         loadedStrokes.clear()
                         currentPoints.clear()
+                        redoStrokes.clear()
                     }) {
-                        Icon(Icons.Default.DeleteSweep, contentDescription = "Clear", tint = Color.Red)
+                        Icon(Icons.Default.DeleteSweep, contentDescription = "Clear", tint = AuraTheme.colors.negativeRed)
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -127,11 +149,11 @@ fun DrawingCanvas(
                             onSaveDrawing(serialized)
                             onBack()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
                     ) {
-                        Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Save", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -139,7 +161,7 @@ fun DrawingCanvas(
 
         // Toolbar Controls
         Surface(
-            color = AuraSlateCard,
+            color = AuraTheme.colors.cardBackground,
             modifier = Modifier.fillMaxWidth(),
             tonalElevation = 2.dp
         ) {
