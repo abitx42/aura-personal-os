@@ -753,7 +753,7 @@ fun NoteEditorScreen(
                 label = {
                     Text(
                         if (currentDrawingData == null) "Attach Drawing Workspace" else "Modify Sketchpad drawing",
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         fontSize = 11.sp
                     )
                 },
@@ -761,12 +761,12 @@ fun NoteEditorScreen(
                     Icon(
                         imageVector = Icons.Default.Gesture,
                         contentDescription = "Drawing",
-                        tint = if (currentDrawingData == null) AuraWhiteMuted else AuraCyanNeon,
+                        tint = if (currentDrawingData == null) AuraTheme.colors.textMuted else AuraTheme.colors.accentBrand,
                         modifier = Modifier.size(14.dp)
                     )
                 },
                 colors = AssistChipDefaults.assistChipColors(
-                    containerColor = if (currentDrawingData == null) AuraSlateCard else AuraPurpleAccent.copy(alpha = 0.2f)
+                    containerColor = if (currentDrawingData == null) AuraTheme.colors.cardBackground else AuraTheme.colors.accentBrand.copy(alpha = 0.2f)
                 ),
                 border = null
             )
@@ -789,7 +789,7 @@ fun NoteEditorScreen(
                         if (isGlobalRecording) "Recording... (${recordedMicSecs / 1000}s)"
                         else if (currentVoicePath != null) "Playback attachment"
                         else "Record Voice Note",
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         fontSize = 11.sp
                     )
                 },
@@ -797,12 +797,12 @@ fun NoteEditorScreen(
                     Icon(
                         imageVector = if (isGlobalRecording) Icons.Default.FiberManualRecord else Icons.Default.Mic,
                         contentDescription = "Voice Recorder",
-                        tint = if (isGlobalRecording) Color.Red else if (currentVoicePath != null) AuraCyanNeon else AuraWhiteMuted,
+                        tint = if (isGlobalRecording) AuraTheme.colors.negativeRed else if (currentVoicePath != null) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                         modifier = Modifier.size(14.dp).animateContentSize()
                     )
                 },
                 colors = AssistChipDefaults.assistChipColors(
-                    containerColor = if (isGlobalRecording) Color.Red.copy(alpha = 0.2f) else AuraSlateCard
+                    containerColor = if (isGlobalRecording) AuraTheme.colors.negativeRed.copy(alpha = 0.2f) else AuraTheme.colors.cardBackground
                 ),
                 border = null
             )
@@ -829,17 +829,17 @@ fun NoteEditorScreen(
                     Icon(
                         imageVector = if (audioState is PlaybackState.Playing) Icons.Default.PauseCircle else Icons.Default.PlayCircle,
                         contentDescription = "Play/Pause attachment",
-                        tint = AuraCyanNeon,
+                        tint = AuraTheme.colors.accentBrand,
                         modifier = Modifier.size(24.dp)
                     )
                 }
 
-                Text("Voice attachment loaded", fontSize = 11.sp, color = AuraCyanNeon)
+                Text("Voice attachment loaded", fontSize = 11.sp, color = AuraTheme.colors.accentBrand)
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 IconButton(onClick = { currentVoicePath = null }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete voice file", tint = Color.Red, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Delete, contentDescription = "Delete voice file", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(16.dp))
                 }
             }
         }
@@ -1022,22 +1022,22 @@ fun NoteEditorScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            viewModel.restoreNoteVersion(version)
-                                            title = version.title
-                                            content = version.content
-                                            showVersionsSheet = false
-                                        },
-                                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
+                                             viewModel.restoreNoteVersion(version)
+                                             title = version.title
+                                             content = version.content
+                                             showVersionsSheet = false
+                                         },
+                                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.bottomNavBackground)
                                 ) {
                                     Column(modifier = Modifier.padding(10.dp)) {
-                                        Text(version.changeDescription, fontSize = 12.sp, color = AuraCyanNeon, fontWeight = FontWeight.SemiBold)
+                                        Text(version.changeDescription, fontSize = 12.sp, color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.SemiBold)
                                         Spacer(modifier = Modifier.height(2.dp))
-                                        Text(version.title, fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                        Text(version.title, fontSize = 11.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.getDefault()).format(Date(version.modifiedAt)),
                                             fontSize = 9.sp,
-                                            color = AuraWhiteMuted
+                                            color = AuraTheme.colors.textMuted
                                         )
                                     }
                                 }
@@ -1048,10 +1048,10 @@ fun NoteEditorScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showVersionsSheet = false }) {
-                    Text("Close", color = AuraCyanNeon)
+                    Text("Close", color = AuraTheme.colors.accentBrand)
                 }
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 }
@@ -1066,7 +1066,7 @@ fun MarkdownParagraphRenderer(text: String, modifier: Modifier = Modifier) {
                 text = trimmed.substring(2),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Black,
-                color = AuraCyanNeon,
+                color = AuraTheme.colors.accentBrand,
                 modifier = modifier.padding(vertical = 8.dp)
             )
         }
@@ -1076,7 +1076,7 @@ fun MarkdownParagraphRenderer(text: String, modifier: Modifier = Modifier) {
                 text = trimmed.substring(3),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = AuraPurpleAccent,
+                color = AuraTheme.colors.gold,
                 modifier = modifier.padding(vertical = 6.dp)
             )
         }
@@ -1086,38 +1086,38 @@ fun MarkdownParagraphRenderer(text: String, modifier: Modifier = Modifier) {
                 text = trimmed.substring(2, trimmed.length - 2),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = AuraTheme.colors.textPrimary,
                 modifier = modifier.padding(vertical = 2.dp)
             )
         }
         // Horizontal divider
         trimmed == "---" -> {
-            Divider(color = AuraSlateLight, thickness = 1.dp, modifier = modifier.padding(vertical = 12.dp))
+            HorizontalDivider(color = AuraTheme.colors.cardBorder, thickness = 1.dp, modifier = modifier.padding(vertical = 12.dp))
         }
         // Bullet points
         trimmed.startsWith("- ") -> {
             Row(modifier = modifier.padding(start = 8.dp, top = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(4.dp).background(AuraCyanNeon, CircleShape))
+                Box(modifier = Modifier.size(4.dp).background(AuraTheme.colors.accentBrand, CircleShape))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = trimmed.substring(2), fontSize = 13.sp, color = AuraWhiteMedium)
+                Text(text = trimmed.substring(2), fontSize = 13.sp, color = AuraTheme.colors.textPrimary)
             }
         }
         // Standard bullet lists / checklists
         trimmed.startsWith("[ ] ") -> {
             Row(modifier = modifier.padding(start = 8.dp, top = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CheckBoxOutlineBlank, contentDescription = "Todo blank", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
+                Icon(Icons.Default.CheckBoxOutlineBlank, contentDescription = "Todo blank", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(12.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = trimmed.substring(4), fontSize = 13.sp, color = AuraWhiteMedium)
+                Text(text = trimmed.substring(4), fontSize = 13.sp, color = AuraTheme.colors.textPrimary)
             }
         }
         trimmed.startsWith("[x] ") -> {
             Row(modifier = modifier.padding(start = 8.dp, top = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CheckBox, contentDescription = "Todo completed", tint = AuraCyanNeon, modifier = Modifier.size(12.dp))
+                Icon(Icons.Default.CheckBox, contentDescription = "Todo completed", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(12.dp))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = trimmed.substring(4),
                     fontSize = 13.sp,
-                    color = AuraWhiteMuted,
+                    color = AuraTheme.colors.textMuted,
                     textDecoration = TextDecoration.LineThrough
                 )
             }
@@ -1126,7 +1126,7 @@ fun MarkdownParagraphRenderer(text: String, modifier: Modifier = Modifier) {
             Text(
                 text = text,
                 fontSize = 13.sp,
-                color = AuraWhiteMedium,
+                color = AuraTheme.colors.textPrimary,
                 lineHeight = 20.sp,
                 modifier = modifier.padding(vertical = 2.dp)
             )
