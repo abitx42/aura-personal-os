@@ -3124,15 +3124,20 @@ fun AppSecuritySettingsScreen(
                 Divider(color = AuraSlateLight.copy(alpha = 0.5f))
 
                 // Inline form to add friend
-                Text("Register New Friend Entry", fontSize = 11.sp, color = AuraWhiteMedium, fontWeight = FontWeight.Bold)
+                Text("Register New Friend Entry", fontSize = 11.sp, color = AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                 
                 OutlinedTextField(
                     value = newFriendName,
                     onValueChange = { newFriendName = it },
-                    placeholder = { Text("Friend Name", color = AuraWhiteMuted) },
-                    label = { Text("Full Name", color = AuraCyanNeon) },
+                    placeholder = { Text("Friend Name", color = AuraTheme.colors.textMuted) },
+                    label = { Text("Full Name", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
+                    ),
                     shape = RoundedCornerShape(10.dp),
                     singleLine = true
                 )
@@ -3144,10 +3149,15 @@ fun AppSecuritySettingsScreen(
                     OutlinedTextField(
                         value = newFriendPhone,
                         onValueChange = { newFriendPhone = it },
-                        placeholder = { Text("Phone (optional)", color = AuraWhiteMuted) },
-                        label = { Text("Phone", color = AuraCyanNeon) },
+                        placeholder = { Text("Phone (optional)", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Phone", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         singleLine = true
                     )
@@ -3155,10 +3165,15 @@ fun AppSecuritySettingsScreen(
                     OutlinedTextField(
                         value = newFriendNotes,
                         onValueChange = { newFriendNotes = it },
-                        placeholder = { Text("e.g. Roommate", color = AuraWhiteMuted) },
-                        label = { Text("Notes", color = AuraCyanNeon) },
+                        placeholder = { Text("e.g. Roommate", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Notes", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         singleLine = true
                     )
@@ -3173,11 +3188,11 @@ fun AppSecuritySettingsScreen(
                             newFriendNotes = ""
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text("+ Add Friend to Ledger", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text("+ Add Friend to Ledger", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
             }
         }
@@ -3193,8 +3208,8 @@ fun AppSecuritySettingsScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -3207,14 +3222,14 @@ fun AppSecuritySettingsScreen(
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = "About us logo",
-                            tint = AuraCyanNeon,
+                            tint = AuraTheme.colors.accentBrand,
                             modifier = Modifier.size(20.dp)
                         )
                         Text(
                             "ABOUT US & CREATOR PANEL",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White,
+                            color = AuraTheme.colors.textPrimary,
                             letterSpacing = 1.sp
                         )
                     }
@@ -3227,17 +3242,17 @@ fun AppSecuritySettingsScreen(
                                     onClick = { isEditingAboutUs = false },
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
-                                    Text("CANCEL", color = Color.Red, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text("CANCEL", color = AuraTheme.colors.negativeRed, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                                 }
                                 Button(
                                     onClick = {
                                         viewModel.updateAboutUsText(tempAboutUsInput)
                                         isEditingAboutUs = false
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
-                                    Text("SAVE", color = Color.Black, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text("SAVE", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                                 }
                             }
                         } else {
@@ -3246,7 +3261,7 @@ fun AppSecuritySettingsScreen(
                                     tempAboutUsInput = currentAboutUsText
                                     isEditingAboutUs = true
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
+                                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text("EDIT (OWNER)", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -3256,10 +3271,11 @@ fun AppSecuritySettingsScreen(
                         // Helpful reminder for other emails
                         Box(
                             modifier = Modifier
-                                .background(AuraSlateLight, RoundedCornerShape(6.dp))
+                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(6.dp))
+                                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(6.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
-                            Text("READ ONLY", color = AuraWhiteMuted, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                            Text("READ ONLY", color = AuraTheme.colors.textMuted, fontSize = 8.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -3270,10 +3286,10 @@ fun AppSecuritySettingsScreen(
                         onValueChange = { tempAboutUsInput = it },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, lineHeight = 16.sp)
                     )
@@ -3281,14 +3297,14 @@ fun AppSecuritySettingsScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard, RoundedCornerShape(10.dp))
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(10.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
                             .padding(12.dp)
                     ) {
                         SelectionContainer {
                             Text(
                                 text = currentAboutUsText,
-                                color = Color.White,
+                                color = AuraTheme.colors.textPrimary,
                                 fontSize = 12.sp,
                                 lineHeight = 16.sp
                             )
@@ -3299,7 +3315,7 @@ fun AppSecuritySettingsScreen(
                 if (!isOwner) {
                     Text(
                         "* Log in with Gmail ‘moreaboutastram@gmail.com’ via Sync to authenticate as owner and edit this content.",
-                        color = AuraWhiteMuted,
+                        color = AuraTheme.colors.textMuted,
                         fontSize = 9.sp,
                         lineHeight = 12.sp
                     )
