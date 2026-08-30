@@ -136,7 +136,7 @@ class AudioController(private val context: Context) {
             _playbackState.value = PlaybackState.Playing
             startTrackingProgress()
             Log.d("AudioController", "Started playing: $filePath")
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e("AudioController", "Failed starting player", e)
             _playbackState.value = PlaybackState.Error("Playing error")
         }
@@ -163,9 +163,11 @@ class AudioController(private val context: Context) {
     fun seekTo(progress: Float) {
         val player = mediaPlayer ?: return
         val duration = player.duration
-        val targetPosition = (progress * duration).toInt()
-        player.seekTo(targetPosition)
-        _playbackProgress.value = progress
+        if (duration > 0) {
+            val targetPosition = (progress.coerceIn(0f, 1f) * duration).toInt()
+            player.seekTo(targetPosition)
+            _playbackProgress.value = progress.coerceIn(0f, 1f)
+        }
     }
 
     fun stopPlaying() {

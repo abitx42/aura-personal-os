@@ -411,6 +411,9 @@ interface MoneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: Transaction): Long
 
+    @Update
+    suspend fun updateTransaction(transaction: Transaction)
+
     @Delete
     suspend fun deleteTransaction(transaction: Transaction)
 
@@ -420,6 +423,9 @@ interface MoneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertInvestment(investment: Investment): Long
 
+    @Update
+    suspend fun updateInvestment(investment: Investment)
+
     @Delete
     suspend fun deleteInvestment(investment: Investment)
 
@@ -428,6 +434,9 @@ interface MoneyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFriend(friend: Friend): Long
+
+    @Update
+    suspend fun updateFriend(friend: Friend)
 
     @Delete
     suspend fun deleteFriend(friend: Friend)

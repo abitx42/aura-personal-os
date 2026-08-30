@@ -39,12 +39,11 @@ fun AuraAnimatedNavBar(
 ) {
     val navItems = remember {
         listOf(
-            NavItem(Section.Dashboard, Icons.Default.Dashboard, "Workspace Dashboard"),
-            NavItem(Section.Notes, Icons.Default.Feed, "Notebook tabs"),
-            NavItem(Section.Tasks, Icons.Default.FormatListBulleted, "Tasks Kanban", "nav_tasks"),
-            NavItem(Section.Habits, Icons.Default.LocalFireDepartment, "Habits check trackers"),
-            NavItem(Section.Day, Icons.Default.CalendarToday, "Calendars diary logs", "nav_journal"),
-            NavItem(Section.Money, Icons.Default.Payments, "Ledger and splits", "nav_money")
+            NavItem(Section.Dashboard, Icons.Default.Home, "Home"),
+            NavItem(Section.Notes, Icons.Default.Person, "Personal"),
+            NavItem(Section.Tasks, Icons.Default.ReceiptLong, "Txn", "nav_tasks"),
+            NavItem(Section.Money, Icons.Default.CreditCard, "Accounts", "nav_money"),
+            NavItem(Section.Day, Icons.Default.MoreHoriz, "More", "nav_more")
         )
     }
 
