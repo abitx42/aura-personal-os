@@ -417,7 +417,7 @@ fun MoneyTrackerScreen(
                     )
                 }
                 if (category == "Friend" && tickedFriends.isNotEmpty()) {
-                    val shareCount = tickedFriends.size + (if (includeMe) 1 else 0)
+                    val shareCount = (tickedFriends.size + (if (includeMe) 1 else 0)).coerceAtLeast(1)
                     val splitShare = amount / shareCount
                     tickedFriends.forEach { fri ->
                         viewModel.addDebt(
@@ -567,7 +567,7 @@ fun MoneyTrackerScreen(
             onDismiss = { showSplitBillDialog = false },
             onSubmit = { title, amt, isYouOwe, selectedParticipants, splitType, customPays ->
                 // Automatically calculate and register debt transactions under participants
-                val participantCount = selectedParticipants.size + 1 // + Me
+                val participantCount = (selectedParticipants.size + 1).coerceAtLeast(1) // + Me
                 when (splitType) {
                     "EQUAL" -> {
                         val chunk = amt / participantCount
@@ -1262,7 +1262,7 @@ fun FriendsAndSplitsModule(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraObsidian.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                            .background(AuraTheme.colors.cardBackground, RoundedCornerShape(10.dp))
                             .padding(10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -2227,7 +2227,7 @@ fun FriendsAndSplitsModule(
                             val billTotalValue = expenseAmountInput.toDoubleOrNull() ?: 0.0
                             if (billTotalValue > 0.0 && expenseTitleInput.isNotBlank()) {
                                 // EQUAL Chunk calculators
-                                val partitionCount = activeRoom.memberNames.size
+                                val partitionCount = activeRoom.memberNames.size.coerceAtLeast(1)
                                 val mapSplits = activeRoom.memberNames.associateWith { billTotalValue / partitionCount }
                                 viewModel.addRoomExpense(
                                     roomId = activeRoom.id,
@@ -2388,35 +2388,49 @@ fun SavingsGoalsView(
                         (gol.savedAmount / gol.targetAmount * 100).coerceAtMost(100.0)
                     } else 0.0
 
+                    val shape = RoundedCornerShape(16.dp)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
-                            .padding(12.dp)
+                            .padding(vertical = 6.dp)
+                            .clip(shape)
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, shape)
+                            .padding(14.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(gol.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text("Target: ${gol.targetDate}", fontSize = 9.sp, color = AuraWhiteMuted)
+                                Text(gol.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                                Text("Target: ${gol.targetDate}", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             
                             // Progress bar
-                            LinearProgressIndicator(
-                                progress = (percentage / 100.0).toFloat(),
-                                modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
-                                color = AuraCyanNeon,
-                                trackColor = AuraSlateLight
-                            )
+                            val progressFrac = (percentage / 100.0).toFloat().coerceIn(0f, 1f)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(AuraTheme.colors.bottomNavBackground)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(progressFrac.coerceAtLeast(0.01f))
+                                        .fillMaxHeight()
+                                        .clip(RoundedCornerShape(3.dp))
+                                        .background(if (progressFrac >= 1f) AuraTheme.colors.positiveGreen else AuraTheme.colors.accentBrand)
+                                )
+                            }
                             
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "Saved: ₹${gol.savedAmount.roundToInt()} of ₹${gol.targetAmount.roundToInt()} (${percentage.roundToInt()}%)",
-                                    fontSize = 10.sp,
-                                    color = AuraWhiteMuted
+                                    fontSize = 11.sp,
+                                    color = AuraTheme.colors.textSecondary,
+                                    fontWeight = FontWeight.Medium
                                 )
                                 
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -2613,9 +2627,6 @@ fun VisualAnalyticsDashboard(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                modifier = Modifier.clickable { onCategoryClick?.invoke(pair.first) }
-                            ) {
-                                class Box
                                 androidx.compose.foundation.layout.Box(modifier = Modifier.size(8.dp).background(colors[idx % colors.size], RoundedCornerShape(2.dp)))
                                 Text(
                                     text = "${pair.first}: ${if (totalSentimentExpenses > 0) ((pair.second / totalSentimentExpenses) * 100).roundToInt() else 0}%",

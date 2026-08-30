@@ -1080,7 +1080,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val taskProgress = if (todayTasks.isNotEmpty()) {
             (completedTodayTasks.toFloat() / todayTasks.size.toFloat() * 100).toInt()
         } else {
-            100 // completed automatically if nothing planned
+            if (completedTasks > 0) 100 else 0
         }
 
         // Streak count over all habits
