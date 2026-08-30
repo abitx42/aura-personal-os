@@ -570,9 +570,8 @@ fun MainAppContainer(
                                 Section.Dashboard,
                                 Section.Notes,
                                 Section.Tasks,
-                                Section.Habits,
-                                Section.Day,
-                                Section.Money
+                                Section.Money,
+                                Section.Day
                             )
                         }
                         val pagerState = androidx.compose.foundation.pager.rememberPagerState(
@@ -627,6 +626,9 @@ fun MainAppContainer(
                                 Section.SecuritySettings -> {
                                     AppSecuritySettingsScreen(viewModel = viewModel)
                                 }
+                                Section.Habits -> {
+                                    HabitsTabScreen(viewModel = viewModel)
+                                }
                                 else -> { /* Safety fallback */ }
                             }
                         } else {
@@ -671,20 +673,11 @@ fun MainAppContainer(
                                             }
                                         )
                                     }
-                                    Section.Habits -> {
-                                        HabitsTabScreen(viewModel = viewModel)
-                                    }
-                                    Section.Day -> {
-                                        JournalAndCalendarScreen(
-                                            viewModel = viewModel,
-                                            onOpenDrawingWorkspace = { data ->
-                                                workspaceDrawingData = data
-                                                isDrawingWorkspaceOpen = true
-                                            }
-                                        )
-                                    }
                                     Section.Money -> {
                                         MoneyTrackerScreen(viewModel = viewModel)
+                                    }
+                                    Section.Day -> {
+                                        MoreHubScreen(viewModel = viewModel)
                                     }
                                     else -> {}
                                 }
@@ -1624,7 +1617,319 @@ fun DashboardScreen(
 }
 
 // ==========================================
-// COMPACT GLASS NAVIGATION BAR
+// MORE SCREEN (ECOSYSTEM TOOLBOX + GROUPED SETTINGS)
+// Directly matching Reference Screenshots 2 & 3
+// ==========================================
+@Composable
+fun MoreHubScreen(
+    viewModel: AppViewModel
+) {
+    val debts by viewModel.allDebts.collectAsState()
+    val savingsGoals by viewModel.allSavingsGoals.collectAsState()
+
+    var isGridView by remember { mutableStateOf(true) }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AuraTheme.colors.screenBackground)
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 1. Header: "More" + PRO + Profile
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "More",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = AuraTheme.colors.textPrimary
+                )
+                AuraHeaderActions(
+                    onProClick = { viewModel.navigateTo(Section.SecuritySettings) },
+                    onProfileClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                )
+            }
+        }
+
+        // 2. ECOSYSTEM TOOLBOX Eyebrow + View Switcher + Swap
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "ECOSYSTEM TOOLBOX",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AuraTheme.colors.textMuted,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // View Toggle (List vs Grid)
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.FormatListBulleted,
+                                contentDescription = "List",
+                                tint = if (!isGridView) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier
+                                    .size(15.dp)
+                                    .clickable { isGridView = false }
+                            )
+                            Icon(
+                                imageVector = Icons.Default.GridView,
+                                contentDescription = "Grid",
+                                tint = if (isGridView) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier
+                                    .size(15.dp)
+                                    .clickable { isGridView = true }
+                            )
+                        }
+                    }
+
+                    // SWAP Button
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(AuraTheme.colors.cardBackground)
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp))
+                            .clickable { /* Swap view */ }
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SwapHoriz,
+                                contentDescription = "Swap",
+                                tint = AuraTheme.colors.textSecondary,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Text(
+                                text = "SWAP",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AuraTheme.colors.textSecondary,
+                                letterSpacing = 0.8.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. 2-COLUMN GRID (Matching Reference Screenshot 2)
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Row 1: Split & Links
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AuraHubCard(
+                        title = "Split",
+                        statText = "${debts.size} TRANSACTIONS",
+                        icon = Icons.Default.PeopleOutline,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    AuraHubCard(
+                        title = "Links",
+                        statText = "0 SAVED",
+                        icon = Icons.Default.OpenInNew,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Notes) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Row 2: Categories & Budgets
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AuraHubCard(
+                        title = "Categories",
+                        statText = "1 TRACKED",
+                        icon = Icons.Default.PieChart,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    AuraHubCard(
+                        title = "Budgets",
+                        statText = "SET PLAN",
+                        icon = Icons.Default.AccountBalanceWallet,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Row 3: Loans & Savings
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AuraHubCard(
+                        title = "Loans",
+                        statText = "${debts.filter { it.isYouOwe }.size} LOANS",
+                        icon = Icons.Default.AccountBalance,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    AuraHubCard(
+                        title = "Savings",
+                        statText = "${savingsGoals.size} SAVINGS TARGETS",
+                        icon = Icons.Default.TrackChanges,
+                        accentColor = AuraTheme.colors.accentBrand,
+                        onClick = { viewModel.navigateTo(Section.Money) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+
+        // 4. GROUPED SECTIONS (Matching Reference Screenshot 3)
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                // Top Highlight Card: Ad-free Experience & Financial Freedom
+                val topShape = RoundedCornerShape(20.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(topShape)
+                        .background(AuraTheme.colors.cardBackground)
+                        .border(1.dp, AuraTheme.colors.cardBorder, topShape)
+                        .padding(vertical = 4.dp)
+                ) {
+                    AuraSectionRow(
+                        title = "Ad-free Experience",
+                        description = "No more interruptions while managing your money.",
+                        icon = Icons.Default.StarOutline,
+                        iconTint = AuraTheme.colors.accentBrand,
+                        onClick = {}
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 56.dp, end = 16.dp),
+                        color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f),
+                        thickness = 0.8.dp
+                    )
+                    AuraSectionRow(
+                        title = "Financial Freedom",
+                        description = "Manage more than 1 personal goal and loan.",
+                        icon = Icons.Default.TrackChanges,
+                        iconTint = AuraTheme.colors.accentBrand,
+                        onClick = {}
+                    )
+                }
+
+                // Group 1: SHARING & COLLABORATION
+                AuraSectionGroup(
+                    eyebrow = "SHARING & COLLABORATION",
+                    items = listOf(
+                        SectionRowItem(
+                            title = "Unlimited Shared Members",
+                            description = "Add more than 3 persons in individual shared history.",
+                            icon = Icons.Default.PeopleOutline,
+                            iconTint = AuraTheme.colors.accentBrand
+                        ),
+                        SectionRowItem(
+                            title = "Multiple Groups",
+                            description = "Create more than 1 sharing group in the Shared tab.",
+                            icon = Icons.Default.GridView,
+                            iconTint = AuraTheme.colors.accentBrand
+                        ),
+                        SectionRowItem(
+                            title = "Friend Collaboration",
+                            description = "Real-time cloud sync with friends and group members.",
+                            icon = Icons.Default.Sync,
+                            iconTint = AuraTheme.colors.accentBrand
+                        )
+                    )
+                )
+
+                // Group 2: ORGANIZATION & TOOLS
+                AuraSectionGroup(
+                    eyebrow = "ORGANIZATION & TOOLS",
+                    items = listOf(
+                        SectionRowItem(
+                            title = "Unlimited Links",
+                            description = "Save and organize more than 4 useful links.",
+                            icon = Icons.Default.Link,
+                            iconTint = AuraTheme.colors.accentBrand
+                        ),
+                        SectionRowItem(
+                            title = "Grouped Links",
+                            description = "Organize your links into multiple categories.",
+                            icon = Icons.Default.GridView,
+                            iconTint = AuraTheme.colors.accentBrand
+                        ),
+                        SectionRowItem(
+                            title = "Subscription Mastery",
+                            description = "Track more than 2 recurring subscriptions.",
+                            icon = Icons.Default.CreditCard,
+                            iconTint = AuraTheme.colors.accentBrand
+                        )
+                    )
+                )
+
+                // Group 3: SECURITY & SUPPORT
+                AuraSectionGroup(
+                    eyebrow = "SECURITY & SUPPORT",
+                    items = listOf(
+                        SectionRowItem(
+                            title = "Advanced Data Security",
+                            description = "Unlimited daily backups and automated cloud sync.",
+                            icon = Icons.Default.Shield,
+                            iconTint = AuraTheme.colors.accentBrand,
+                            onClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                        ),
+                        SectionRowItem(
+                            title = "Cloud Backup & Restore",
+                            description = "Securely backup and load your data across devices.",
+                            icon = Icons.Default.CloudUpload,
+                            iconTint = AuraTheme.colors.accentBrand,
+                            onClick = { viewModel.navigateTo(Section.SecuritySettings) }
+                        )
+                    )
+                )
+            }
+        }
+
+        // Safety Bottom Space
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
+    }
+}
+
+// ==========================================
+// FLOATING PILL NAVIGATION DOCK (5 TABS)
+// Directly matching all Reference Screenshots
 // ==========================================
 @Composable
 fun AuraBottomNavRow(
@@ -1634,55 +1939,65 @@ fun AuraBottomNavRow(
     val navItems = listOf(
         Triple(Section.Dashboard, "Home", Icons.Outlined.Home),
         Triple(Section.Notes, "Personal", Icons.Outlined.Person),
-        Triple(Section.Tasks, "Txn/Tasks", Icons.Outlined.FormatListBulleted),
+        Triple(Section.Tasks, "Txn", Icons.Outlined.ReceiptLong),
         Triple(Section.Money, "Accounts", Icons.Outlined.CreditCard),
-        Triple(Section.Day, "Day/More", Icons.Outlined.MoreHoriz)
+        Triple(Section.Day, "More", Icons.Outlined.MoreHoriz)
     )
 
-    Surface(
-        color = AuraTheme.colors.bottomNavBackground,
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding(),
-        tonalElevation = 8.dp,
-        border = BorderStroke(0.8.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.6f))
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
+        Surface(
+            color = AuraTheme.colors.bottomNavBackground,
+            shape = RoundedCornerShape(32.dp),
+            border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
+            shadowElevation = 12.dp
         ) {
-            navItems.forEach { (section, label, icon) ->
-                val isSelected = active == section
-                val shape = RoundedCornerShape(20.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                navItems.forEach { (section, label, icon) ->
+                    val isSelected = active == section
+                    val shape = RoundedCornerShape(22.dp)
 
-                Column(
-                    modifier = Modifier
-                        .clip(shape)
-                        .auraSpringPress(
-                            cornerRadius = 20.dp,
-                            onClick = { viewModel.navigateTo(section) }
-                        )
-                        .background(if (isSelected) AuraTheme.colors.bottomNavActivePill else Color.Transparent)
-                        .padding(horizontal = if (isSelected) 14.dp else 10.dp, vertical = 6.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = label,
-                        tint = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
-                        fontSize = 10.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(shape)
+                            .auraSpringPress(
+                                cornerRadius = 22.dp,
+                                onClick = { viewModel.navigateTo(section) }
+                            )
+                            .background(if (isSelected) AuraTheme.colors.bottomNavActivePill else Color.Transparent)
+                            .padding(horizontal = if (isSelected) 16.dp else 12.dp, vertical = 7.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = label,
+                                tint = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                fontSize = 10.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                            )
+                        }
+                    }
                 }
             }
         }

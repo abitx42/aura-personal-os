@@ -792,31 +792,9 @@ fun QuickEngagementToolbar(
 }
 
 // ===================================================
-// SUB-MODULE: TRANSACTION JOURNAL LEDGER
+// SIDE-BY-SIDE INCOMING VS OUTGOING SUMMARY CARDS
+// Directly matching Reference Screenshot 2
 // ===================================================
-@Composable
-fun TransactionLedgerView(
-    transactions: List<Transaction>,
-    onDeleteClick: (Transaction) -> Unit,
-    onEditClick: (Transaction) -> Unit
-) {
-    var searchQuery by remember { mutableStateOf("") }
-    var filterCategory by remember { mutableStateOf("All") }
-    var filterType by remember { mutableStateOf("All") }
-
-    val filteredList = transactions.filter { tx ->
-        val matchesQuery = tx.recipientOrSender.contains(searchQuery, true) ||
-                tx.category.contains(searchQuery, true) ||
-                tx.note.contains(searchQuery, true) ||
-                tx.amount.toString().contains(searchQuery)
-        
-        val matchesCategory = filterCategory == "All" || tx.category == filterCategory
-        val matchesType = filterType == "All" || tx.type == filterType
-        
-        matchesQuery && matchesCategory && matchesType
-    }
-
-// Side-by-side INCOMING vs OUTGOING summary cards matching Reference Screenshot 2
 @Composable
 fun ModernTransactionSummaryCards(
     incoming: Double,
@@ -2702,8 +2680,6 @@ fun VisualAnalyticsDashboard(
     }
 }
 
-// Mini view helper: Accounts summary
-@Composable
 // Modern Account Card directly inspired by Reference Screenshot 1
 @Composable
 fun ModernAccountCard(
@@ -2767,7 +2743,7 @@ fun ModernAccountCard(
                         }
                     }
                     Text(
-                        text = "BANK ACCOUNT",
+                        text = "BANK",
                         style = MaterialTheme.typography.labelSmall,
                         color = AuraTheme.colors.textMuted,
                         letterSpacing = 1.sp,
