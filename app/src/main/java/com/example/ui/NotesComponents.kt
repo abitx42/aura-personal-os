@@ -904,8 +904,8 @@ fun NoteEditorScreen(
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp))
-                    .background(AuraCharcoalBase, RoundedCornerShape(12.dp))
+                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
+                    .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ) {
                 item {
@@ -913,10 +913,10 @@ fun NoteEditorScreen(
                         text = title.ifBlank { "Untitled Document" },
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = AuraTheme.colors.textPrimary
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Divider(color = AuraSlateLight)
+                    HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
@@ -932,44 +932,44 @@ fun NoteEditorScreen(
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp))
-                    .background(AuraCharcoalBase, RoundedCornerShape(12.dp))
+                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
+                    .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
             ) {
                 // Title Field
                 TextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = { Text("Title", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMuted) },
+                    placeholder = { Text("Title", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textMuted) },
                     modifier = Modifier.fillMaxWidth().testTag("note_title_input"),
-                    textStyle = MaterialTheme.typography.titleMedium.copy(color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                    textStyle = MaterialTheme.typography.titleMedium.copy(color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
-                Divider(color = AuraSlateLight, thickness = 1.dp)
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f), thickness = 1.dp)
 
                 // Description Contents
                 TextField(
                     value = content,
                     onValueChange = { content = it },
-                    placeholder = { Text("Write your thoughts or markdown headings...", fontSize = 14.sp, color = AuraWhiteMuted) },
+                    placeholder = { Text("Write your thoughts or markdown headings...", fontSize = 14.sp, color = AuraTheme.colors.textMuted) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f).testTag("note_content_input"),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 14.sp),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(color = AuraTheme.colors.textPrimary, fontSize = 14.sp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
             }
@@ -977,7 +977,7 @@ fun NoteEditorScreen(
 
         // Sub footer showing live statistics
         Surface(
-            color = AuraCharcoalBase,
+            color = AuraTheme.colors.bottomNavBackground,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -990,16 +990,16 @@ fun NoteEditorScreen(
                 Text(
                     text = "Char: $charCount   |   Words: $wordCount",
                     fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    color = AuraTheme.colors.textMuted
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.HourglassEmpty, contentDescription = "Read Time", tint = AuraWhiteMuted, modifier = Modifier.size(12.dp))
+                    Icon(Icons.Default.HourglassEmpty, contentDescription = "Read Time", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(12.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Read: ~$readTimeMinutes min",
                         fontSize = 11.sp,
-                        color = AuraWhiteMuted
+                        color = AuraTheme.colors.textMuted
                     )
                 }
             }
