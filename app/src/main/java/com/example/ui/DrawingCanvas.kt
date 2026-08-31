@@ -288,7 +288,7 @@ fun DrawingCanvas(
                     var currentY = lineSpacing
                     while (currentY < canvasHeight) {
                         drawLine(
-                            color = Color(0xFF262D3D),
+                            color = AuraTheme.colors.cardBorder.copy(alpha = 0.6f),
                             start = Offset(0f, currentY),
                             end = Offset(canvasWidth, currentY),
                             strokeWidth = 1f
@@ -297,7 +297,7 @@ fun DrawingCanvas(
                     }
                     // Vertical margin rule list
                     drawLine(
-                        color = Color(0xFFEF5350).copy(alpha = 0.5f),
+                        color = AuraTheme.colors.negativeRed.copy(alpha = 0.4f),
                         start = Offset(60.dp.toPx(), 0f),
                         end = Offset(60.dp.toPx(), canvasHeight),
                         strokeWidth = 1.5f
@@ -318,7 +318,7 @@ fun DrawingCanvas(
                         val strokeColor = try {
                             Color(android.graphics.Color.parseColor(stroke.colorHex))
                         } catch (e: Exception) {
-                            Color.Cyan
+                            AuraTheme.colors.accentBrand
                         }
 
                         drawPath(
@@ -342,7 +342,7 @@ fun DrawingCanvas(
                     }
                     
                     val activeColor = if (isEraserActive) {
-                        Color(0xFF14171F)
+                        AuraTheme.colors.cardBackground
                     } else {
                         try {
                             Color(android.graphics.Color.parseColor(selectedColorHex))
