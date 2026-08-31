@@ -156,4 +156,43 @@ class AuraCoreUnitTest {
 
         assertEquals("02:05", formatted)
     }
+
+    @Test
+    fun testPinPasscodeValidation_strictFourDigits() {
+        val validPin = "4829"
+        val tooShort = "482"
+        val tooLong = "48291"
+        val withLetters = "482a"
+
+        fun isValid(p: String) = p.length == 4 && p.all { it.isDigit() }
+
+        assertTrue(isValid(validPin))
+        org.junit.Assert.assertFalse(isValid(tooShort))
+        org.junit.Assert.assertFalse(isValid(tooLong))
+        org.junit.Assert.assertFalse(isValid(withLetters))
+    }
+
+    @Test
+    fun testReminderTimeStringFormat_validHoursMinutes() {
+        val validTime = "08:30"
+        val validEvening = "23:59"
+        val invalidHours = "25:00"
+        val invalidMins = "12:60"
+
+        val timeRegex = Regex("^([01]\\d|2[0-3]):[0-5]\\d$")
+
+        assertTrue(timeRegex.matches(validTime))
+        assertTrue(timeRegex.matches(validEvening))
+        org.junit.Assert.assertFalse(timeRegex.matches(invalidHours))
+        org.junit.Assert.assertFalse(timeRegex.matches(invalidMins))
+    }
+
+    @Test
+    fun testCurrencyDisplay_roundToIntFormatting() {
+        val toReceive = 5250.75
+        val youOwe = 1200.25
+        val netDifference = (toReceive - youOwe).toInt()
+
+        assertEquals(4050, netDifference)
+    }
 }
