@@ -3903,4 +3903,3 @@ fun HabitsTabScreen(
     }
 }
 
-val AuraWhiteDescription = Color(0xFFC5D1E6)

@@ -2992,7 +2992,7 @@ fun SplitSummarySectionView(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("PENDING SPLITS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium, letterSpacing = 1.sp)
+                    Text("PENDING SPLITS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary, letterSpacing = 1.sp)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)

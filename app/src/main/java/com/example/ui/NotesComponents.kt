@@ -1014,7 +1014,7 @@ fun NoteEditorScreen(
             text = {
                 Column(modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp)) {
                     if (noteVersions.isEmpty()) {
-                        Text("No snapshot history saved yet.", color = AuraWhiteMuted)
+                        Text("No snapshot history saved yet.", color = AuraTheme.colors.textMuted)
                     } else {
                         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             items(noteVersions) { version ->
