@@ -330,7 +330,10 @@ fun JournalAndCalendarScreen(
                                             color = if (isSelected) colorsVal else AuraTheme.colors.cardBorder.copy(alpha = 0.4f),
                                             shape = moodShape
                                         )
-                                        .clickable { selectedMood = moodName }
+                                        .auraSpringPress(
+                                            cornerRadius = 8.dp,
+                                            onClick = { selectedMood = moodName }
+                                        )
                                         .padding(horizontal = 10.dp, vertical = 6.dp)
                                 ) {
                                     Text(
