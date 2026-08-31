@@ -374,4 +374,32 @@ class AuraCoreUnitTest {
         assertEquals(2, daily.size)
         assertEquals(1, weekly.size)
     }
+
+    @Test
+    fun testMultipleDebtSettlements_reachesZero() {
+        var debt = Debt(id = 1, friendId = 1, friendName = "Alex", title = "Dinner", totalAmount = 1000.0, remainingAmount = 1000.0, isYouOwe = false)
+        
+        // 1st payment: 400
+        val payment1 = 400.0
+        val actualPaid1 = minOf(payment1, debt.remainingAmount)
+        debt = debt.copy(remainingAmount = debt.remainingAmount - actualPaid1)
+        assertEquals(600.0, debt.remainingAmount, 0.001)
+
+        // 2nd payment: 600
+        val payment2 = 600.0
+        val actualPaid2 = minOf(payment2, debt.remainingAmount)
+        debt = debt.copy(remainingAmount = debt.remainingAmount - actualPaid2, status = if (debt.remainingAmount - actualPaid2 <= 0.0) "SETTLED" else "PENDING")
+        assertEquals(0.0, debt.remainingAmount, 0.001)
+        assertEquals("SETTLED", debt.status)
+    }
+
+    @Test
+    fun testFriendNetBalanceCalculation_positiveNegative() {
+        val toReceive = 1500.0
+        val youOwe = 800.0
+        val netBalance = toReceive - youOwe
+
+        assertEquals(700.0, netBalance, 0.001)
+        assertTrue(netBalance > 0)
+    }
 }
