@@ -1106,7 +1106,7 @@ fun TaskComposerScreen(
                                 Icon(
                                     imageVector = if (sub.isCompleted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = "Check",
-                                    tint = if (sub.isCompleted) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                    tint = if (sub.isCompleted) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -1120,7 +1120,7 @@ fun TaskComposerScreen(
                         }
 
                         IconButton(onClick = { viewModel.deleteSubtaskDirectly(sub) }, modifier = Modifier.size(24.dp)) {
-                            Icon(Icons.Default.Close, contentDescription = "Delete sub", tint = Color.Red, modifier = Modifier.size(14.dp))
+                            Icon(Icons.Default.Close, contentDescription = "Delete sub", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(14.dp))
                         }
                     }
                 }
