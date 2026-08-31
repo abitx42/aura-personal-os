@@ -3115,7 +3115,7 @@ fun AppSecuritySettingsScreen(
                                                 frnd.notes.takeIf { it.isNotBlank() }
                                             ).joinToString(" | "),
                                             fontSize = 9.sp,
-                                            color = AuraWhiteMuted
+                                            color = AuraTheme.colors.textMuted
                                         )
                                     }
                                 }
@@ -3126,7 +3126,7 @@ fun AppSecuritySettingsScreen(
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Remove friend",
-                                        tint = Color.Red.copy(alpha = 0.8f),
+                                        tint = AuraTheme.colors.negativeRed,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
@@ -3135,7 +3135,7 @@ fun AppSecuritySettingsScreen(
                     }
                 }
 
-                Divider(color = AuraSlateLight.copy(alpha = 0.5f))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // Inline form to add friend
                 Text("Register New Friend Entry", fontSize = 11.sp, color = AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
