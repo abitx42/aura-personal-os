@@ -402,4 +402,27 @@ class AuraCoreUnitTest {
         assertEquals(700.0, netBalance, 0.001)
         assertTrue(netBalance > 0)
     }
+
+    @Test
+    fun testSubtaskProgressPercentage_math() {
+        val totalSubtasks = 4
+        val completedSubtasks = 3
+        val progress = if (totalSubtasks > 0) ((completedSubtasks.toDouble() / totalSubtasks) * 100).toInt() else 0
+
+        assertEquals(75, progress)
+    }
+
+    @Test
+    fun testSubtaskFilterByParentTaskId() {
+        val subtasks = listOf(
+            Subtask(id = 1, taskId = 101, title = "Design mockups", isCompleted = true),
+            Subtask(id = 2, taskId = 101, title = "Implement UI", isCompleted = false),
+            Subtask(id = 3, taskId = 102, title = "Write backend tests", isCompleted = true)
+        )
+        val filtered = subtasks.filter { it.taskId == 101 }
+
+        assertEquals(2, filtered.size)
+        assertEquals("Design mockups", filtered[0].title)
+        assertEquals("Implement UI", filtered[1].title)
+    }
 }
