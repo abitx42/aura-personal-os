@@ -342,12 +342,12 @@ fun DrawingCanvas(
                     }
                     
                     val activeColor = if (isEraserActive) {
-                        AuraCharcoalBase
+                        Color(0xFF14171F)
                     } else {
                         try {
                             Color(android.graphics.Color.parseColor(selectedColorHex))
                         } catch (e: Exception) {
-                            AuraCyanNeon
+                            AuraTheme.colors.accentBrand
                         }
                     }
 
