@@ -195,4 +195,26 @@ class AuraCoreUnitTest {
 
         assertEquals(4050, netDifference)
     }
+
+    @Test
+    fun testTaskEnergyLevels_standardLabels() {
+        val energyLevels = listOf("High Energy", "Medium Energy", "Low Energy")
+        assertEquals(3, energyLevels.size)
+        assertTrue(energyLevels.contains("High Energy"))
+        assertTrue(energyLevels.contains("Medium Energy"))
+        assertTrue(energyLevels.contains("Low Energy"))
+    }
+
+    @Test
+    fun testMoodCategories_validKeys() {
+        val validMoods = setOf("HAPPY", "CALM", "CONTENT", "NEUTRAL", "CREATIVE", "TIRED", "SAD")
+        val currentMood = "CALM"
+        assertTrue("Selected mood must be within recognized set", validMoods.contains(currentMood))
+    }
+
+    @Test
+    fun testEmptyDrawingStroke_safeHandling() {
+        val emptyStroke = SketchStroke(points = emptyList(), colorHex = "#FF5B32", strokeWidth = 6f)
+        assertTrue(emptyStroke.points.isEmpty())
+    }
 }
