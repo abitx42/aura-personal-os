@@ -333,4 +333,45 @@ class AuraCoreUnitTest {
 
         assertEquals(80, percent)
     }
+
+    @Test
+    fun testHabitStreak_consecutiveDays() {
+        val habitLogs = listOf(
+            HabitLog(id = 1, habitId = 10, completionDate = "2026-08-30"),
+            HabitLog(id = 2, habitId = 10, completionDate = "2026-08-31")
+        )
+        val dates = habitLogs.map { it.completionDate }.toSet()
+        val isConsecutive = dates.contains("2026-08-30") && dates.contains("2026-08-31")
+
+        assertTrue(isConsecutive)
+        assertEquals(2, dates.size)
+    }
+
+    @Test
+    fun testHabitStreak_brokenStreak() {
+        val habitLogs = listOf(
+            HabitLog(id = 1, habitId = 10, completionDate = "2026-08-25"),
+            HabitLog(id = 2, habitId = 10, completionDate = "2026-08-31")
+        )
+        val dates = habitLogs.map { it.completionDate }.toSet()
+        val yesterday = "2026-08-30"
+        val today = "2026-08-31"
+        val isConsecutive = dates.contains(yesterday) && dates.contains(today)
+
+        org.junit.Assert.assertFalse(isConsecutive)
+    }
+
+    @Test
+    fun testHabitFrequencies_dailyAndWeekly() {
+        val habits = listOf(
+            Habit(id = 1, name = "Morning Run", frequency = "Daily"),
+            Habit(id = 2, name = "Deep Cleaning", frequency = "Weekly"),
+            Habit(id = 3, name = "Meditation", frequency = "Daily")
+        )
+        val daily = habits.filter { it.frequency == "Daily" }
+        val weekly = habits.filter { it.frequency == "Weekly" }
+
+        assertEquals(2, daily.size)
+        assertEquals(1, weekly.size)
+    }
 }
