@@ -645,16 +645,11 @@ fun PremiumFinancialOverviewCard(
             .fillMaxWidth()
             .border(
                 1.dp,
-                Brush.linearGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
-                    )
-                ),
+                AuraTheme.colors.cardBorder,
                 RoundedCornerShape(24.dp)
             ),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
     ) {
         Column(
             modifier = Modifier
@@ -676,7 +671,7 @@ fun PremiumFinancialOverviewCard(
                     Text(
                         text = "DYNAMIC NET WORTH",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = AuraTheme.colors.textMuted,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.5.sp
                     )
@@ -684,19 +679,19 @@ fun PremiumFinancialOverviewCard(
                         text = "₹${"%,.2f".format(netWorth)}",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = AuraTheme.colors.textPrimary
                     )
                 }
                 Icon(
                     imageVector = Icons.Default.Analytics,
                     contentDescription = "Dynamic balance calculation",
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = AuraTheme.colors.accentBrand,
                     modifier = Modifier.size(36.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), thickness = 1.dp)
+            HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f), thickness = 1.dp)
             Spacer(modifier = Modifier.height(16.dp))
 
             // Numbered Statistics 2x2 Grid using AuraNumberedStat
