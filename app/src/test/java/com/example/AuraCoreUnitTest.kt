@@ -124,4 +124,36 @@ class AuraCoreUnitTest {
 
         assertEquals("2026-08-31", formatted)
     }
+
+    @Test
+    fun testExpenseEqualSplit_fairShareCalculation() {
+        val totalBill = 1500.0
+        val members = listOf("Alice", "Bob", "Charlie")
+        val shareCount = members.size.coerceAtLeast(1)
+        val splitShare = totalBill / shareCount
+
+        assertEquals(500.0, splitShare, 0.001)
+        val totalSum = splitShare * shareCount
+        assertEquals(totalBill, totalSum, 0.001)
+    }
+
+    @Test
+    fun testWordAndCharCount_accurateMultiLine() {
+        val content = "Aura Personal OS\nSeamless offline fintech and productivity."
+        val words = content.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
+        val charCount = content.length
+
+        assertEquals(7, words.size)
+        assertEquals(59, charCount)
+    }
+
+    @Test
+    fun testTimerFormatting_leadingZeros() {
+        val totalSeconds = 125 // 2 mins 5 secs
+        val mins = totalSeconds / 60
+        val secs = totalSeconds % 60
+        val formatted = "%02d:%02d".format(mins, secs)
+
+        assertEquals("02:05", formatted)
+    }
 }
