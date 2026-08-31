@@ -2313,39 +2313,40 @@ fun FriendsAndSplitsModule(
                             Text("₹", color = MoodHappy, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         }
 
-                        Text("TRANSFER TRANSACTION SUCCESSFUL", color = MoodHappy, fontSize = 11.sp, fontWeight = FontWeight.Black)
+                        Text("TRANSFER TRANSACTION SUCCESSFUL", color = AuraTheme.colors.positiveGreen, fontSize = 11.sp, fontWeight = FontWeight.Black)
 
-                        Divider(color = AuraSlateLight.copy(alpha = 0.5f))
+                        HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Recipient Name:", color = AuraWhiteMuted, fontSize = 9.sp)
-                            Text("Sahil (Roommate)", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                            Text("Recipient Name:", color = AuraTheme.colors.textMuted, fontSize = 9.sp)
+                            Text("Sahil (Roommate)", color = AuraTheme.colors.textPrimary, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
                         }
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Amount Settled:", color = AuraWhiteMuted, fontSize = 9.sp)
-                            Text("₹450.00", color = AuraCyanNeon, fontSize = 10.sp, fontWeight = FontWeight.Black)
+                            Text("Amount Settled:", color = AuraTheme.colors.textMuted, fontSize = 9.sp)
+                            Text("₹450.00", color = AuraTheme.colors.accentBrand, fontSize = 10.sp, fontWeight = FontWeight.Black)
                         }
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("UPI Reference No:", color = AuraWhiteMuted, fontSize = 9.sp)
-                            Text("618295039203", color = Color.White, fontSize = 10.sp)
+                            Text("UPI Reference No:", color = AuraTheme.colors.textMuted, fontSize = 9.sp)
+                            Text("618295039203", color = AuraTheme.colors.textPrimary, fontSize = 10.sp)
                         }
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Timestamp:", color = AuraWhiteMuted, fontSize = 9.sp)
-                            Text("Jun 5, 2026, 23:18:57 UTC", color = Color.White, fontSize = 10.sp)
+                            Text("Timestamp:", color = AuraTheme.colors.textMuted, fontSize = 9.sp)
+                            Text("Jun 5, 2026, 23:18:57 UTC", color = AuraTheme.colors.textPrimary, fontSize = 10.sp)
                         }
 
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(AuraSlateCard, RoundedCornerShape(8.dp))
+                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                 .padding(8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("✓ SIGNED SECURE & AUDITED VIA F-SECURE", color = AuraCyanNeon, fontSize = 8.sp, fontWeight = FontWeight.Black)
+                            Text("✓ SIGNED SECURE & AUDITED VIA F-SECURE", color = AuraTheme.colors.accentBrand, fontSize = 8.sp, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -2353,12 +2354,12 @@ fun FriendsAndSplitsModule(
             confirmButton = {
                 Button(
                     onClick = { activeReceiptPath = null },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("DONE", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("DONE", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = AuraSlateCard
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 }
@@ -3001,12 +3002,12 @@ fun SplitSummarySectionView(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Text("Net: ₹${(toReceive - youOwe).roundToInt()}", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon)
+                        Text("Net: ₹${(toReceive - youOwe).roundToInt()}", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.accentBrand)
                         if (onNavigateToSplits != null) {
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = "Open Splits Module",
-                                tint = AuraCyanNeon,
+                                tint = AuraTheme.colors.accentBrand,
                                 modifier = Modifier.size(10.dp)
                             )
                         }
@@ -3020,17 +3021,17 @@ fun SplitSummarySectionView(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(d.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text("${if (d.isYouOwe) "Owe" else "Owes you"} ${d.friendName}", fontSize = 9.sp, color = AuraWhiteMuted)
+                            Text(d.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                            Text("${if (d.isYouOwe) "Owe" else "Owes you"} ${d.friendName}", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("₹${d.remainingAmount.roundToInt()}", fontSize = 11.sp, color = if (d.isYouOwe) Color.Red else MoodHappy)
+                            Text("₹${d.remainingAmount.roundToInt()}", fontSize = 11.sp, color = if (d.isYouOwe) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen)
                             TextButton(
                                 onClick = { onQuickSettle(d) },
                                 modifier = Modifier.height(24.dp),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
-                                Text("SETTLE", fontSize = 9.sp, color = AuraCyanNeon, fontWeight = FontWeight.Bold)
+                                Text("SETTLE", fontSize = 9.sp, color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -3051,9 +3052,9 @@ fun MiniRemindersView(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp))
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp))
                 .let { if (onNavigateToReminders != null) it.clickable { onNavigateToReminders() } else it },
-            colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha=0.3f)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
@@ -3062,12 +3063,12 @@ fun MiniRemindersView(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("UPCOMING SUBS/BILLS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium, letterSpacing = 1.sp)
+                    Text("UPCOMING SUBS/BILLS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary, letterSpacing = 1.sp)
                     if (onNavigateToReminders != null) {
                         Icon(
                             imageVector = Icons.Default.ArrowForward,
                             contentDescription = "Open Reminders",
-                            tint = AuraCyanNeon,
+                            tint = AuraTheme.colors.accentBrand,
                             modifier = Modifier.size(12.dp)
                         )
                     }
@@ -3080,13 +3081,13 @@ fun MiniRemindersView(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(r.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text("Due: ${r.dueDate}", fontSize = 9.sp, color = AuraWhiteMuted)
+                            Text(r.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                            Text("Due: ${r.dueDate}", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("₹${r.amount.roundToInt()}", fontSize = 11.sp, color = AuraPurpleAccent, fontWeight = FontWeight.Bold)
+                            Text("₹${r.amount.roundToInt()}", fontSize = 11.sp, color = AuraTheme.colors.gold, fontWeight = FontWeight.Bold)
                             IconButton(onClick = { onSettle(r) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.Done, contentDescription = "Mark done", tint = AuraCyanNeon, modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.Done, contentDescription = "Mark done", tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(14.dp))
                             }
                         }
                     }
@@ -3124,7 +3125,7 @@ fun QuickTransactionBottomSheet(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Record $type Money", color = Color.White, fontWeight = FontWeight.Black, fontSize = 16.sp) },
+        title = { Text("Record $type Money", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Black, fontSize = 16.sp) },
         text = {
             Column(
                 modifier = Modifier
@@ -3138,13 +3139,13 @@ fun QuickTransactionBottomSheet(
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                         keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
                     ),
-                    label = { Text("Transaction Amount (₹)", color = AuraCyanNeon) },
+                    label = { Text("Transaction Amount (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3152,7 +3153,7 @@ fun QuickTransactionBottomSheet(
                 if (limitWarn) {
                     Text(
                         text = "⚠️ Warning: This exceeds ${selectedAccount?.name ?: "Account"}'s balance (Available: ₹${"%,.0f".format(selectedAccount?.balance ?: 0.0)})",
-                        color = Color.Yellow,
+                        color = AuraTheme.colors.gold,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
@@ -3161,7 +3162,7 @@ fun QuickTransactionBottomSheet(
 
                 // Destination / Source Selector instead of recipient text field + category horizontal slider
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(if (type == "SENT") "Select Destination Option" else "Select Source Option", fontSize = 10.sp, color = AuraWhiteMedium, fontWeight = FontWeight.Bold)
+                    Text(if (type == "SENT") "Select Destination Option" else "Select Source Option", fontSize = 10.sp, color = AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -3172,11 +3173,12 @@ fun QuickTransactionBottomSheet(
                             val s = selectedCategory == opt
                             Box(
                                 modifier = Modifier
-                                    .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
+                                    .background(if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBackground, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { selectedCategory = opt }
                                     .padding(horizontal = 14.dp, vertical = 8.dp)
                             ) {
-                                Text(opt, fontSize = 10.sp, color = if (s) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+                                Text(opt, fontSize = 10.sp, color = if (s) Color.White else AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -3187,8 +3189,8 @@ fun QuickTransactionBottomSheet(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                            .border(1.dp, AuraSlateLight, RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                             .padding(10.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -3196,7 +3198,7 @@ fun QuickTransactionBottomSheet(
                             "SPLIT WITH FRIENDS",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Black,
-                            color = AuraCyanNeon,
+                            color = AuraTheme.colors.accentBrand,
                             letterSpacing = 1.sp
                         )
                         
@@ -3204,7 +3206,7 @@ fun QuickTransactionBottomSheet(
                             Text(
                                 "No friends directory found. Add friends in Settings first!",
                                 fontSize = 11.sp,
-                                color = AuraWhiteMuted
+                                color = AuraTheme.colors.textMuted
                             )
                         } else {
                             Row(
@@ -3222,22 +3224,22 @@ fun QuickTransactionBottomSheet(
                                     Box(
                                         modifier = Modifier
                                             .size(20.dp)
-                                            .background(if (includeMe) AuraCyanNeon else Color.Transparent, RoundedCornerShape(4.dp))
-                                            .border(1.5.dp, if (includeMe) AuraCyanNeon else AuraWhiteMedium, RoundedCornerShape(4.dp)),
+                                            .background(if (includeMe) AuraTheme.colors.accentBrand else Color.Transparent, RoundedCornerShape(4.dp))
+                                            .border(1.5.dp, if (includeMe) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(4.dp)),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         if (includeMe) {
                                             Icon(
                                                 imageVector = Icons.Default.Check,
                                                 contentDescription = null,
-                                                tint = Color.Black,
+                                                tint = Color.White,
                                                 modifier = Modifier.size(14.dp)
                                             )
                                         }
                                     }
-                                    Text("Include Me", fontSize = 12.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text("Include Me", fontSize = 12.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                 }
-                                Text("You part of the split", fontSize = 9.sp, color = AuraWhiteMuted)
+                                Text("You part of the split", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                             }
 
                             friends.forEach { friend ->
@@ -3263,25 +3265,25 @@ fun QuickTransactionBottomSheet(
                                         Box(
                                             modifier = Modifier
                                                 .size(20.dp)
-                                                .background(if (isTicked) AuraCyanNeon else Color.Transparent, RoundedCornerShape(4.dp))
-                                                .border(1.5.dp, if (isTicked) AuraCyanNeon else AuraWhiteMedium, RoundedCornerShape(4.dp)),
+                                                .background(if (isTicked) AuraTheme.colors.accentBrand else Color.Transparent, RoundedCornerShape(4.dp))
+                                                .border(1.5.dp, if (isTicked) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(4.dp)),
                                             contentAlignment = Alignment.Center
                                         ) {
                                             if (isTicked) {
                                                 Icon(
                                                     imageVector = Icons.Default.Check,
                                                     contentDescription = null,
-                                                    tint = Color.Black,
+                                                    tint = Color.White,
                                                     modifier = Modifier.size(14.dp)
                                                 )
                                             }
                                         }
-                                        Text(friend.name, fontSize = 12.sp, color = Color.White)
+                                        Text(friend.name, fontSize = 12.sp, color = AuraTheme.colors.textPrimary)
                                     }
                                     Text(
                                         if (friend.notes.isNotBlank()) friend.notes else "Friend",
                                         fontSize = 9.sp,
-                                        color = AuraWhiteMuted
+                                        color = AuraTheme.colors.textMuted
                                     )
                                 }
                             }
@@ -3292,16 +3294,16 @@ fun QuickTransactionBottomSheet(
                             if (amtVal > 0.0 && shareCount > 0 && tickedFriends.isNotEmpty()) {
                                 val share = amtVal / shareCount
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Divider(color = AuraSlateLight.copy(alpha = 0.3f))
+                                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
                                 Text(
                                     text = "Equally split between $shareCount ticks:",
                                     fontSize = 9.sp,
-                                    color = AuraWhiteMedium
+                                    color = AuraTheme.colors.textSecondary
                                 )
                                 Text(
                                     text = "₹${"%,.2f".format(share)} each",
                                     fontSize = 13.sp,
-                                    color = MoodHappy,
+                                    color = AuraTheme.colors.positiveGreen,
                                     fontWeight = FontWeight.Black
                                 )
                             }
@@ -3311,7 +3313,7 @@ fun QuickTransactionBottomSheet(
 
                 // Account Selector
                 Column {
-                    Text(if (type == "SENT") "Debit Account" else "Credit Account", fontSize = 10.sp, color = AuraWhiteMedium)
+                    Text(if (type == "SENT") "Debit Account" else "Credit Account", fontSize = 10.sp, color = AuraTheme.colors.textSecondary)
                     Row(
                         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -3320,11 +3322,12 @@ fun QuickTransactionBottomSheet(
                             val s = selectedAccount?.id == ac.id
                             Box(
                                 modifier = Modifier
-                                    .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
+                                    .background(if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBackground, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { selectedAccount = ac }
                                     .padding(horizontal = 10.dp, vertical = 6.dp)
                             ) {
-                                Text(ac.name, fontSize = 9.sp, color = if (s) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+                                Text(ac.name, fontSize = 9.sp, color = if (s) Color.White else AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -3333,26 +3336,26 @@ fun QuickTransactionBottomSheet(
                 OutlinedTextField(
                     value = rawNote,
                     onValueChange = { rawNote = it },
-                    placeholder = { Text("Notes (optional)", color = AuraWhiteMuted) },
+                    placeholder = { Text("Notes (optional)", color = AuraTheme.colors.textMuted) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
                 OutlinedTextField(
                     value = rawLocation,
                     onValueChange = { rawLocation = it },
-                    placeholder = { Text("Location (optional)", color = AuraWhiteMuted) },
+                    placeholder = { Text("Location (optional)", color = AuraTheme.colors.textMuted) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
             }
@@ -3374,9 +3377,9 @@ fun QuickTransactionBottomSheet(
                         onSubmit(amt, recName, selectedCategory, rawNote, rawLocation, payMethod, acId, tickedFriends.toList(), includeMe)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("RECORD ENTRY", color = Color.Black, fontWeight = FontWeight.Black)
+                Text("RECORD ENTRY", color = Color.White, fontWeight = FontWeight.Black)
             }
         },
         dismissButton = {
@@ -3384,7 +3387,7 @@ fun QuickTransactionBottomSheet(
                 Text("CANCEL", color = Color.White)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
@@ -3402,19 +3405,19 @@ fun AddInvestmentFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Investment Asset", color = Color.White, fontWeight = FontWeight.Bold) },
+        title = { Text("Add New Investment Asset", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = inName,
                     onValueChange = { inName = it },
-                    label = { Text("Investment Asset Name (Stocks, ETF etc.)", color = AuraCyanNeon) },
+                    label = { Text("Investment Asset Name (Stocks, ETF etc.)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3422,28 +3425,29 @@ fun AddInvestmentFormDialog(
                     value = inAmount,
                     onValueChange = { inAmount = it },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                    label = { Text("Investment Value (₹)", color = AuraCyanNeon) },
+                    label = { Text("Investment Value (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
                 Column {
-                    Text("Investment Type", fontSize = 9.sp, color = AuraWhiteMuted)
+                    Text("Investment Type", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                     Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         supportedTypes.forEach { t ->
                             val s = inType == t
                             Box(
                                 modifier = Modifier
-                                    .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
+                                    .background(if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { inType = t }
                                     .padding(horizontal = 8.dp, vertical = 6.dp)
                             ) {
-                                Text(t, fontSize = 9.sp, color = if (s) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+                                Text(t, fontSize = 9.sp, color = if (s) Color.White else AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -3452,13 +3456,13 @@ fun AddInvestmentFormDialog(
                 OutlinedTextField(
                     value = inNotes,
                     onValueChange = { inNotes = it },
-                    placeholder = { Text("Notes (optional)", color = AuraWhiteMuted) },
+                    placeholder = { Text("Notes (optional)", color = AuraTheme.colors.textMuted) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
             }
@@ -3472,17 +3476,17 @@ fun AddInvestmentFormDialog(
                         onSubmit(inName, inType, amt, todayStr, inNotes)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("ADD PORTFOLIO Asset", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("ADD PORTFOLIO ASSET", color = Color.White, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("CANCEL", color = Color.White)
+                Text("CANCEL", color = AuraTheme.colors.textSecondary)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
@@ -3497,45 +3501,45 @@ fun AddFriendProfileDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Splitwise Friend Profile", color = Color.White, fontWeight = FontWeight.Bold) },
+        title = { Text("Add Splitwise Friend Profile", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = frName,
                     onValueChange = { frName = it },
-                    label = { Text("Friend Name", color = AuraCyanNeon) },
+                    label = { Text("Friend Name", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
                 OutlinedTextField(
                     value = frPhone,
                     onValueChange = { frPhone = it },
-                    label = { Text("Phone Number (optional)", color = AuraCyanNeon) },
+                    label = { Text("Phone Number (optional)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
                 OutlinedTextField(
                     value = frNotes,
                     onValueChange = { frNotes = it },
-                    label = { Text("Context/Notes (e.g. Roommate)", color = AuraCyanNeon) },
+                    label = { Text("Context/Notes (e.g. Roommate)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
             }
@@ -3547,17 +3551,17 @@ fun AddFriendProfileDialog(
                         onSubmit(frName, frPhone, frNotes)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
             ) {
-                Text("CREATE PROFILE", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("CREATE PROFILE", color = Color.White, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("CANCEL", color = Color.White)
+                Text("CANCEL", color = AuraTheme.colors.textSecondary)
             }
         },
-        containerColor = AuraCharcoalBase
+        containerColor = AuraTheme.colors.cardBackground
     )
 }
 
@@ -3578,7 +3582,7 @@ fun BillSplittingFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Unified Splitwise Bill Composer", color = Color.White, fontWeight = FontWeight.Bold) },
+        title = { Text("Unified Splitwise Bill Composer", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -3587,13 +3591,13 @@ fun BillSplittingFormDialog(
                 OutlinedTextField(
                     value = billTitle,
                     onValueChange = { billTitle = it },
-                    label = { Text("Bill Title (e.g., Dinner Split)", color = AuraCyanNeon) },
+                    label = { Text("Bill Title (e.g., Dinner Split)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3601,13 +3605,13 @@ fun BillSplittingFormDialog(
                     value = billAmount,
                     onValueChange = { billAmount = it },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                    label = { Text("Total Bill Amount (₹)", color = AuraCyanNeon) },
+                    label = { Text("Total Bill Amount (₹)", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     )
                 )
 
@@ -3617,37 +3621,38 @@ fun BillSplittingFormDialog(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Debtor Direction:", color = AuraWhiteMedium, fontSize = 11.sp, modifier = Modifier.weight(1f))
+                    Text("Debtor Direction:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp, modifier = Modifier.weight(1f))
                     Row(
                         modifier = Modifier
-                            .background(AuraSlateCard, RoundedCornerShape(10.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
                             .padding(4.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(if (!isYouOwe) AuraCyanNeon else Color.Transparent, RoundedCornerShape(8.dp))
+                                .background(if (!isYouOwe) AuraTheme.colors.accentBrand else Color.Transparent, RoundedCornerShape(8.dp))
                                 .clickable { isYouOwe = false }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
-                            Text("They Owe Me", fontSize = 9.sp, color = if (!isYouOwe) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+                            Text("They Owe Me", fontSize = 9.sp, color = if (!isYouOwe) Color.White else AuraTheme.colors.textSecondary, fontWeight = FontWeight.Bold)
                         }
                         Box(
                             modifier = Modifier
-                                .background(if (isYouOwe) AuraPurpleAccent else Color.Transparent, RoundedCornerShape(8.dp))
+                                .background(if (isYouOwe) AuraTheme.colors.negativeRed else Color.Transparent, RoundedCornerShape(8.dp))
                                 .clickable { isYouOwe = true }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
-                            Text("I Owe Them", fontSize = 9.sp, color = if (isYouOwe) Color.White else AuraWhiteMuted, fontWeight = FontWeight.Bold)
+                            Text("I Owe Them", fontSize = 9.sp, color = if (isYouOwe) Color.White else AuraTheme.colors.textMuted, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
 
-                Divider(color = AuraSlateLight.copy(alpha=0.3f))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // Participants multi-select
-                Text("Select Friends sharing the bill:", fontSize = 10.sp, color = AuraWhiteMedium)
+                Text("Select Friends sharing the bill:", fontSize = 10.sp, color = AuraTheme.colors.textSecondary)
                 if (friends.isEmpty()) {
-                    Text("No friends available to split. Register some first!", fontSize = 10.sp, color = Color.Red)
+                    Text("No friends available to split. Register some first!", fontSize = 10.sp, color = AuraTheme.colors.negativeRed)
                 } else {
                     Row(
                         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -3657,7 +3662,8 @@ fun BillSplittingFormDialog(
                             val s = selectedParticipants.contains(f)
                             Box(
                                 modifier = Modifier
-                                    .background(if (s) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(12.dp))
+                                    .background(if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                                    .border(1.dp, if (s) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                                     .clickable {
                                         selectedParticipants = if (s) {
                                             selectedParticipants - f
@@ -3939,7 +3945,7 @@ fun DetailScreenHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(AuraSlateCard)
+            .background(AuraTheme.colors.cardBackground)
             .statusBarsPadding()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -3949,14 +3955,14 @@ fun DetailScreenHeader(
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
-                tint = Color.White
+                tint = AuraTheme.colors.textPrimary
             )
         }
         Text(
             text = title.uppercase(),
             fontSize = 14.sp,
             fontWeight = FontWeight.Black,
-            color = Color.White,
+            color = AuraTheme.colors.textPrimary,
             letterSpacing = 1.sp
         )
     }
@@ -3977,7 +3983,7 @@ fun AvailableBalancePassbookView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         DetailScreenHeader(title = "Account Passbook", onBack = onBack)
 
@@ -3995,7 +4001,7 @@ fun AvailableBalancePassbookView(
                     text = "WALLETS & GENERAL LEDGERS",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMedium,
+                    color = AuraTheme.colors.textSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -4012,16 +4018,16 @@ fun AvailableBalancePassbookView(
                             modifier = Modifier
                                 .width(200.dp)
                                 .clickable { onAdjustBalance(acct) }
-                                .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
+                                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
                             shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
+                            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                         ) {
                             Column(modifier = Modifier.padding(14.dp)) {
-                                Text(acct.name.uppercase(), fontSize = 10.sp, color = AuraCyanNeon, fontWeight = FontWeight.Black)
+                                Text(acct.name.uppercase(), fontSize = 10.sp, color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Black)
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text("₹${"%,.2f".format(acct.balance)}", fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                Text("₹${"%,.2f".format(acct.balance)}", fontSize = 18.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("Tap to adjust manually", fontSize = 9.sp, color = AuraWhiteMuted)
+                                Text("Tap to adjust manually", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
                     }
@@ -4031,8 +4037,8 @@ fun AvailableBalancePassbookView(
             // Filters Section Card
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.5f)),
+                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -4040,22 +4046,22 @@ fun AvailableBalancePassbookView(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = AuraCyanNeon, modifier = Modifier.size(16.dp))
-                            Text("ADVANCED FILTERS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(16.dp))
+                            Text("ADVANCED FILTERS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                         }
 
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
-                            placeholder = { Text("Search description, recipient, category...", fontSize = 11.sp, color = AuraWhiteMuted) },
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, color = Color.White),
+                            placeholder = { Text("Search description, recipient, category...", fontSize = 11.sp, color = AuraTheme.colors.textMuted) },
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, color = AuraTheme.colors.textPrimary),
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraCyanNeon,
-                                unfocusedBorderColor = AuraSlateLight,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             )
                         )
 
@@ -4065,7 +4071,8 @@ fun AvailableBalancePassbookView(
                                 val active = selectedType == t
                                 Box(
                                     modifier = Modifier
-                                        .background(if (active) AuraCyanNeon else AuraSlateCard, RoundedCornerShape(8.dp))
+                                        .background(if (active) AuraTheme.colors.accentBrand else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                        .border(1.dp, if (active) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                         .clickable { selectedType = t }
                                         .padding(horizontal = 8.dp, vertical = 6.dp)
                                 ) {
@@ -4078,7 +4085,7 @@ fun AvailableBalancePassbookView(
                                             else -> "All Flows"
                                         },
                                         fontSize = 9.sp,
-                                        color = if (active) Color.Black else Color.White,
+                                        color = if (active) Color.White else AuraTheme.colors.textSecondary,
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
@@ -4094,7 +4101,7 @@ fun AvailableBalancePassbookView(
                     text = "PASSBOOK LEDGER ENTRIES",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMedium,
+                    color = AuraTheme.colors.textSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -4115,7 +4122,7 @@ fun AvailableBalancePassbookView(
                         modifier = Modifier.fillMaxWidth().padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No passbook entries match current filter.", color = AuraWhiteMuted, fontSize = 11.sp)
+                        Text("No passbook entries match current filter.", color = AuraTheme.colors.textMuted, fontSize = 11.sp)
                     }
                 }
             } else {
@@ -4124,8 +4131,8 @@ fun AvailableBalancePassbookView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -4134,13 +4141,13 @@ fun AvailableBalancePassbookView(
                             Box(
                                 modifier = Modifier
                                     .size(36.dp)
-                                    .background(if (isIncome) MoodHappy.copy(alpha = 0.15f) else AuraPurpleAccent.copy(alpha = 0.15f), CircleShape),
+                                    .background(if (isIncome) AuraTheme.colors.positiveGreen.copy(alpha = 0.15f) else AuraTheme.colors.accentBrand.copy(alpha = 0.15f), CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = if (isIncome) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
                                     contentDescription = "Flow direction",
-                                    tint = if (isIncome) MoodHappy else AuraPurpleAccent,
+                                    tint = if (isIncome) AuraTheme.colors.positiveGreen else AuraTheme.colors.accentBrand,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -4150,21 +4157,22 @@ fun AvailableBalancePassbookView(
                                     text = tx.recipientOrSender.ifBlank { "Cash Box" },
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = AuraTheme.colors.textPrimary
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                                     Box(
                                         modifier = Modifier
-                                            .background(AuraSlateLight, RoundedCornerShape(4.dp))
+                                            .background(AuraTheme.colors.cardBackground, RoundedCornerShape(4.dp))
+                                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(4.dp))
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
-                                        Text(tx.category.uppercase(), fontSize = 7.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                        Text(tx.category.uppercase(), fontSize = 7.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                     }
-                                    Text(tx.dateString, fontSize = 9.sp, color = AuraWhiteMuted)
+                                    Text(tx.dateString, fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                                 }
                                 if (tx.note.isNotBlank()) {
-                                    Text(tx.note, fontSize = 10.sp, color = AuraWhiteMuted, style = androidx.compose.ui.text.TextStyle(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic))
+                                    Text(tx.note, fontSize = 10.sp, color = AuraTheme.colors.textMuted, style = androidx.compose.ui.text.TextStyle(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic))
                                 }
                             }
                         }
@@ -4174,15 +4182,15 @@ fun AvailableBalancePassbookView(
                                 text = "${if (isIncome) "+" else "-"}₹${tx.amount.roundToInt()}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Black,
-                                color = if (isIncome) MoodHappy else Color.White
+                                color = if (isIncome) AuraTheme.colors.positiveGreen else AuraTheme.colors.textPrimary
                             )
 
                             IconButton(onClick = { onEditTransaction(tx) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.Edit, contentDescription = "Edit Tx", tint = AuraWhiteMuted.copy(alpha = 0.6f), modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.Edit, contentDescription = "Edit Tx", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(14.dp))
                             }
 
                             IconButton(onClick = { onDeleteTransaction(tx) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete Tx", tint = AuraWhiteMuted.copy(alpha = 0.6f), modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete Tx", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(14.dp))
                             }
                         }
                     }
@@ -4207,7 +4215,7 @@ fun SplitsToReceiveView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         DetailScreenHeader(title = "Splits To Receive", onBack = onBack)
 
@@ -4224,9 +4232,9 @@ fun SplitsToReceiveView(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, MoodHappy.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
+                        .border(1.dp, AuraTheme.colors.positiveGreen.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Row(
@@ -4235,11 +4243,11 @@ fun SplitsToReceiveView(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("TOTAL EXPECTED RECEIVABLES", fontSize = 9.sp, color = MoodHappy, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                                Text("TOTAL EXPECTED RECEIVABLES", fontSize = 9.sp, color = AuraTheme.colors.positiveGreen, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                                 Spacer(modifier = Modifier.height(2.dp))
-                                Text("₹${"%,.2f".format(totalToReceive)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                Text("₹${"%,.2f".format(totalToReceive)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
                             }
-                            Icon(Icons.Default.TrendingUp, contentDescription = "Receivables stream", tint = MoodHappy, modifier = Modifier.size(32.dp))
+                            Icon(Icons.Default.TrendingUp, contentDescription = "Receivables stream", tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(32.dp))
                         }
                     }
                 }
@@ -4251,7 +4259,7 @@ fun SplitsToReceiveView(
                     text = "PENDING SPLITS BY FRIEND",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMedium,
+                    color = AuraTheme.colors.textSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -4273,7 +4281,7 @@ fun SplitsToReceiveView(
                             .padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No outstanding friend splits to make! You are fully squared up.", color = MoodHappy, fontSize = 11.sp, textAlign = TextAlign.Center)
+                        Text("No outstanding friend splits to make! You are fully squared up.", color = AuraTheme.colors.positiveGreen, fontSize = 11.sp, textAlign = TextAlign.Center)
                     }
                 }
             } else {
@@ -4281,27 +4289,27 @@ fun SplitsToReceiveView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(16.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                             .clickable { onFriendClick(friend) }
                             .padding(14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(friend.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text("Owing splits: $splitCount bills", fontSize = 10.sp, color = AuraWhiteMuted)
+                            Text(friend.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                            Text("Owing splits: $splitCount bills", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             if (friend.notes.isNotBlank()) {
-                                Text(friend.notes, fontSize = 9.sp, color = AuraWhiteMuted)
+                                Text(friend.notes, fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Column(horizontalAlignment = Alignment.End) {
-                                Text("₹${netAmount.roundToInt()}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = MoodHappy)
-                                Text("Owes you net", fontSize = 8.sp, color = MoodHappy)
+                                Text("₹${netAmount.roundToInt()}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.positiveGreen)
+                                Text("Owes you net", fontSize = 8.sp, color = AuraTheme.colors.positiveGreen)
                             }
-                            Icon(Icons.Default.ArrowForward, contentDescription = "View details", tint = AuraWhiteMuted, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.ArrowForward, contentDescription = "View details", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                         }
                     }
                 }
@@ -4325,7 +4333,7 @@ fun SplitsYouOweView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         DetailScreenHeader(title = "Splits You Owe", onBack = onBack)
 
@@ -4342,9 +4350,9 @@ fun SplitsYouOweView(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color.Red.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
+                        .border(1.dp, AuraTheme.colors.negativeRed.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Row(
@@ -4353,11 +4361,11 @@ fun SplitsYouOweView(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("TOTAL OUTSTANDING LIABILITIES", fontSize = 9.sp, color = Color.Red, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                                Text("TOTAL OUTSTANDING LIABILITIES", fontSize = 9.sp, color = AuraTheme.colors.negativeRed, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                                 Spacer(modifier = Modifier.height(2.dp))
-                                Text("₹${"%,.2f".format(totalYouOwe)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                Text("₹${"%,.2f".format(totalYouOwe)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
                             }
-                            Icon(Icons.Default.TrendingDown, contentDescription = "Liabilities curve", tint = Color.Red, modifier = Modifier.size(32.dp))
+                            Icon(Icons.Default.TrendingDown, contentDescription = "Liabilities curve", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(32.dp))
                         }
                     }
                 }
@@ -4369,7 +4377,7 @@ fun SplitsYouOweView(
                     text = "DEBTS BY CREDITOR",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMedium,
+                    color = AuraTheme.colors.textSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -4391,7 +4399,7 @@ fun SplitsYouOweView(
                             .padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No debts! You are completely debt-free. Outstanding job.", color = MoodHappy, fontSize = 11.sp, textAlign = TextAlign.Center)
+                        Text("No debts! You are completely debt-free. Outstanding job.", color = AuraTheme.colors.positiveGreen, fontSize = 11.sp, textAlign = TextAlign.Center)
                     }
                 }
             } else {
@@ -4399,27 +4407,27 @@ fun SplitsYouOweView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(16.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                             .clickable { onFriendClick(friend) }
                             .padding(14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(friend.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text("Owed splits: $splitCount bills", fontSize = 10.sp, color = AuraWhiteMuted)
+                            Text(friend.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                            Text("Owed splits: $splitCount bills", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             if (friend.notes.isNotBlank()) {
-                                Text(friend.notes, fontSize = 9.sp, color = AuraWhiteMuted)
+                                Text(friend.notes, fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Column(horizontalAlignment = Alignment.End) {
-                                Text("₹${netAmount.roundToInt()}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.Red)
-                                Text("You owe net", fontSize = 8.sp, color = Color.Red)
+                                Text("₹${netAmount.roundToInt()}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.negativeRed)
+                                Text("You owe net", fontSize = 8.sp, color = AuraTheme.colors.negativeRed)
                             }
-                            Icon(Icons.Default.ArrowForward, contentDescription = "View details", tint = AuraWhiteMuted, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.ArrowForward, contentDescription = "View details", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                         }
                     }
                 }
@@ -4445,7 +4453,7 @@ fun FriendSplitDetailsView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         DetailScreenHeader(title = "Splits with ${friend.name}", onBack = onBack)
 
@@ -4464,11 +4472,11 @@ fun FriendSplitDetailsView(
                         .fillMaxWidth()
                         .border(
                             width = 1.dp,
-                            color = if (netBalance > 0) MoodHappy.copy(alpha = 0.5f) else if (netBalance < 0) Color.Red.copy(alpha = 0.5f) else AuraWhiteMuted,
+                            color = if (netBalance > 0) AuraTheme.colors.positiveGreen.copy(alpha = 0.5f) else if (netBalance < 0) AuraTheme.colors.negativeRed.copy(alpha = 0.5f) else AuraTheme.colors.cardBorder,
                             shape = RoundedCornerShape(20.dp)
                         ),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(
                         modifier = Modifier.padding(18.dp),
@@ -4477,13 +4485,13 @@ fun FriendSplitDetailsView(
                         Text(
                             text = "NET SETTLEMENT WITH ${friend.name.uppercase()}",
                             fontSize = 9.sp,
-                            color = AuraWhiteMuted,
+                            color = AuraTheme.colors.textMuted,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 1.sp
                         )
                         Spacer(modifier = Modifier.height(6.dp))
 
-                        val netColor = if (netBalance > 0) MoodHappy else if (netBalance < 0) Color.Red else Color.White
+                        val netColor = if (netBalance > 0) AuraTheme.colors.positiveGreen else if (netBalance < 0) AuraTheme.colors.negativeRed else AuraTheme.colors.textPrimary
                         val netLabel = if (netBalance > 0) "OWES YOU ₹${"%,.2f".format(netBalance)}" else if (netBalance < 0) "YOU OWE ₹${"%,.2f".format(-netBalance)}" else "SETTLED SQUARED UP"
 
                         Text(
@@ -4502,7 +4510,7 @@ fun FriendSplitDetailsView(
                     text = "ACTIVE SPLITS JOURNAL",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraWhiteMedium,
+                    color = AuraTheme.colors.textSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -4513,7 +4521,7 @@ fun FriendSplitDetailsView(
                         modifier = Modifier.fillMaxWidth().padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No pending splits with this friend.", color = AuraWhiteMuted, fontSize = 11.sp)
+                        Text("No pending splits with this friend.", color = AuraTheme.colors.textMuted, fontSize = 11.sp)
                     }
                 }
             } else {
@@ -4521,21 +4529,21 @@ fun FriendSplitDetailsView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(14.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp))
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(dbt.title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(dbt.title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                             Text(
                                 text = "Total ₹${dbt.totalAmount.roundToInt()} • ${dbt.date}",
                                 fontSize = 10.sp,
-                                color = AuraWhiteMuted
+                                color = AuraTheme.colors.textMuted
                             )
                             if (dbt.remainingAmount < dbt.totalAmount) {
-                                Text("Partial Settle Paid: ₹${(dbt.totalAmount - dbt.remainingAmount).roundToInt()}", fontSize = 9.sp, color = AuraCyanNeon)
+                                Text("Partial Settle Paid: ₹${(dbt.totalAmount - dbt.remainingAmount).roundToInt()}", fontSize = 9.sp, color = AuraTheme.colors.accentBrand)
                             }
                         }
 
@@ -4548,22 +4556,22 @@ fun FriendSplitDetailsView(
                                     text = "₹${dbt.remainingAmount.roundToInt()}",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Black,
-                                    color = if (dbt.isYouOwe) Color.Red else MoodHappy
+                                    color = if (dbt.isYouOwe) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen
                                 )
                                 Text(
                                     text = if (dbt.isYouOwe) "You owe" else "Owes you",
                                     fontSize = 8.sp,
-                                    color = AuraWhiteMuted
+                                    color = AuraTheme.colors.textMuted
                                 )
                             }
 
                             Button(
                                 onClick = { onQuickSettle(dbt) },
-                                colors = ButtonDefaults.buttonColors(containerColor = if (dbt.isYouOwe) Color.Red else MoodHappy),
+                                colors = ButtonDefaults.buttonColors(containerColor = if (dbt.isYouOwe) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen),
                                 shape = RoundedCornerShape(8.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                             ) {
-                                Text("SETTLE", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                Text("SETTLE", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -4587,7 +4595,7 @@ fun PortfolioInvestmentDetailsView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
     ) {
         DetailScreenHeader(title = "Portfolio Holdings", onBack = onBack)
 
@@ -4604,9 +4612,9 @@ fun PortfolioInvestmentDetailsView(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color.Yellow.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
+                        .border(1.dp, AuraTheme.colors.gold.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Row(
@@ -4615,11 +4623,11 @@ fun PortfolioInvestmentDetailsView(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("TOTAL PORTFOLIO VALUE", fontSize = 9.sp, color = Color.Yellow, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                                Text("TOTAL PORTFOLIO VALUE", fontSize = 9.sp, color = AuraTheme.colors.gold, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                                 Spacer(modifier = Modifier.height(2.dp))
-                                Text("₹${"%,.2f".format(totalInvested)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                Text("₹${"%,.2f".format(totalInvested)}", fontSize = 28.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
                             }
-                            Icon(Icons.Default.Timeline, contentDescription = "Holdings graph", tint = Color.Yellow, modifier = Modifier.size(32.dp))
+                            Icon(Icons.Default.Timeline, contentDescription = "Holdings graph", tint = AuraTheme.colors.gold, modifier = Modifier.size(32.dp))
                         }
                     }
                 }
@@ -4636,14 +4644,14 @@ fun PortfolioInvestmentDetailsView(
                         text = "ASSETS ENGINE",
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        color = AuraWhiteMedium,
+                        color = AuraTheme.colors.textSecondary,
                         letterSpacing = 1.sp,
                         modifier = Modifier.weight(1f)
                     )
 
                     Button(
                         onClick = onAddInvestmentClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.gold),
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                     ) {
@@ -4658,7 +4666,7 @@ fun PortfolioInvestmentDetailsView(
                         modifier = Modifier.fillMaxWidth().padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No active holdings discovered. Tap '+ ADD ASSET' above to log Stocks, Crypto, Mutual Funds or Gold.", color = AuraWhiteMuted, fontSize = 11.sp, textAlign = TextAlign.Center)
+                        Text("No active holdings discovered. Tap '+ ADD ASSET' above to log Stocks, Crypto, Mutual Funds or Gold.", color = AuraTheme.colors.textMuted, fontSize = 11.sp, textAlign = TextAlign.Center)
                     }
                 }
             } else {
@@ -4675,34 +4683,34 @@ fun PortfolioInvestmentDetailsView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
-                            .border(1.dp, AuraSlateLight.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(16.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                             .padding(14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(inv.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(inv.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
-                                        .background(Color.Yellow, RoundedCornerShape(4.dp))
+                                        .background(AuraTheme.colors.gold, RoundedCornerShape(4.dp))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
                                     Text(inv.type.uppercase(), fontSize = 8.sp, color = Color.Black, fontWeight = FontWeight.Black)
                                 }
-                                Text("Held: $daysHeld Days", fontSize = 10.sp, color = AuraWhiteMuted)
+                                Text("Held: $daysHeld Days", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             }
                             if (inv.notes.isNotBlank()) {
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text(inv.notes, fontSize = 10.sp, color = AuraWhiteMuted)
+                                Text(inv.notes, fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text("₹${"%,.0f".format(inv.amount)}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.Yellow)
+                            Text("₹${"%,.0f".format(inv.amount)}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.gold)
                             IconButton(onClick = { onDeleteInvestment(inv) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete asset", tint = AuraWhiteMuted.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete asset", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
