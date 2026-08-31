@@ -1577,9 +1577,9 @@ fun FriendsAndSplitsModule(
                 // ==========================================
                 if (selectedRoomId == null) {
                     Card(
-                        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+                        modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
                         shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+                        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Row(
@@ -1587,14 +1587,14 @@ fun FriendsAndSplitsModule(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("COGNITIVE EXPENSE ROOMS", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
+                                Text("COGNITIVE EXPENSE ROOMS", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
                                 Button(
                                     onClick = { showCreateRoomDialog = true },
-                                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
-                                    Text("+ CREATE ROOM", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                    Text("+ CREATE ROOM", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                                 }
                             }
 
@@ -1611,12 +1611,12 @@ fun FriendsAndSplitsModule(
                                     Icon(
                                         imageVector = Icons.Default.Groups,
                                         contentDescription = null,
-                                        tint = AuraWhiteMuted,
+                                        tint = AuraTheme.colors.textMuted,
                                         modifier = Modifier.size(36.dp)
                                     )
                                     Text(
                                         "No shared expense rooms configured. Create a room to manage Splitwise-style travel or room bills.",
-                                        color = AuraWhiteMuted,
+                                        color = AuraTheme.colors.textMuted,
                                         fontSize = 11.sp,
                                         textAlign = TextAlign.Center,
                                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -1631,9 +1631,9 @@ fun FriendsAndSplitsModule(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(vertical = 4.dp)
-                                            .border(1.dp, AuraSlateLight.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+                                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
                                             .clickable { selectedRoomId = room.id }
-                                            .background(AuraObsidian.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(14.dp))
                                             .padding(12.dp),
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
@@ -1642,26 +1642,27 @@ fun FriendsAndSplitsModule(
                                             Box(
                                                 modifier = Modifier
                                                     .size(34.dp)
-                                                    .background(AuraSlateLight, RoundedCornerShape(8.dp)),
+                                                    .background(AuraTheme.colors.cardBackground, RoundedCornerShape(8.dp))
+                                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp)),
                                                 contentAlignment = Alignment.Center
                                             ) {
                                                 Text(room.emoji, fontSize = 18.sp)
                                             }
 
                                             Column {
-                                                Text(room.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                                Text(room.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                                                 Text(
                                                     text = "${room.memberNames.size} members • ${room.memberNames.joinToString(", ")}",
                                                     fontSize = 8.sp,
-                                                    color = AuraWhiteMuted,
+                                                    color = AuraTheme.colors.textMuted,
                                                     maxLines = 1
                                                 )
                                             }
                                         }
 
                                         Column(horizontalAlignment = Alignment.End) {
-                                            Text("₹${totalAmt.toInt()}", fontSize = 13.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
-                                            Text("Total Spent", fontSize = 8.sp, color = AuraWhiteMuted)
+                                            Text("₹${totalAmt.toInt()}", fontSize = 13.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
+                                            Text("Total Spent", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
                                         }
                                     }
                                 }
@@ -1680,9 +1681,9 @@ fun FriendsAndSplitsModule(
                         val minSettlements = viewModel.getMinimizeTransactionsForRoom(roomId)
 
                         Card(
-                            modifier = Modifier.fillMaxWidth().border(1.dp, AuraCyanNeon.copy(alpha = 0.4f), RoundedCornerShape(20.dp)),
+                            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
+                            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                         ) {
                             Column(modifier = Modifier.padding(14.dp)) {
                                 // Room Header Info
@@ -1694,14 +1695,14 @@ fun FriendsAndSplitsModule(
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                         Text(roomObj.emoji, fontSize = 20.sp)
                                         Column {
-                                            Text(roomObj.name.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
-                                            Text("${roomObj.memberNames.size} connected members", fontSize = 8.sp, color = AuraWhiteMuted)
+                                            Text(roomObj.name.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
+                                            Text("${roomObj.memberNames.size} connected members", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
                                         }
                                     }
 
                                     Text(
                                         "BACK TO LIST",
-                                        color = AuraCyanNeon,
+                                        color = AuraTheme.colors.accentBrand,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
@@ -1714,38 +1715,41 @@ fun FriendsAndSplitsModule(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(AuraObsidian, RoundedCornerShape(10.dp))
+                                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                                        .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                                         .padding(10.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column {
-                                        Text("TOTAL ROOM SPEND", fontSize = 8.sp, color = AuraWhiteMuted)
-                                        Text("₹${totalAmt.toInt()}", fontSize = 16.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
+                                        Text("TOTAL ROOM SPEND", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
+                                        Text("₹${totalAmt.toInt()}", fontSize = 16.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
                                     }
                                     Button(
                                         onClick = { showAddRoomExpenseDialog = true },
-                                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                         shape = RoundedCornerShape(6.dp),
                                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                     ) {
-                                        Text("+ ADD EXPENSE", color = Color.Black, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                                        Text("+ ADD EXPENSE", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Bold)
                                     }
                                 }
 
-                                // 1. SMART SETTLEMENT ALGORITHM SOLVER (PHASE 3)
+                                // 1. SMART SETTLEMENT ALGORITHM SOLVER
                                 Spacer(modifier = Modifier.height(14.dp))
-                                Text("SMART DEBT-MINIMIZATION RECOMMENDATIONS", fontSize = 9.sp, fontWeight = FontWeight.Black, color = AuraPurpleAccent, letterSpacing = 0.5.sp)
+                                Text("SMART DEBT-MINIMIZATION RECOMMENDATIONS", fontSize = 9.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.gold, letterSpacing = 0.5.sp)
                                 Spacer(modifier = Modifier.height(6.dp))
 
                                 if (minSettlements.isEmpty()) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .border(1.dp, MoodHappy.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                                            .border(1.dp, AuraTheme.colors.positiveGreen.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
                                             .padding(10.dp),
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Text("🎉 Group is fully settled up! Zero balances outstanding.", color = MoodHappy, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                        Text("🎉 Group is fully settled up! Zero balances outstanding.", color = AuraTheme.colors.positiveGreen, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                                     }
                                 } else {
                                     minSettlements.forEach { (debtor, creditor, amt) ->
@@ -1753,29 +1757,31 @@ fun FriendsAndSplitsModule(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(vertical = 3.dp)
-                                                .background(AuraObsidian.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                                                .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                                                 .padding(horizontal = 10.dp, vertical = 8.dp),
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                                Text(debtor, fontWeight = FontWeight.Bold, color = Color.Red, fontSize = 11.sp)
-                                                Text("owes", color = AuraWhiteMuted, fontSize = 10.sp)
-                                                Text(creditor, fontWeight = FontWeight.Bold, color = MoodHappy, fontSize = 11.sp)
+                                                Text(debtor, fontWeight = FontWeight.Bold, color = AuraTheme.colors.negativeRed, fontSize = 11.sp)
+                                                Text("owes", color = AuraTheme.colors.textMuted, fontSize = 10.sp)
+                                                Text(creditor, fontWeight = FontWeight.Bold, color = AuraTheme.colors.positiveGreen, fontSize = 11.sp)
                                             }
 
                                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                                Text("₹${amt.toInt()}", fontWeight = FontWeight.Black, color = Color.White, fontSize = 12.sp)
+                                                Text("₹${amt.toInt()}", fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary, fontSize = 12.sp)
                                                 Button(
                                                     onClick = { 
                                                         viewModel.settleGroupDebt(roomId, debtor, creditor, amt)
                                                         android.widget.Toast.makeText(context, "Settlement registered!", android.widget.Toast.LENGTH_SHORT).show()
                                                     },
-                                                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.cardBackground),
                                                     shape = RoundedCornerShape(6.dp),
+                                                    border = BorderStroke(1.dp, AuraTheme.colors.accentBrand.copy(alpha = 0.5f)),
                                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                                 ) {
-                                                    Text("SETTLE DIRECT", color = AuraCyanNeon, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                                                    Text("SETTLE DIRECT", color = AuraTheme.colors.accentBrand, fontSize = 8.sp, fontWeight = FontWeight.Bold)
                                                 }
                                             }
                                         }
@@ -1784,27 +1790,28 @@ fun FriendsAndSplitsModule(
 
                                 // 2. Room Expense history
                                 Spacer(modifier = Modifier.height(14.dp))
-                                Text("EXPENSES CHRONIC Timeline", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
+                                Text("EXPENSES CHRONIC TIMELINE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary)
                                 Spacer(modifier = Modifier.height(6.dp))
 
                                 if (expenses.isEmpty()) {
-                                    Text("No expenses logged in this room yet.", color = AuraWhiteMuted, fontSize = 10.sp)
+                                    Text("No expenses logged in this room yet.", color = AuraTheme.colors.textMuted, fontSize = 10.sp)
                                 } else {
                                     expenses.forEach { exp ->
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(vertical = 3.dp)
-                                                .background(AuraObsidian.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+                                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                                .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
                                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Column {
-                                                Text(exp.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                                Text("Paid by ${exp.paidByName}", fontSize = 8.sp, color = AuraWhiteMuted)
+                                                Text(exp.title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                                                Text("Paid by ${exp.paidByName}", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
                                             }
-                                            Text("₹${exp.amount.toInt()}", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                            Text("₹${exp.amount.toInt()}", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary)
                                         }
                                     }
                                 }
@@ -1819,12 +1826,12 @@ fun FriendsAndSplitsModule(
                 // TAB 3: SOCIAL REACTION HUB (PHASE 4)
                 // ==========================================
                 Card(
-                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
-                        Text("REAL-TIME ACTIVITIES & FEED", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
+                        Text("REAL-TIME ACTIVITIES & FEED", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
                         Spacer(modifier = Modifier.height(10.dp))
 
                         socialActivities.forEach { act ->
@@ -1832,8 +1839,8 @@ fun FriendsAndSplitsModule(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
-                                    .border(1.dp, AuraSlateLight.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                                    .background(AuraObsidian.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
+                                    .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                                    .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
                                     .padding(10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
@@ -1841,10 +1848,10 @@ fun FriendsAndSplitsModule(
                                 Box(
                                     modifier = Modifier
                                         .size(28.dp)
-                                        .background(AuraPurpleAccent, CircleShape),
+                                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.2f), CircleShape),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(act.userName.take(2).uppercase(), color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text(act.userName.take(2).uppercase(), color = AuraTheme.colors.accentBrand, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                                 }
 
                                 Column(modifier = Modifier.weight(1f)) {
@@ -1853,28 +1860,29 @@ fun FriendsAndSplitsModule(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(act.userName, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                        Text(act.userName, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                                         Text(
                                             text = SimpleDateFormat("HH:mm", Locale.US).format(Date(act.timestamp)),
                                             fontSize = 8.sp,
-                                            color = AuraWhiteMuted
+                                            color = AuraTheme.colors.textMuted
                                         )
                                     }
 
-                                    Text(act.text, fontSize = 11.sp, color = AuraWhiteMedium)
+                                    Text(act.text, fontSize = 11.sp, color = AuraTheme.colors.textSecondary)
 
                                     // Attachment Display (UPI Payment Screenshot simulation)
                                     if (act.receiptPath != null) {
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Button(
                                             onClick = { activeReceiptPath = act.receiptPath },
-                                            colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.cardBackground),
                                             shape = RoundedCornerShape(6.dp),
+                                            border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                         ) {
-                                            Icon(Icons.Default.AttachFile, contentDescription = "attachment", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
+                                            Icon(Icons.Default.AttachFile, contentDescription = "attachment", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
                                             Spacer(modifier = Modifier.width(4.dp))
-                                            Text("UPI_RECEIPT_PROOF.PNG", fontSize = 8.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                            Text("UPI_RECEIPT_PROOF.PNG", fontSize = 8.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                         }
                                     }
 
@@ -1891,11 +1899,11 @@ fun FriendsAndSplitsModule(
                                                 modifier = Modifier
                                                     .border(
                                                         1.dp, 
-                                                        if (isReacted) AuraCyanNeon else Color.Transparent, 
+                                                        if (isReacted) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder.copy(alpha = 0.5f), 
                                                         RoundedCornerShape(6.dp)
                                                     )
                                                     .background(
-                                                        if (isReacted) AuraCyanNeon.copy(alpha = 0.2f) else AuraSlateLight, 
+                                                        if (isReacted) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.cardBackground, 
                                                         RoundedCornerShape(6.dp)
                                                     )
                                                     .clickable {
@@ -1931,22 +1939,22 @@ fun FriendsAndSplitsModule(
 
         AlertDialog(
             onDismissRequest = { showGoogleSignDialog = false },
-            title = { Text("GOOGLE CLOUD ACCESS LINK", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+            title = { Text("GOOGLE CLOUD ACCESS LINK", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Select or enter a Google account credentials to link for secure sync mirroring:", color = AuraWhiteMedium, fontSize = 11.sp)
+                    Text("Select or enter a Google account credentials to link for secure sync mirroring:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     OutlinedTextField(
                         value = customEmailInput,
                         onValueChange = { customEmailInput = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
-                        placeholder = { Text("example@gmail.com") }
+                        placeholder = { Text("example@gmail.com", color = AuraTheme.colors.textMuted) }
                     )
                 }
             },
@@ -1956,20 +1964,21 @@ fun FriendsAndSplitsModule(
                         viewModel.signInWithGoogle(customEmailInput)
                         showGoogleSignDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("AUTHORIZE & SYNC", color = Color.Black)
+                    Text("AUTHORIZE & SYNC", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 Button(
                     onClick = { showGoogleSignDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                 ) {
-                    Text("CANCEL", color = Color.White)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary)
                 }
             },
-            containerColor = AuraSlateCard
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 
@@ -1980,29 +1989,30 @@ fun FriendsAndSplitsModule(
 
         AlertDialog(
             onDismissRequest = { inviteFriendItem = null },
-            title = { Text("PEER CLOUD CONNECT INVITE", color = Color.White, fontSize = 14.sp) },
+            title = { Text("PEER CLOUD CONNECT INVITE", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
             text = {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Share this secure entry connect URL with ${friObj.name} to sync all your split balances in real time", color = AuraWhiteMedium, fontSize = 11.sp)
+                    Text("Share this secure entry connect URL with ${friObj.name} to sync all your split balances in real time", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     
                     // Web URL link text field box
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraObsidian, RoundedCornerShape(8.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                             .padding(10.dp)
                     ) {
-                        Text(linkText, color = AuraCyanNeon, fontSize = 11.sp, maxLines = 2)
+                        Text(linkText, color = AuraTheme.colors.accentBrand, fontSize = 11.sp, maxLines = 2)
                     }
 
                     // Graphical matrix representation of QR Code matching specifications
                     Box(
                         modifier = Modifier
                             .size(100.dp)
-                            .border(1.dp, AuraCyanNeon.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                            .border(1.dp, AuraTheme.colors.accentBrand.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                             .background(Color.White)
                             .padding(8.dp)
                     ) {
@@ -2031,12 +2041,12 @@ fun FriendsAndSplitsModule(
                         inviteFriendItem = null
                         android.widget.Toast.makeText(context, "Copied connection invite link!", android.widget.Toast.LENGTH_SHORT).show()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("COPY URL & CONNECTIONS", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("COPY URL & CONNECTIONS", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = AuraSlateCard
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 
@@ -2049,29 +2059,29 @@ fun FriendsAndSplitsModule(
 
         AlertDialog(
             onDismissRequest = { showCreateRoomDialog = false },
-            title = { Text("NEW GROUP ROOM SETUP", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+            title = { Text("NEW GROUP ROOM SETUP", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    Text("Enter Group Room title details:", color = AuraWhiteMedium, fontSize = 11.sp)
+                    Text("Enter Group Room title details:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     OutlinedTextField(
                         value = roomNameInput,
                         onValueChange = { roomNameInput = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
-                        placeholder = { Text("e.g. Flatmates Bills, Goa 2026") }
+                        placeholder = { Text("e.g. Flatmates Bills, Goa 2026", color = AuraTheme.colors.textMuted) }
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Choose Room Visual Emoji:", color = AuraWhiteMedium, fontSize = 11.sp)
+                    Text("Choose Room Visual Emoji:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
@@ -2080,7 +2090,8 @@ fun FriendsAndSplitsModule(
                             Box(
                                 modifier = Modifier
                                     .size(34.dp)
-                                    .background(if (isSel) AuraCyanNeon else AuraSlateLight, RoundedCornerShape(8.dp))
+                                    .background(if (isSel) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (isSel) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { selectedEmoji = emoji }
                                     .padding(4.dp),
                                 contentAlignment = Alignment.Center
@@ -2091,10 +2102,10 @@ fun FriendsAndSplitsModule(
                     }
 
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("Select Group Members Checklist:", color = AuraWhiteMedium, fontSize = 11.sp)
+                    Text("Select Group Members Checklist:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     
                     if (friends.isEmpty()) {
-                        Text("Please create Friend entry items before setting group rooms.", color = AuraWhiteMuted, fontSize = 10.sp)
+                        Text("Please create Friend entry items before setting group rooms.", color = AuraTheme.colors.textMuted, fontSize = 10.sp)
                     } else {
                         friends.forEach { fri ->
                             val isChecked = checkedFriends[fri.name] ?: false
@@ -2109,9 +2120,9 @@ fun FriendsAndSplitsModule(
                                 Checkbox(
                                     checked = isChecked, 
                                     onCheckedChange = { checkedFriends[fri.name] = it },
-                                    colors = CheckboxDefaults.colors(checkedColor = AuraCyanNeon)
+                                    colors = CheckboxDefaults.colors(checkedColor = AuraTheme.colors.accentBrand)
                                 )
-                                Text(fri.name, color = Color.White, fontSize = 12.sp)
+                                Text(fri.name, color = AuraTheme.colors.textPrimary, fontSize = 12.sp)
                             }
                         }
                     }
@@ -2126,20 +2137,21 @@ fun FriendsAndSplitsModule(
                         }
                         showCreateRoomDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("CREATE ROOM ROOM", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("CREATE ROOM", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 Button(
                     onClick = { showCreateRoomDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                 ) {
-                    Text("CANCEL", color = Color.White, fontSize = 11.sp)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                 }
             },
-            containerColor = AuraSlateCard
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 
@@ -2154,43 +2166,43 @@ fun FriendsAndSplitsModule(
 
             AlertDialog(
                 onDismissRequest = { showAddRoomExpenseDialog = false },
-                title = { Text("ADD GROUP ROOM EXPENSE", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Black) },
+                title = { Text("ADD GROUP ROOM EXPENSE", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Black) },
                 text = {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     ) {
-                        Text("Expense Title:", color = AuraWhiteMedium, fontSize = 11.sp)
+                        Text("Expense Title:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                         OutlinedTextField(
                             value = expenseTitleInput,
                             onValueChange = { expenseTitleInput = it },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraCyanNeon,
-                                unfocusedBorderColor = AuraSlateLight,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             ),
-                            placeholder = { Text("e.g. Resort Booking / Lunch") }
+                            placeholder = { Text("e.g. Resort Booking / Lunch", color = AuraTheme.colors.textMuted) }
                         )
 
-                        Text("Total Bill Amount (₹):", color = AuraWhiteMedium, fontSize = 11.sp)
+                        Text("Total Bill Amount (₹):", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                         OutlinedTextField(
                             value = expenseAmountInput,
                             onValueChange = { expenseAmountInput = it },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraCyanNeon,
-                                unfocusedBorderColor = AuraSlateLight,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             ),
-                            placeholder = { Text("e.g. 1800") }
+                            placeholder = { Text("e.g. 1800", color = AuraTheme.colors.textMuted) }
                         )
 
-                        Text("Who Paid Initially:", color = AuraWhiteMedium, fontSize = 11.sp)
+                        Text("Who Paid Initially:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.fillMaxWidth()
@@ -2199,16 +2211,17 @@ fun FriendsAndSplitsModule(
                                 val isPaid = expensePaidBy == mbr
                                 Box(
                                     modifier = Modifier
-                                        .background(if (isPaid) AuraPurpleAccent else AuraSlateLight, RoundedCornerShape(8.dp))
+                                        .background(if (isPaid) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                        .border(1.dp, if (isPaid) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                         .clickable { expensePaidBy = mbr }
                                         .padding(horizontal = 8.dp, vertical = 6.dp)
                                 ) {
-                                    Text(mbr, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text(mbr, color = if (isPaid) AuraTheme.colors.accentBrand else AuraTheme.colors.textPrimary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
 
-                        Text("Split Proportion strategy:", color = AuraWhiteMedium, fontSize = 11.sp)
+                        Text("Split Proportion strategy:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
@@ -2221,9 +2234,9 @@ fun FriendsAndSplitsModule(
                                     RadioButton(
                                         selected = customSplitStrategy == strat,
                                         onClick = { customSplitStrategy = strat },
-                                        colors = RadioButtonDefaults.colors(selectedColor = AuraCyanNeon)
+                                        colors = RadioButtonDefaults.colors(selectedColor = AuraTheme.colors.accentBrand)
                                     )
-                                    Text(strat, color = Color.White, fontSize = 11.sp)
+                                    Text(strat, color = AuraTheme.colors.textPrimary, fontSize = 11.sp)
                                 }
                             }
                         }
@@ -2247,20 +2260,21 @@ fun FriendsAndSplitsModule(
                             }
                             showAddRoomExpenseDialog = false
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                     ) {
-                        Text("RECORD EXPENSE", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Text("RECORD EXPENSE", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { showAddRoomExpenseDialog = false },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight)
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                        border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                     ) {
-                        Text("CANCEL", color = Color.White, fontSize = 11.sp)
+                        Text("CANCEL", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     }
                 },
-                containerColor = AuraSlateCard
+                containerColor = AuraTheme.colors.cardBackground
             )
         }
     }
