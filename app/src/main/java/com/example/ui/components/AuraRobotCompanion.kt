@@ -130,6 +130,8 @@ fun BoxScope.AuraRobotCompanion(
     var robotState by remember { mutableStateOf(RobotState.IDLE_STAND) }
     var robotMood by remember { mutableStateOf(RobotMood.HAPPY) }
     var facingDirection by remember { mutableFloatStateOf(1f) } // 1f = right, -1f = left
+    var pettingStreak by remember { mutableIntStateOf(0) }
+    var lastPetTimestamp by remember { mutableLongStateOf(0L) }
 
     // Interactive & Climbing Animation Drivers
     val squashStretchX = remember { Animatable(1f) }
@@ -326,6 +328,39 @@ fun BoxScope.AuraRobotCompanion(
                 hasInitializedPos = true
                 delay(500)
                 triggerSpeech("Aura Rover online! Tap any tab to watch me climb! 🐾⚡", 4800)
+            }
+        }
+
+        // Screen & Tab Reactive Personality System
+        LaunchedEffect(activeTab) {
+            if (!hasInitializedPos) return@LaunchedEffect
+            AuraHaptics.triggerSubtleTick(view)
+            when (activeTab) {
+                Section.Dashboard -> {
+                    robotMood = RobotMood.HAPPY
+                    triggerSpeech("Headquarters overview! 📊 Everything at a glance!", 3500)
+                }
+                Section.Notes -> {
+                    robotMood = RobotMood.CURIOUS
+                    triggerSpeech("Offline Notebook! 📝 Ready for thoughts & sketches!", 3500)
+                }
+                Section.Tasks -> {
+                    robotMood = RobotMood.STRONG_SHIELD
+                    triggerSpeech("Objectives Tower! 🛡️ Let's crush those tasks!", 3500)
+                }
+                Section.Money -> {
+                    robotMood = RobotMood.COOL
+                    triggerSpeech("Fintech Vault! 💰 Budgets and splits under control!", 3500)
+                }
+                Section.Habits, Section.Day -> {
+                    robotMood = RobotMood.CONFIDENT
+                    triggerSpeech("Habit Matrix & Day Flow! ⚡ Streaks build masters!", 3500)
+                }
+                Section.SecuritySettings -> {
+                    robotMood = RobotMood.STRONG_SHIELD
+                    triggerSpeech("Security & Sync Vault! 🔐 Maximum protection!", 3500)
+                }
+                else -> {}
             }
         }
 
@@ -559,7 +594,31 @@ fun BoxScope.AuraRobotCompanion(
                         detectTapGestures(
                             onTap = {
                                 AuraHaptics.triggerConfirm(view)
-                                if (robotState == RobotState.PERCHED_ON_OBJECT) {
+                                val now = System.currentTimeMillis()
+                                if (now - lastPetTimestamp < 650L) {
+                                    pettingStreak++
+                                } else {
+                                    pettingStreak = 1
+                                }
+                                lastPetTimestamp = now
+
+                                if (pettingStreak >= 3) {
+                                    // PETTING ACTIVATION: Heart Eyes, Joy Jump & Purr!
+                                    robotMood = RobotMood.LOVE
+                                    triggerSpeech("Aww! I love exploring Aura with you! ❤️🐾✨", 3200)
+                                    scope.launch {
+                                        squashStretchY.animateTo(1.3f, tween(120))
+                                        squashStretchX.animateTo(0.85f, tween(120))
+                                        squashStretchY.animateTo(0.9f, tween(100))
+                                        squashStretchX.animateTo(1.15f, tween(100))
+                                        squashStretchY.animateTo(1f, spring(dampingRatio = 0.5f))
+                                        squashStretchX.animateTo(1f, spring(dampingRatio = 0.5f))
+                                        delay(2500)
+                                        if (robotMood == RobotMood.LOVE) {
+                                            robotMood = RobotMood.HAPPY
+                                        }
+                                    }
+                                } else if (robotState == RobotState.PERCHED_ON_OBJECT) {
                                     // When tapped while perched: prompt action or hop down
                                     if (currentPlatform?.section != null) {
                                         onNavigateTab(currentPlatform!!.section!!)
@@ -579,7 +638,8 @@ fun BoxScope.AuraRobotCompanion(
                                             "Hey! Claws fully locked! 🦾✨",
                                             "Whoa! Ground drift engaged! 🌀",
                                             "Hehe! Tap a tab to watch me climb it! 🧗",
-                                            "Super sturdy! Nothing knocks me down! ⚡"
+                                            "Super sturdy! Nothing knocks me down! ⚡",
+                                            "Tap rapidly to pet me! 🐾❤️"
                                         ).random(),
                                         2500
                                     )

@@ -425,4 +425,38 @@ class AuraCoreUnitTest {
         assertEquals("Design mockups", filtered[0].title)
         assertEquals("Implement UI", filtered[1].title)
     }
+
+    @Test
+    fun testRobotMood_allEnumVariants() {
+        val moods = com.example.ui.components.RobotMood.values()
+        assertTrue(moods.contains(com.example.ui.components.RobotMood.HAPPY))
+        assertTrue(moods.contains(com.example.ui.components.RobotMood.CURIOUS))
+        assertTrue(moods.contains(com.example.ui.components.RobotMood.LOVE))
+        assertTrue(moods.contains(com.example.ui.components.RobotMood.STRONG_SHIELD))
+        assertTrue(moods.contains(com.example.ui.components.RobotMood.COOL))
+    }
+
+    @Test
+    fun testRobotState_allPhysicsStates() {
+        val states = com.example.ui.components.RobotState.values()
+        assertTrue(states.contains(com.example.ui.components.RobotState.IDLE_STAND))
+        assertTrue(states.contains(com.example.ui.components.RobotState.WALKING))
+        assertTrue(states.contains(com.example.ui.components.RobotState.CLIMBING_UP))
+        assertTrue(states.contains(com.example.ui.components.RobotState.PERCHED_ON_OBJECT))
+        assertTrue(states.contains(com.example.ui.components.RobotState.DRAGGED))
+    }
+
+    @Test
+    fun testClimbablePlatform_relativeXBounds() {
+        val platforms = listOf(
+            com.example.ui.components.ClimbablePlatform("home", "Home Base", com.example.ui.Section.Dashboard, "🏠", 0.12f, 44f, "Home!"),
+            com.example.ui.components.ClimbablePlatform("notes", "Notes Vault", com.example.ui.Section.Notes, "📝", 0.31f, 44f, "Notes!"),
+            com.example.ui.components.ClimbablePlatform("tasks", "Tasks Tower", com.example.ui.Section.Tasks, "🛡️", 0.50f, 44f, "Tasks!"),
+            com.example.ui.components.ClimbablePlatform("money", "Money Vault", com.example.ui.Section.Money, "💰", 0.69f, 44f, "Money!")
+        )
+        platforms.forEach { p ->
+            assertTrue("relativeX must be between 0f and 1f", p.relativeX in 0f..1f)
+            assertTrue("elevation must be positive", p.elevationDp > 0f)
+        }
+    }
 }
