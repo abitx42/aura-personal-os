@@ -215,8 +215,8 @@ fun TasksScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp)
-                        .border(1.dp, AuraCyanNeon, RoundedCornerShape(14.dp)),
-                    colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                        .border(1.dp, AuraTheme.colors.accentBrand, RoundedCornerShape(14.dp)),
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
                     shape = RoundedCornerShape(14.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
@@ -229,7 +229,7 @@ fun TasksScreen(
                                 Icon(
                                     imageVector = Icons.Default.HourglassEmpty,
                                     contentDescription = "Active Timer",
-                                    tint = AuraCyanNeon,
+                                    tint = AuraTheme.colors.accentBrand,
                                     modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
@@ -237,7 +237,7 @@ fun TasksScreen(
                                     text = "ACTIVE POMODORO FOCUS SESSION",
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = AuraCyanNeon,
+                                    color = AuraTheme.colors.accentBrand,
                                     letterSpacing = 1.sp
                                 )
                             }
@@ -245,7 +245,7 @@ fun TasksScreen(
                                 onClick = { viewModel.resetTaskTimer() },
                                 modifier = Modifier.size(24.dp)
                             ) {
-                                Icon(Icons.Default.Close, contentDescription = "Close Timer", tint = Color.Red, modifier = Modifier.size(14.dp))
+                                Icon(Icons.Default.Close, contentDescription = "Close Timer", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(14.dp))
                             }
                         }
 
@@ -255,7 +255,7 @@ fun TasksScreen(
                             text = timedTask.title,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = AuraTheme.colors.textPrimary
                         )
 
                         Spacer(modifier = Modifier.height(6.dp))
@@ -273,7 +273,7 @@ fun TasksScreen(
                                 text = formattedTime,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Black,
-                                color = AuraCyanNeon,
+                                color = AuraTheme.colors.accentBrand,
                                 style = androidx.compose.ui.text.TextStyle(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
                             )
 
@@ -286,7 +286,7 @@ fun TasksScreen(
                                             viewModel.resumeTaskTimer()
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = if (isTimerRunning) AuraCopperWarm else AuraCyanNeon),
+                                    colors = ButtonDefaults.buttonColors(containerColor = if (isTimerRunning) AuraTheme.colors.gold else AuraTheme.colors.accentBrand),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                 ) {
@@ -398,16 +398,21 @@ fun TasksScreen(
     if (taskToTime != null) {
         AlertDialog(
             onDismissRequest = { taskToTime = null },
-            title = { Text("Start Focus Timer", color = Color.White, fontWeight = FontWeight.Bold) },
+            title = { Text("Start Focus Timer", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Select session duration in minutes for: \"${taskToTime?.title}\"", color = AuraWhiteMedium, fontSize = 13.sp)
+                    Text("Select session duration in minutes for: \"${taskToTime?.title}\"", color = AuraTheme.colors.textSecondary, fontSize = 13.sp)
                     
                     OutlinedTextField(
                         value = selectedTimerMinutes,
                         onValueChange = { selectedTimerMinutes = it.filter { c -> c.isDigit() } },
-                        label = { Text("Minutes", color = AuraCyanNeon) },
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight, focusedTextColor = Color.White),
+                        label = { Text("Minutes", color = AuraTheme.colors.accentBrand) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -906,10 +911,10 @@ fun TaskComposerScreen(
                             onBack()
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text("Save", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -925,14 +930,14 @@ fun TaskComposerScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = { Text("What needs to be done?", color = AuraWhiteMuted) },
-                    label = { Text("Objective Title", color = AuraCyanNeon) },
+                    placeholder = { Text("What needs to be done?", color = AuraTheme.colors.textMuted) },
+                    label = { Text("Objective Title", color = AuraTheme.colors.accentBrand) },
                     modifier = Modifier.fillMaxWidth().testTag("task_title_input"),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AuraCyanNeon,
-                        unfocusedBorderColor = AuraSlateLight,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                        focusedTextColor = AuraTheme.colors.textPrimary,
+                        unfocusedTextColor = AuraTheme.colors.textPrimary
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
