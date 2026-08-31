@@ -1157,9 +1157,9 @@ fun MainAppContainer(
                         onDismissRequest = { showCustomIconDialog = false },
                         title = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.AddPhotoAlternate, contentDescription = null, tint = AuraPurpleAccent, modifier = Modifier.size(24.dp))
+                                Icon(Icons.Default.AddPhotoAlternate, contentDescription = null, tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("CUSTOMIZE CAPTURE ICON", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("CUSTOMIZE CAPTURE ICON", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             }
                         },
                         text = {
@@ -1168,7 +1168,7 @@ fun MainAppContainer(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 item {
-                                    Text("Transform your quick capture button with funny GIFs of cats, dogs, customized circles, animations or photographs!", color = AuraWhiteMuted, fontSize = 11.sp)
+                                    Text("Transform your quick capture button with funny GIFs of cats, dogs, customized circles, animations or photographs!", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                                 }
 
                                 item {
@@ -1180,7 +1180,7 @@ fun MainAppContainer(
                                             onClick = {
                                                 iconPickerLauncher.launch("image/*")
                                             },
-                                            colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
+                                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                             modifier = Modifier.weight(1f)
                                         ) {
                                             Icon(Icons.Default.FolderOpen, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
@@ -1191,9 +1191,9 @@ fun MainAppContainer(
                                 }
 
                                 item {
-                                    Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(AuraSlateLight))
+                                    HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text("Amusing Preset GIFs & Circles (tap to apply):", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    Text("Amusing Preset GIFs & Circles (tap to apply):", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                 }
 
                                 item {
@@ -1242,7 +1242,7 @@ fun MainAppContainer(
                                                         )
                                                     }
                                                     Spacer(modifier = Modifier.height(6.dp))
-                                                    Text(preset.first, color = Color.White, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.SemiBold)
+                                                    Text(preset.first, color = AuraTheme.colors.textPrimary, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.SemiBold)
                                                 }
                                             }
                                         }
@@ -1253,10 +1253,15 @@ fun MainAppContainer(
                                     OutlinedTextField(
                                         value = rawUrlInput,
                                         onValueChange = { rawUrlInput = it },
-                                        placeholder = { Text("https://example.com/item.gif", color = AuraWhiteMuted) },
-                                        label = { Text("Or paste image URL", color = AuraPurpleAccent) },
+                                        placeholder = { Text("https://example.com/item.gif", color = AuraTheme.colors.textMuted) },
+                                        label = { Text("Or paste image URL", color = AuraTheme.colors.accentBrand) },
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraPurpleAccent, unfocusedBorderColor = AuraSlateLight)
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                            focusedTextColor = AuraTheme.colors.textPrimary,
+                                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                                        )
                                     )
                                 }
                             }
@@ -1270,7 +1275,7 @@ fun MainAppContainer(
                                     showCustomIconDialog = false
                                 }
                             ) {
-                                Text("DONE", color = AuraPurpleAccent, fontWeight = FontWeight.Bold)
+                                Text("DONE", color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                             }
                         },
                         dismissButton = {
@@ -1280,10 +1285,10 @@ fun MainAppContainer(
                                     showCustomIconDialog = false
                                 }
                             ) {
-                                Text("RESET", color = Color.Red)
+                                Text("RESET DEFAULT", color = AuraTheme.colors.textSecondary)
                             }
                         },
-                        containerColor = AuraCharcoalBase
+                        containerColor = AuraTheme.colors.cardBackground
                     )
                 }
 

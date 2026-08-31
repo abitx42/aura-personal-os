@@ -1121,11 +1121,13 @@ fun TaskComposerScreen(
                         OutlinedTextField(
                             value = inlineSubTitle,
                             onValueChange = { inlineSubTitle = it },
-                            placeholder = { Text("Add secondary subtask node...", fontSize = 11.sp, color = AuraWhiteMuted) },
+                            placeholder = { Text("Add secondary subtask node...", fontSize = 11.sp, color = AuraTheme.colors.textMuted) },
                             modifier = Modifier.weight(1f),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraPurpleAccent,
-                                unfocusedBorderColor = AuraSlateLight
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             ),
                             shape = RoundedCornerShape(8.dp)
                         )
@@ -1137,7 +1139,7 @@ fun TaskComposerScreen(
                                     inlineSubTitle = ""
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = AuraPurpleAccent),
+                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Add sub", tint = Color.White)
@@ -1150,12 +1152,14 @@ fun TaskComposerScreen(
                     OutlinedTextField(
                         value = draftSubtaskText,
                         onValueChange = { draftSubtaskText = it },
-                        placeholder = { Text("E.g. Step 1: Research components", color = AuraWhiteMuted) },
-                        label = { Text("Initial subtask checkpoint (optional)", color = AuraWhiteMedium) },
+                        placeholder = { Text("E.g. Step 1: Research components", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Initial subtask checkpoint (optional)", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraPurpleAccent,
-                            unfocusedBorderColor = AuraSlateLight
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
