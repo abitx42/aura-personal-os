@@ -420,13 +420,13 @@ fun TasksScreen(
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .background(AuraSlateCard, RoundedCornerShape(8.dp))
-                                    .border(1.dp, if (selectedTimerMinutes == preset) AuraCyanNeon else AuraSlateLight, RoundedCornerShape(8.dp))
+                                    .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (selectedTimerMinutes == preset) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                     .clickable { selectedTimerMinutes = preset }
                                     .padding(vertical = 8.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(preset, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                Text(preset, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                             }
                         }
                     }
@@ -439,9 +439,9 @@ fun TasksScreen(
                         taskToTime?.let { viewModel.startTaskTimer(it.id, mins) }
                         taskToTime = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("START TIMER", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text("START TIMER", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -940,17 +940,17 @@ fun TaskComposerScreen(
 
             // Categories list chips selection
             item {
-                Text("Select Workspace category", fontSize = 11.sp, color = AuraWhiteMuted)
+                Text("Select Workspace category", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
                 Row(modifier = Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("General", "Work", "Urgent Objectives", "Life").forEach { item ->
                         val isSelected = category == item
                         FilterChip(
                             selected = isSelected,
                             onClick = { category = item },
-                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.Black else Color.White) },
+                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.White else AuraTheme.colors.textPrimary) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = AuraCyanNeon,
-                                containerColor = AuraSlateCard
+                                selectedContainerColor = AuraTheme.colors.accentBrand,
+                                containerColor = AuraTheme.colors.cardBackground
                             )
                         )
                     }
@@ -959,7 +959,7 @@ fun TaskComposerScreen(
 
             // Priorities chips selection
             item {
-                Text("Priority Level", fontSize = 11.sp, color = AuraWhiteMuted)
+                Text("Priority Level", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
                 Row(modifier = Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("Low", "Medium", "High", "Urgent").forEach { item ->
                         val isSelected = priority == item
@@ -967,10 +967,10 @@ fun TaskComposerScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = { priority = item },
-                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.Black else Color.White) },
+                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.White else AuraTheme.colors.textPrimary) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = col,
-                                containerColor = AuraSlateCard
+                                containerColor = AuraTheme.colors.cardBackground
                             )
                         )
                     }
@@ -979,17 +979,17 @@ fun TaskComposerScreen(
 
             // Focus Energy level attributes
             item {
-                Text("Focus Energy intensity required", fontSize = 11.sp, color = AuraWhiteMuted)
+                Text("Focus Energy intensity required", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
                 Row(modifier = Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("Low Energy", "Medium Energy", "High Energy").forEach { item ->
                         val isSelected = energy == item
                         FilterChip(
                             selected = isSelected,
                             onClick = { energy = item },
-                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.White else AuraWhiteMuted) },
+                            label = { Text(item, fontSize = 11.sp, color = if (isSelected) Color.White else AuraTheme.colors.textSecondary) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = AuraPurpleAccent,
-                                containerColor = AuraSlateCard
+                                selectedContainerColor = AuraTheme.colors.gold,
+                                containerColor = AuraTheme.colors.cardBackground
                             )
                         )
                     }
@@ -1003,13 +1003,13 @@ fun TaskComposerScreen(
                     OutlinedTextField(
                         value = date,
                         onValueChange = { date = it },
-                        label = { Text("Due Date (yyyy-MM-dd)", color = AuraWhiteMedium) },
+                        label = { Text("Due Date (yyyy-MM-dd)", color = AuraTheme.colors.textSecondary) },
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
@@ -1018,14 +1018,14 @@ fun TaskComposerScreen(
                     OutlinedTextField(
                         value = time,
                         onValueChange = { time = it },
-                        placeholder = { Text("e.g. 09:30 or 18:00", color = AuraWhiteMuted) },
-                        label = { Text("Reminder Alarm (HH:MM)", color = AuraWhiteMedium) },
+                        placeholder = { Text("e.g. 09:30 or 18:00", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Reminder Alarm (HH:MM)", color = AuraTheme.colors.textSecondary) },
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
@@ -1037,23 +1037,25 @@ fun TaskComposerScreen(
                             value = recurrence,
                             onValueChange = { },
                             readOnly = true,
-                            label = { Text("Repeat schedule", color = AuraWhiteMedium) },
+                            label = { Text("Repeat schedule", color = AuraTheme.colors.textSecondary) },
                             trailingIcon = {
                                 IconButton(onClick = { expandRecur = true }) {
-                                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown", tint = AuraTheme.colors.textSecondary)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = AuraCyanNeon,
-                                unfocusedBorderColor = AuraSlateLight
+                                focusedBorderColor = AuraTheme.colors.accentBrand,
+                                unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                focusedTextColor = AuraTheme.colors.textPrimary,
+                                unfocusedTextColor = AuraTheme.colors.textPrimary
                             ),
                             shape = RoundedCornerShape(10.dp)
                         )
 
-                        DropdownMenu(expanded = expandRecur, onDismissRequest = { expandRecur = false }, modifier = Modifier.background(AuraSlateCard)) {
+                        DropdownMenu(expanded = expandRecur, onDismissRequest = { expandRecur = false }, modifier = Modifier.background(AuraTheme.colors.cardBackground)) {
                             listOf("None", "Daily", "Weekly", "Monthly").forEach { opt ->
-                                DropdownMenuItem(text = { Text(opt, color = Color.White) }, onClick = {
+                                DropdownMenuItem(text = { Text(opt, color = AuraTheme.colors.textPrimary) }, onClick = {
                                     recurrence = opt
                                     expandRecur = false
                                 })
@@ -1066,7 +1068,7 @@ fun TaskComposerScreen(
             // RELATIONAL SUBTASKS CHECKLIST NODES
             if (task != null) {
                 item {
-                    Text("Hierarchical Subtasks checklists", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Hierarchical Subtasks checklists", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
@@ -1074,7 +1076,8 @@ fun TaskComposerScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraSlateCard, RoundedCornerShape(8.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                             .padding(horizontal = 10.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -1084,7 +1087,7 @@ fun TaskComposerScreen(
                                 Icon(
                                     imageVector = if (sub.isCompleted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = "Check",
-                                    tint = if (sub.isCompleted) AuraCyanNeon else AuraWhiteMuted,
+                                    tint = if (sub.isCompleted) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -1092,7 +1095,7 @@ fun TaskComposerScreen(
                             Text(
                                 text = sub.title,
                                 fontSize = 12.sp,
-                                color = if (sub.isCompleted) AuraWhiteMuted else Color.White,
+                                color = if (sub.isCompleted) AuraTheme.colors.textMuted else AuraTheme.colors.textPrimary,
                                 textDecoration = if (sub.isCompleted) TextDecoration.LineThrough else TextDecoration.None
                             )
                         }
