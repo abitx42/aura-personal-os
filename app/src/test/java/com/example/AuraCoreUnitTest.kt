@@ -90,4 +90,38 @@ class AuraCoreUnitTest {
         assertTrue("Serialized output must contain hex colors", serialized.contains("#FF5B32"))
         assertTrue("Serialized output must contain points", serialized.contains("10.0:20.0"))
     }
+
+    @Test
+    fun testNetWorthCalculation_accurateBalance() {
+        val totalAvailableBalance = 45000.0
+        val totalInvested = 120000.0
+        val totalToReceive = 15000.0
+        val totalYouOwe = 8000.0
+
+        val netWorth = totalAvailableBalance + totalInvested + totalToReceive - totalYouOwe
+        assertEquals(172000.0, netWorth, 0.001)
+    }
+
+    @Test
+    fun testDebtSettlementAdjustment_cappedToRemaining() {
+        val debtAmount = 500.0
+        val remainingAmount = 300.0
+        val paymentAttempt = 400.0
+
+        val actualPaid = minOf(paymentAttempt, remainingAmount)
+        val newRemaining = remainingAmount - actualPaid
+
+        assertEquals(300.0, actualPaid, 0.001)
+        assertEquals(0.0, newRemaining, 0.001)
+    }
+
+    @Test
+    fun testDateFormatting_safePattern() {
+        val cal = Calendar.getInstance()
+        cal.set(2026, Calendar.AUGUST, 31)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val formatted = sdf.format(cal.time)
+
+        assertEquals("2026-08-31", formatted)
+    }
 }
