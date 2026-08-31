@@ -852,8 +852,8 @@ fun NoteEditorScreen(
                     .height(200.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-                colors = CardDefaults.cardColors(containerColor = AuraSlateCard)
+                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
             ) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     androidx.compose.foundation.Image(

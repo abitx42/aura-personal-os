@@ -1071,9 +1071,9 @@ fun InvestmentsPortfolioView(
     onDeleteInvestment: (Investment) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+        modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -2986,9 +2986,9 @@ fun SplitSummarySectionView(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp))
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp))
                 .let { if (onNavigateToSplits != null) it.clickable { onNavigateToSplits() } else it },
-            colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha=0.3f)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(modifier = Modifier.padding(14.dp)) {

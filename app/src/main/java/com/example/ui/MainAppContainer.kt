@@ -1208,8 +1208,8 @@ fun MainAppContainer(
                                                     .width(105.dp)
                                                     .fillMaxHeight()
                                                     .clip(RoundedCornerShape(12.dp))
-                                                    .background(AuraSlateCard)
-                                                    .border(2.dp, if (isSelected) AuraCyanNeon else AuraSlateLight, RoundedCornerShape(12.dp))
+                                                    .background(AuraTheme.colors.cardBackground)
+                                                    .border(2.dp, if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
                                                     .clickable {
                                                         viewModel.setQuickCaptureIconUri(preset.second)
                                                     }
@@ -1224,7 +1224,7 @@ fun MainAppContainer(
                                                         modifier = Modifier
                                                             .size(54.dp)
                                                             .clip(CircleShape)
-                                                            .background(AuraSlateLight),
+                                                            .background(AuraTheme.colors.bottomNavBackground),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         androidx.compose.foundation.Image(
@@ -2307,12 +2307,12 @@ fun AppSecuritySettingsScreen(
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(Icons.Default.CloudSync, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Default.CloudSync, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("SIGN IN WITH GOOGLE", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Text("SIGN IN WITH GOOGLE", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
 
-                    Text("Or configure simulated email identification below:", color = AuraWhiteMedium, fontSize = 10.sp)
+                    Text("Or configure simulated email identification below:", color = AuraTheme.colors.textSecondary, fontSize = 10.sp)
 
                     OutlinedTextField(
                         value = tempEmailInput,
@@ -2320,12 +2320,12 @@ fun AppSecuritySettingsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AuraCyanNeon,
-                            unfocusedBorderColor = AuraSlateLight,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
                         ),
-                        placeholder = { Text("example@gmail.com") }
+                        placeholder = { Text("example@gmail.com", color = AuraTheme.colors.textMuted) }
                     )
                 }
             },
@@ -2335,20 +2335,21 @@ fun AppSecuritySettingsScreen(
                         viewModel.signInWithGoogle(tempEmailInput)
                         showGoogleSignDialogInSettings = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("IDENTIFY & CONNECT", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("IDENTIFY & CONNECT", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 Button(
                     onClick = { showGoogleSignDialogInSettings = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                 ) {
-                    Text("CANCEL", color = Color.White, fontSize = 11.sp)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                 }
             },
-            containerColor = AuraSlateCard
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 
@@ -2363,10 +2364,10 @@ fun AppSecuritySettingsScreen(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { viewModel.navigateTo(Section.Dashboard) }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Dashboard", tint = Color.White)
+                Icon(Icons.Default.ArrowBack, contentDescription = "Dashboard", tint = AuraTheme.colors.textPrimary)
             }
             Spacer(modifier = Modifier.width(6.dp))
-            Text("SETTINGS & SYSTEM CONFIG", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("SETTINGS & SYSTEM CONFIG", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
         }
 
         // ======================================================================
@@ -2375,8 +2376,8 @@ fun AppSecuritySettingsScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(2.dp, if (isSyncEnabled) AuraCyanNeon.copy(alpha = 0.5f) else AuraSlateLight, RoundedCornerShape(20.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
             shape = RoundedCornerShape(20.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -2390,30 +2391,30 @@ fun AppSecuritySettingsScreen(
                         Icon(
                             imageVector = Icons.Default.CloudQueue,
                             contentDescription = "Cloud logo",
-                            tint = if (isSyncEnabled) AuraCyanNeon else AuraPurpleAccent,
+                            tint = AuraTheme.colors.accentBrand,
                             modifier = Modifier.size(22.dp)
                         )
                         Text(
                             "AURA PROFILE & GOOGLE DRIVE CLOUD SYNC",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Black,
-                            color = Color.White,
+                            color = AuraTheme.colors.textPrimary,
                             letterSpacing = 0.5.sp
                         )
                     }
 
                     if (isSyncing) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp), color = AuraCyanNeon, strokeWidth = 2.dp)
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp), color = AuraTheme.colors.accentBrand, strokeWidth = 2.dp)
                     } else {
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
-                                .background(if (isSyncEnabled) MoodHappy else AuraCopperWarm, CircleShape)
+                                .background(if (isSyncEnabled) AuraTheme.colors.positiveGreen else AuraTheme.colors.gold, CircleShape)
                         )
                     }
                 }
 
-                Divider(color = AuraSlateLight.copy(alpha = 0.3f))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // Profile Display Name Config
                 Row(
@@ -2422,17 +2423,17 @@ fun AppSecuritySettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Active Sync Profile Label", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
+                        Text("Active Sync Profile Label", fontSize = 9.sp, color = AuraTheme.colors.textMuted, fontWeight = FontWeight.Bold)
                         if (isEditingProfile) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 OutlinedTextField(
                                     value = tempProfileNameInput,
                                     onValueChange = { tempProfileNameInput = it },
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = AuraCyanNeon,
-                                        unfocusedBorderColor = AuraSlateLight,
-                                        focusedTextColor = Color.White,
-                                        unfocusedTextColor = Color.White
+                                        focusedBorderColor = AuraTheme.colors.accentBrand,
+                                        unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                                        focusedTextColor = AuraTheme.colors.textPrimary,
+                                        unfocusedTextColor = AuraTheme.colors.textPrimary
                                     ),
                                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
                                     modifier = Modifier.weight(1f).height(46.dp),
@@ -2446,11 +2447,11 @@ fun AppSecuritySettingsScreen(
                                         }
                                         isEditingProfile = false
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                                 ) {
-                                    Text("SAVE", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Black)
+                                    Text("SAVE", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Black)
                                 }
                             }
                         } else {
@@ -2459,12 +2460,12 @@ fun AppSecuritySettingsScreen(
                                     text = profileName,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = AuraTheme.colors.textPrimary
                                 )
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = "Edit Profile Name",
-                                    tint = AuraCyanNeon,
+                                    tint = AuraTheme.colors.accentBrand,
                                     modifier = Modifier
                                         .size(14.dp)
                                         .clickable { isEditingProfile = true }
@@ -2478,40 +2479,41 @@ fun AppSecuritySettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(AuraObsidian.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                        .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                         .padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Google Cloud Connection Status", fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.Bold)
+                        Text("Google Cloud Connection Status", fontSize = 9.sp, color = AuraTheme.colors.textMuted, fontWeight = FontWeight.Bold)
                         Text(
                             text = if (userEmail != null) "Connected: $userEmail" else "Offline Local Only (Unlinked)",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = if (userEmail != null) AuraCyanNeon else AuraWhiteMedium
+                            color = if (userEmail != null) AuraTheme.colors.accentBrand else AuraTheme.colors.textSecondary
                         )
                         Text(
                             text = "Mirror Latency Status: $lastSync",
                             fontSize = 8.sp,
-                            color = AuraWhiteMuted
+                            color = AuraTheme.colors.textMuted
                         )
                     }
 
                     if (userEmail == null) {
                         Button(
                             onClick = { showGoogleSignDialogInSettings = true },
-                            colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
                             shape = RoundedCornerShape(8.dp),
-                            border = BorderStroke(1.dp, AuraCyanNeon.copy(alpha = 0.3f)),
+                            border = BorderStroke(1.dp, AuraTheme.colors.accentBrand.copy(alpha = 0.5f)),
                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                         ) {
-                            Text("LINK DRIVE", color = AuraCyanNeon, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                            Text("LINK DRIVE", color = AuraTheme.colors.accentBrand, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                         }
                     } else {
                         Text(
                             text = "Sign Out",
-                            color = Color.Red.copy(alpha = 0.8f),
+                            color = AuraTheme.colors.negativeRed,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -2531,13 +2533,13 @@ fun AppSecuritySettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1.0f)) {
-                        Text("Enable Google Cloud Real-Time Auto-Sync", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text("Triggers background drive updates on any database frames changed.", fontSize = 9.sp, color = AuraWhiteMuted)
+                        Text("Enable Google Cloud Real-Time Auto-Sync", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                        Text("Triggers background drive updates on any database frames changed.", fontSize = 9.sp, color = AuraTheme.colors.textMuted)
                     }
                     Switch(
                         checked = isSyncEnabled,
                         onCheckedChange = { viewModel.setCloudSyncEnabled(it) },
-                        colors = SwitchDefaults.colors(checkedThumbColor = AuraCyanNeon, checkedTrackColor = AuraCyanNeon.copy(alpha = 0.5f))
+                        colors = SwitchDefaults.colors(checkedThumbColor = AuraTheme.colors.accentBrand, checkedTrackColor = AuraTheme.colors.accentBrand.copy(alpha = 0.5f))
                     )
                 }
 
@@ -2545,15 +2547,16 @@ fun AppSecuritySettingsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                        .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                         .padding(10.dp)
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("COMPRESSED DATA SUMMARY FOR DRIVE:", fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraPurpleAccent, letterSpacing = 0.5.sp)
+                        Text("COMPRESSED DATA SUMMARY FOR DRIVE:", fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.gold, letterSpacing = 0.5.sp)
                         Text(
                             text = "⚡ Real Database Payload: $notesCount Notes | $tasksCount Tasks | $habitsCount Habits | $transactionCount Ledger Records",
                             fontSize = 10.sp,
-                            color = AuraWhiteMedium
+                            color = AuraTheme.colors.textSecondary
                         )
                     }
                 }
@@ -2572,14 +2575,14 @@ fun AppSecuritySettingsScreen(
                                 android.widget.Toast.makeText(context, "Compressed $notesCount notes, $tasksCount tasks, and $habitsCount habits exported safely to Drive!", android.widget.Toast.LENGTH_LONG).show()
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(vertical = 4.dp)
                     ) {
-                        Icon(Icons.Default.CloudUpload, contentDescription = "Export icon", tint = Color.Black, modifier = Modifier.size(13.dp))
+                        Icon(Icons.Default.CloudUpload, contentDescription = "Export icon", tint = Color.White, modifier = Modifier.size(13.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("EXPORT & SAVE", color = Color.Black, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text("EXPORT & SAVE", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     }
 
                     Button(
@@ -2591,15 +2594,15 @@ fun AppSecuritySettingsScreen(
                                 android.widget.Toast.makeText(context, "Retrieving database payload indexes; device indices refreshed successfully!", android.widget.Toast.LENGTH_SHORT).show()
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(vertical = 4.dp),
-                        border = BorderStroke(1.dp, AuraSlateLight)
+                        border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                     ) {
-                        Icon(Icons.Default.CloudDownload, contentDescription = "Import icon", tint = AuraCyanNeon, modifier = Modifier.size(13.dp))
+                        Icon(Icons.Default.CloudDownload, contentDescription = "Import icon", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(13.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("IMPORT / RESTORE", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text("IMPORT / RESTORE", color = AuraTheme.colors.textPrimary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     }
                 }
 
@@ -2613,26 +2616,27 @@ fun AppSecuritySettingsScreen(
                             android.widget.Toast.makeText(context, "Synchronizing current database with external workspace indices!", android.widget.Toast.LENGTH_LONG).show()
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateCard),
-                    border = BorderStroke(1.dp, AuraPurpleAccent.copy(alpha = 0.5f)),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
+                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(vertical = 4.dp)
                 ) {
-                    Icon(Icons.Default.Sync, contentDescription = "Simulate pull", tint = AuraPurpleAccent, modifier = Modifier.size(13.dp))
+                    Icon(Icons.Default.Sync, contentDescription = "Simulate pull", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(13.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("SIMULATE EXTERNAL DEVICE SYNC & PULL", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
+                    Text("SIMULATE EXTERNAL DEVICE SYNC & PULL", color = AuraTheme.colors.textPrimary, fontSize = 9.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
                 }
 
                 // Connected Devices List
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("WORKSPACE CLOUD PARTICIPANT DEVICES:", fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraWhiteMuted, letterSpacing = 0.5.sp)
+                Text("WORKSPACE CLOUD PARTICIPANT DEVICES:", fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textMuted, letterSpacing = 0.5.sp)
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     connectedDevices.forEach { device ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(AuraObsidian.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
@@ -2641,15 +2645,15 @@ fun AppSecuritySettingsScreen(
                                 Icon(
                                     imageVector = if (device.contains("This Device")) Icons.Default.Smartphone else Icons.Default.Tv,
                                     contentDescription = "Device icon",
-                                    tint = if (device.contains("This Device")) AuraCyanNeon else AuraWhiteMuted,
+                                    tint = if (device.contains("This Device")) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                     modifier = Modifier.size(14.dp)
                                 )
-                                Text(device, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Medium)
+                                Text(device, fontSize = 10.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Medium)
                             }
                             Text(
                                 text = if (device.contains("This Device")) "Active Now" else "Idle State Sync",
                                 fontSize = 8.sp,
-                                color = if (device.contains("This Device")) MoodHappy else AuraWhiteMuted
+                                color = if (device.contains("This Device")) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted
                             )
                         }
                     }
@@ -2663,8 +2667,8 @@ fun AppSecuritySettingsScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(2.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase),
+                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
             shape = RoundedCornerShape(20.dp)
         ) {
             val currentCaptureColor by viewModel.captureButtonColor.collectAsState()
@@ -2675,40 +2679,40 @@ fun AppSecuritySettingsScreen(
                     Icon(
                         imageVector = Icons.Default.Palette,
                         contentDescription = "Aesthetics logo",
-                        tint = AuraCyanNeon,
+                        tint = AuraTheme.colors.accentBrand,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
                         "CAPTURE BUTTON AESTHETICS",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         letterSpacing = 0.5.sp
                     )
                 }
 
                 Text(
                     "Personalize the interactive glowing aura, haptic trigger states, and physics dynamics of the floating Quick Capture overlay.",
-                    color = AuraWhiteMuted,
+                    color = AuraTheme.colors.textSecondary,
                     fontSize = 11.sp,
                     lineHeight = 15.sp
                 )
 
-                Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(AuraSlateLight))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // 1. Color Selector
-                Text("INTELLIGENT TINT GLOW COLOR:", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraCyanNeon)
+                Text("INTELLIGENT TINT GLOW COLOR:", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.accentBrand)
 
                 class LocalCaptureColorSetting(val id: String, val label: String, val brush: Brush)
 
                 val colorOptions = listOf(
-                    LocalCaptureColorSetting("DEFAULT", "Gradient", Brush.linearGradient(listOf(AuraCyanNeon, AuraPurpleAccent))),
-                    LocalCaptureColorSetting("CYAN", "Cyber Cyan", Brush.linearGradient(listOf(AuraCyanNeon, AuraCyanNeon))),
-                    LocalCaptureColorSetting("PURPLE", "Aura Purple", Brush.linearGradient(listOf(AuraPurpleAccent, AuraPurpleAccent))),
-                    LocalCaptureColorSetting("EMERALD", "Emerald Mint", Brush.linearGradient(listOf(Color(0xFF00FF87), Color(0xFF00FF87)))),
+                    LocalCaptureColorSetting("DEFAULT", "Gradient", Brush.linearGradient(listOf(AuraTheme.colors.accentBrand, AuraTheme.colors.gold))),
+                    LocalCaptureColorSetting("CYAN", "Cyber Cyan", Brush.linearGradient(listOf(AuraTheme.colors.accentBrand, AuraTheme.colors.accentBrand))),
+                    LocalCaptureColorSetting("PURPLE", "Aura Purple", Brush.linearGradient(listOf(Color(0xFF7C4DFF), Color(0xFF7C4DFF)))),
+                    LocalCaptureColorSetting("EMERALD", "Emerald Mint", Brush.linearGradient(listOf(AuraTheme.colors.positiveGreen, AuraTheme.colors.positiveGreen))),
                     LocalCaptureColorSetting("PINK", "Hot Pink", Brush.linearGradient(listOf(Color(0xFFFF2A85), Color(0xFFFF2A85)))),
-                    LocalCaptureColorSetting("RED", "Volcano", Brush.linearGradient(listOf(Color(0xFFFF3E3E), Color(0xFFFF3E3E)))),
-                    LocalCaptureColorSetting("AMBER", "Amber Gold", Brush.linearGradient(listOf(Color(0xFFFFC107), Color(0xFFFFC107))))
+                    LocalCaptureColorSetting("RED", "Volcano", Brush.linearGradient(listOf(AuraTheme.colors.negativeRed, AuraTheme.colors.negativeRed))),
+                    LocalCaptureColorSetting("AMBER", "Amber Gold", Brush.linearGradient(listOf(AuraTheme.colors.gold, AuraTheme.colors.gold)))
                 )
 
                 LazyRow(
@@ -2720,8 +2724,8 @@ fun AppSecuritySettingsScreen(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(AuraSlateCard)
-                                .border(1.5.dp, if (isSelected) AuraCyanNeon else Color.Transparent, RoundedCornerShape(8.dp))
+                                .background(AuraTheme.colors.bottomNavBackground)
+                                .border(1.5.dp, if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                 .clickable {
                                     viewModel.setCaptureButtonColor(option.id)
                                 }
@@ -2735,16 +2739,16 @@ fun AppSecuritySettingsScreen(
                                         .clip(CircleShape)
                                         .background(option.brush)
                                 )
-                                Text(option.label, color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
+                                Text(option.label, color = AuraTheme.colors.textPrimary, fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
                 }
 
-                Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(AuraSlateLight))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // 2. Animation Selector
-                Text("PULSE & ANIMATION DYNAMICS:", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraPurpleAccent)
+                Text("PULSE & ANIMATION DYNAMICS:", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.gold)
 
                 val animOptions = listOf(
                     Pair("SPRING", "Classic Spring"),
@@ -2763,8 +2767,8 @@ fun AppSecuritySettingsScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) AuraPurpleAccent.copy(alpha = 0.2f) else AuraSlateCard)
-                                .border(1.5.dp, if (isSelected) AuraPurpleAccent else AuraSlateLight, RoundedCornerShape(8.dp))
+                                .background(if (isSelected) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground)
+                                .border(1.5.dp, if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                 .clickable {
                                     viewModel.setCaptureButtonAnimationType(anim.first)
                                 }
@@ -2773,7 +2777,7 @@ fun AppSecuritySettingsScreen(
                         ) {
                             Text(
                                 text = anim.second,
-                                color = if (isSelected) Color.White else AuraWhiteMuted,
+                                color = if (isSelected) Color.White else AuraTheme.colors.textMuted,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
@@ -2868,25 +2872,25 @@ fun AppSecuritySettingsScreen(
         val activePalette by viewModel.themePalette.collectAsState()
 
         Card(
-            modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase)
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     "VISUAL COLOR WORKSPACE",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraCyanNeon,
+                    color = AuraTheme.colors.accentBrand,
                     letterSpacing = 1.sp
                 )
                 Text(
                     "Customize workspace environments, background theme, and overall color accent palettes.",
                     fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    color = AuraTheme.colors.textSecondary
                 )
 
                 // Theme Mode Selector
-                Text("Background Mode", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Text("Background Mode", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -2899,14 +2903,14 @@ fun AppSecuritySettingsScreen(
                                 .weight(1f)
                                 .height(40.dp)
                                 .background(
-                                    if (isSelected) AuraCyanNeon else AuraSlateCard,
+                                    if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.bottomNavBackground,
                                     RoundedCornerShape(10.dp)
                                 )
-                                .border(1.dp, if (isSelected) AuraCyanNeon else AuraSlateLight, RoundedCornerShape(10.dp))
+                                .border(1.dp, if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
                                 .clickable { viewModel.setThemeMode(m) },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (isSelected) Color.Black else Color.White)
+                            Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (isSelected) Color.White else AuraTheme.colors.textSecondary)
                         }
                     }
                 }
@@ -2914,12 +2918,12 @@ fun AppSecuritySettingsScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Color accent palettes
-                Text("Color Accent Palette", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Text("Color Accent Palette", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     val palettes = listOf(
-                        "CYAN_GLOW" to Pair("Aura Cyan Glow", AuraCyanNeon),
-                        "EMERALD_GARDEN" to Pair("Mint Emerald", Color(0xFF2ECD71)),
-                        "RADIANT_SUNSET" to Pair("Radiant Sunset", Color(0xFFFF5722)),
+                        "CYAN_GLOW" to Pair("Aura Neon Accent", AuraTheme.colors.accentBrand),
+                        "EMERALD_GARDEN" to Pair("Mint Emerald", AuraTheme.colors.positiveGreen),
+                        "RADIANT_SUNSET" to Pair("Radiant Sunset", AuraTheme.colors.gold),
                         "ROYAL_AMETHYST" to Pair("Royal Amethyst", Color(0xFFBB86FC)),
                         "OCEAN_BREEZE" to Pair("Ocean Breeze", Color(0xFF00B0FF))
                     )
@@ -2929,8 +2933,8 @@ fun AppSecuritySettingsScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(if (isSelected) AuraSlateLight else AuraSlateCard, RoundedCornerShape(10.dp))
-                                .border(1.dp, if (isSelected) AuraCyanNeon else Color.Transparent, RoundedCornerShape(10.dp))
+                                .background(if (isSelected) AuraTheme.colors.accentBrand.copy(alpha = 0.2f) else AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                                .border(1.dp, if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
                                 .clickable { viewModel.setThemePalette(p) }
                                 .padding(horizontal = 12.dp, vertical = 10.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -2943,10 +2947,10 @@ fun AppSecuritySettingsScreen(
                                         .background(pColor, CircleShape)
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
-                                Text(pLabel, fontSize = 12.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
+                                Text(pLabel, fontSize = 12.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.SemiBold)
                             }
                             if (isSelected) {
-                                Icon(Icons.Default.Check, contentDescription = "Selected", tint = AuraCyanNeon, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Check, contentDescription = "Selected", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -2956,21 +2960,21 @@ fun AppSecuritySettingsScreen(
 
         // 2. QUICK SENT TARGET CARD
         Card(
-            modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase)
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     "QUICK TRANSACTION TARGETS",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraCyanNeon,
+                    color = AuraTheme.colors.accentBrand,
                     letterSpacing = 1.sp
                 )
                 Text(
                     "Customize destination options available under Quick Transaction 'Money Sent'. Default categories include Food, Friend, Merchant.",
                     fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    color = AuraTheme.colors.textSecondary
                 )
 
                 // Grid layout of target options
@@ -2984,8 +2988,8 @@ fun AppSecuritySettingsScreen(
                                 Box(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .background(AuraSlateCard, RoundedCornerShape(8.dp))
-                                        .border(1.dp, AuraSlateLight, RoundedCornerShape(8.dp))
+                                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(8.dp))
+                                        .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(8.dp))
                                         .padding(horizontal = 8.dp, vertical = 6.dp)
                                 ) {
                                     Row(
@@ -2993,7 +2997,7 @@ fun AppSecuritySettingsScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(opt, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                        Text(opt, fontSize = 10.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                         IconButton(
                                             onClick = { viewModel.removeSentOption(opt) },
                                             modifier = Modifier.size(16.dp)
@@ -3001,7 +3005,7 @@ fun AppSecuritySettingsScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Close,
                                                 contentDescription = "Remove option",
-                                                tint = Color.Red,
+                                                tint = AuraTheme.colors.negativeRed,
                                                 modifier = Modifier.size(10.dp)
                                             )
                                         }
@@ -3016,7 +3020,7 @@ fun AppSecuritySettingsScreen(
                     }
                 }
 
-                Divider(color = AuraSlateLight.copy(alpha = 0.5f))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
 
                 // Inline form to add option
                 Row(
@@ -3027,10 +3031,15 @@ fun AppSecuritySettingsScreen(
                     OutlinedTextField(
                         value = newOptionText,
                         onValueChange = { newOptionText = it },
-                        placeholder = { Text("e.g. Rent, Gift, Travel", color = AuraWhiteMuted) },
-                        label = { Text("Add Custom Option", color = AuraCyanNeon) },
+                        placeholder = { Text("e.g. Rent, Gift, Travel", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Add Custom Option", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         singleLine = true
                     )
@@ -3042,10 +3051,10 @@ fun AppSecuritySettingsScreen(
                                 newOptionText = ""
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                         shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text("Add", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text("Add", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
                 }
             }
@@ -3053,28 +3062,28 @@ fun AppSecuritySettingsScreen(
 
         // 3. FRIENDS REGISTER CARD
         Card(
-            modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(containerColor = AuraCharcoalBase)
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     "FRIENDS DIRECTORY",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AuraCyanNeon,
+                    color = AuraTheme.colors.accentBrand,
                     letterSpacing = 1.sp
                 )
                 Text(
                     "Manage your friends registry used for splitting bills. Your list is stored locally on this device.",
                     fontSize = 11.sp,
-                    color = AuraWhiteMuted
+                    color = AuraTheme.colors.textSecondary
                 )
 
                 // Scrollable list of friends directly inside the card in Settings with delete triggers
                 if (friends.isEmpty()) {
                     Text(
                         "No friends registered in directory yet.",
-                        color = AuraWhiteMuted,
+                        color = AuraTheme.colors.textMuted,
                         fontSize = 11.sp,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
@@ -3086,14 +3095,14 @@ fun AppSecuritySettingsScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(AuraSlateCard, RoundedCornerShape(10.dp))
-                                    .border(1.dp, AuraSlateLight, RoundedCornerShape(10.dp))
+                                    .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
                                     .padding(horizontal = 10.dp, vertical = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column {
-                                    Text(frnd.name, fontSize = 12.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text(frnd.name, fontSize = 12.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                     if (frnd.notes.isNotBlank() || frnd.phone.isNotBlank()) {
                                         Text(
                                             listOfNotNull(
@@ -3335,7 +3344,7 @@ fun AppSecuritySettingsScreen(
                 text = "your support matters".uppercase(),
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
-                color = AuraCyanNeon,
+                color = AuraTheme.colors.accentBrand,
                 letterSpacing = 2.sp
             )
             
@@ -3343,7 +3352,7 @@ fun AppSecuritySettingsScreen(
                 text = "created by aadii_xy",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
-                color = AuraWhiteMuted,
+                color = AuraTheme.colors.textMuted,
                 letterSpacing = 1.sp
             )
         }
@@ -3368,10 +3377,10 @@ fun GlobalMiniFloatingPlayer(
             .fillMaxWidth()
             .border(
                 1.dp,
-                Brush.linearGradient(listOf(AuraCyanNeon.copy(alpha = 0.6f), AuraPurpleAccent.copy(alpha = 0.3f))),
+                AuraTheme.colors.cardBorder,
                 RoundedCornerShape(16.dp)
             ),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.95f)),
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -3384,7 +3393,7 @@ fun GlobalMiniFloatingPlayer(
                     Icon(
                         imageVector = Icons.Default.MusicNote,
                         contentDescription = "Voice playing note",
-                        tint = AuraCyanNeon,
+                        tint = AuraTheme.colors.accentBrand,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -3392,14 +3401,14 @@ fun GlobalMiniFloatingPlayer(
                         text = header,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = AuraTheme.colors.textPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
 
                 IconButton(onClick = onClose, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Close, contentDescription = "Close Player", tint = Color.Red, modifier = Modifier.size(14.dp))
+                    Icon(Icons.Default.Close, contentDescription = "Close Player", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(14.dp))
                 }
             }
 
@@ -3408,11 +3417,11 @@ fun GlobalMiniFloatingPlayer(
             // Wave progress slider bar
             Slider(
                 value = progress,
-                onValueChange = onSeek,
+                onSeek = onSeek,
                 colors = SliderDefaults.colors(
-                    thumbColor = AuraCyanNeon,
-                    activeTrackColor = AuraCyanNeon,
-                    inactiveTrackColor = AuraSlateLight
+                    thumbColor = AuraTheme.colors.accentBrand,
+                    activeTrackColor = AuraTheme.colors.accentBrand,
+                    inactiveTrackColor = AuraTheme.colors.cardBorder
                 ),
                 modifier = Modifier.height(18.dp)
             )
@@ -3426,7 +3435,7 @@ fun GlobalMiniFloatingPlayer(
                     Icon(
                         imageVector = if (isPlaying) Icons.Default.PauseCircleFilled else Icons.Default.PlayCircleFilled,
                         contentDescription = "Playback toggle button",
-                        tint = AuraCyanNeon,
+                        tint = AuraTheme.colors.accentBrand,
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -3690,29 +3699,29 @@ fun HabitsTabScreen(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.ChevronRight, contentDescription = "Active streak", tint = AuraCopperWarm, modifier = Modifier.size(10.dp))
+                                            Icon(Icons.Default.ChevronRight, contentDescription = "Active streak", tint = AuraTheme.colors.gold, modifier = Modifier.size(10.dp))
                                             Spacer(modifier = Modifier.width(2.dp))
                                             Text(
                                                 "STREAK: ${habitsStreakFlow.value.currentStreak} d",
                                                 fontSize = 9.sp,
                                                 fontWeight = FontWeight.SemiBold,
-                                                color = AuraWhiteDescription
+                                                color = AuraTheme.colors.textSecondary
                                             )
                                         }
 
                                         if (!alarmTime.isNullOrBlank()) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(Icons.Default.NotificationsActive, contentDescription = "Alarm active", tint = AuraCyanNeon, modifier = Modifier.size(10.dp))
+                                                Icon(Icons.Default.NotificationsActive, contentDescription = "Alarm active", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
                                                 Spacer(modifier = Modifier.width(2.dp))
-                                                Text(alarmTime, fontSize = 9.sp, color = AuraCyanNeon, fontWeight = FontWeight.Bold)
+                                                Text(alarmTime, fontSize = 9.sp, color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                                             }
                                         }
 
                                         if (limitMins > 0) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(Icons.Default.Timer, contentDescription = "Target limit", tint = AuraPurpleAccent, modifier = Modifier.size(10.dp))
+                                                Icon(Icons.Default.Timer, contentDescription = "Target limit", tint = AuraTheme.colors.gold, modifier = Modifier.size(10.dp))
                                                 Spacer(modifier = Modifier.width(2.dp))
-                                                Text("${limitMins}m Goal", fontSize = 9.sp, color = AuraPurpleAccent, fontWeight = FontWeight.Bold)
+                                                Text("${limitMins}m Goal", fontSize = 9.sp, color = AuraTheme.colors.gold, fontWeight = FontWeight.Bold)
                                             }
                                         }
                                     }
@@ -3725,7 +3734,7 @@ fun HabitsTabScreen(
                                     text = "${(completePctFlow.value * 100).toInt()}% COMPLETED",
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = AuraCyanNeon
+                                    color = AuraTheme.colors.positiveGreen
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -3737,7 +3746,7 @@ fun HabitsTabScreen(
                                         },
                                         modifier = Modifier.size(24.dp)
                                     ) {
-                                        Icon(Icons.Default.PlayCircle, contentDescription = "Start Habit Timer", tint = AuraPurpleAccent, modifier = Modifier.size(16.dp))
+                                        Icon(Icons.Default.PlayCircle, contentDescription = "Start Habit Timer", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(16.dp))
                                     }
 
                                     // Config details
@@ -3745,11 +3754,11 @@ fun HabitsTabScreen(
                                         onClick = { habitToConfigure = habit },
                                         modifier = Modifier.size(24.dp)
                                     ) {
-                                        Icon(Icons.Default.Settings, contentDescription = "Habit Alarm Settings", tint = AuraWhiteMuted, modifier = Modifier.size(14.dp))
+                                        Icon(Icons.Default.Settings, contentDescription = "Habit Alarm Settings", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(14.dp))
                                     }
 
                                     IconButton(onClick = { viewModel.deleteHabit(habit) }, modifier = Modifier.size(24.dp)) {
-                                        Icon(Icons.Default.Delete, contentDescription = "Delete Habit", tint = Color.Red, modifier = Modifier.size(14.dp))
+                                        Icon(Icons.Default.Delete, contentDescription = "Delete Habit", tint = AuraTheme.colors.negativeRed, modifier = Modifier.size(14.dp))
                                     }
                                 }
                             }
@@ -3764,19 +3773,24 @@ fun HabitsTabScreen(
         var inlineHabitName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showCreateDialog = false },
-            title = { Text("CREATE HABIT", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+            title = { Text("CREATE HABIT", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
             text = {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = inlineHabitName,
                         onValueChange = { inlineHabitName = it },
-                        placeholder = { Text("Meditate, water intake...", color = AuraWhiteMuted) },
-                        label = { Text("Habit name loop", color = AuraCyanNeon) },
+                        placeholder = { Text("Meditate, water intake...", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Habit name loop", color = AuraTheme.colors.accentBrand) },
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight)
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("Select tracking frequency", fontSize = 11.sp, color = AuraWhiteMuted)
+                    Text("Select tracking frequency", fontSize = 11.sp, color = AuraTheme.colors.textSecondary)
                     Row(modifier = Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         listOf("Daily", "Weekly").forEach { freq ->
                             val isSel = selectedTabFreq == freq
@@ -3784,7 +3798,10 @@ fun HabitsTabScreen(
                                 selected = isSel,
                                 onClick = { selectedTabFreq = freq },
                                 label = { Text(freq) },
-                                colors = FilterChipDefaults.filterChipColors(selectedContainerColor = AuraPurpleAccent, selectedLabelColor = Color.White)
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = AuraTheme.colors.accentBrand,
+                                    selectedLabelColor = Color.White
+                                )
                             )
                         }
                     }
@@ -3800,15 +3817,15 @@ fun HabitsTabScreen(
                         }
                     }
                 ) {
-                    Text("CREATE", color = AuraCyanNeon)
+                    Text("CREATE", color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showCreateDialog = false }) {
-                    Text("CANCEL", color = Color.White)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary)
                 }
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 
@@ -3822,17 +3839,22 @@ fun HabitsTabScreen(
         
         AlertDialog(
             onDismissRequest = { habitToConfigure = null },
-            title = { Text("HABIT SETTINGS", color = Color.White, fontWeight = FontWeight.Bold) },
+            title = { Text("HABIT SETTINGS", color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Structure your habit loop with precise target guidelines and daily reminder alarm triggers.", color = AuraWhiteMuted, fontSize = 11.sp)
+                    Text("Structure your habit loop with precise target guidelines and daily reminder alarm triggers.", color = AuraTheme.colors.textSecondary, fontSize = 11.sp)
                     
                     OutlinedTextField(
                         value = configReminderTime,
                         onValueChange = { configReminderTime = it },
-                        placeholder = { Text("e.g. 08:30 or 21:00", color = AuraWhiteMuted) },
-                        label = { Text("Daily Reminder (HH:MM)", color = AuraWhiteMedium) },
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight, focusedTextColor = Color.White),
+                        placeholder = { Text("e.g. 08:30 or 21:00", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Daily Reminder (HH:MM)", color = AuraTheme.colors.accentBrand) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -3840,9 +3862,14 @@ fun HabitsTabScreen(
                     OutlinedTextField(
                         value = configTargetMins,
                         onValueChange = { configTargetMins = it.filter { c -> c.isDigit() } },
-                        placeholder = { Text("e.g. 15 or 30 mins", color = AuraWhiteMuted) },
-                        label = { Text("Practice Goals (Minutes)", color = AuraWhiteMedium) },
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AuraCyanNeon, unfocusedBorderColor = AuraSlateLight, focusedTextColor = Color.White),
+                        placeholder = { Text("e.g. 15 or 30 mins", color = AuraTheme.colors.textMuted) },
+                        label = { Text("Practice Goals (Minutes)", color = AuraTheme.colors.accentBrand) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AuraTheme.colors.accentBrand,
+                            unfocusedBorderColor = AuraTheme.colors.cardBorder,
+                            focusedTextColor = AuraTheme.colors.textPrimary,
+                            unfocusedTextColor = AuraTheme.colors.textPrimary
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -3856,17 +3883,17 @@ fun HabitsTabScreen(
                         viewModel.setHabitTargetMinutes(editingHabit.id, mins)
                         habitToConfigure = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon)
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand)
                 ) {
-                    Text("SAVE CONFIG", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text("SAVE CONFIG", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { habitToConfigure = null }) {
-                    Text("CANCEL", color = Color.White)
+                    Text("CANCEL", color = AuraTheme.colors.textSecondary)
                 }
             },
-            containerColor = AuraCharcoalBase
+            containerColor = AuraTheme.colors.cardBackground
         )
     }
 }
