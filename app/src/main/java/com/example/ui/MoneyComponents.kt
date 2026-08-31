@@ -102,7 +102,7 @@ fun MoneyTrackerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AuraObsidian)
+            .background(AuraTheme.colors.screenBackground)
             .statusBarsPadding()
             .navigationBarsPadding(),
         contentAlignment = Alignment.TopStart
@@ -2293,9 +2293,9 @@ fun FriendsAndSplitsModule(
             },
             text = {
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp)),
                     shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraObsidian)
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.bottomNavBackground)
                 ) {
                     Column(
                         modifier = Modifier

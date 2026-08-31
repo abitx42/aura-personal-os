@@ -491,7 +491,7 @@ fun MainAppContainer(
                         }
                     }
                 },
-                containerColor = AuraObsidian
+                containerColor = AuraTheme.colors.screenBackground
             ) { innerPadding ->
                 val isOnline by viewModel.isOnline.collectAsState()
                 val pendingOpsCount by viewModel.pendingOpsCount.collectAsState()
