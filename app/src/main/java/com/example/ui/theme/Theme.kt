@@ -29,7 +29,10 @@ data class AuraCustomColors(
     val textMuted: Color,
     val bottomNavBackground: Color,
     val bottomNavActivePill: Color
-)
+) {
+    val gold: Color get() = badgeGold
+    val screenBackground: Color get() = cardBackground
+}
 
 val LocalAuraColors = staticCompositionLocalOf {
     AuraCustomColors(
