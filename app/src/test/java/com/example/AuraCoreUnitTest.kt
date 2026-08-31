@@ -289,4 +289,48 @@ class AuraCoreUnitTest {
         val net = accountsTotal + investmentsTotal + toReceive - youOwe
         assertEquals(100000.0, net, 0.001)
     }
+
+    @Test
+    fun testNotesSorting_byModifiedTimestamp() {
+        val n1 = Note(id = 1, title = "A", content = "", lastModified = 1000L)
+        val n2 = Note(id = 2, title = "B", content = "", lastModified = 3000L)
+        val n3 = Note(id = 3, title = "C", content = "", lastModified = 2000L)
+
+        val list = listOf(n1, n2, n3)
+        val recentFirst = list.sortedByDescending { it.lastModified }
+        val oldestFirst = list.sortedBy { it.lastModified }
+
+        assertEquals(2, recentFirst[0].id)
+        assertEquals(3, recentFirst[1].id)
+        assertEquals(1, recentFirst[2].id)
+
+        assertEquals(1, oldestFirst[0].id)
+        assertEquals(3, oldestFirst[1].id)
+        assertEquals(2, oldestFirst[2].id)
+    }
+
+    @Test
+    fun testTaskPriorityOrdering_weightRank() {
+        fun priorityWeight(p: String) = when (p.lowercase()) {
+            "urgent" -> 4
+            "high" -> 3
+            "medium" -> 2
+            "low" -> 1
+            else -> 0
+        }
+
+        val tasks = listOf("Low", "Urgent", "Medium", "High")
+        val sortedByPriority = tasks.sortedByDescending { priorityWeight(it) }
+
+        assertEquals(listOf("Urgent", "High", "Medium", "Low"), sortedByPriority)
+    }
+
+    @Test
+    fun testProductivityPercentage_math() {
+        val total = 5
+        val completed = 4
+        val percent = if (total > 0) ((completed.toDouble() / total) * 100).toInt() else 0
+
+        assertEquals(80, percent)
+    }
 }
