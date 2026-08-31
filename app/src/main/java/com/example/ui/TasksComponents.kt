@@ -833,13 +833,14 @@ fun KanbanTaskCard(
     }
 }
 
+@Composable
 fun getPriorityColor(priority: String): Color {
     return when (priority.lowercase()) {
-        "urgent" -> SemanticRed
-        "high" -> RadiantOrange
-        "medium" -> SemanticGold
-        "low" -> SemanticGreen
-        else -> TextBoneSecondary
+        "urgent" -> AuraTheme.colors.negativeRed
+        "high" -> AuraTheme.colors.accentBrand
+        "medium" -> AuraTheme.colors.gold
+        "low" -> AuraTheme.colors.positiveGreen
+        else -> AuraTheme.colors.textSecondary
     }
 }
 
@@ -1175,7 +1176,7 @@ fun TaskComposerScreen(
                             viewModel.deleteTaskPermanently(task)
                             onBack()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF5350)),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.negativeRed),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(10.dp)
                     ) {
