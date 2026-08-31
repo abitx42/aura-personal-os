@@ -217,4 +217,43 @@ class AuraCoreUnitTest {
         val emptyStroke = SketchStroke(points = emptyList(), colorHex = "#FF5B32", strokeWidth = 6f)
         assertTrue(emptyStroke.points.isEmpty())
     }
+
+    @Test
+    fun testNoteFiltering_caseInsensitiveMatches() {
+        val notes = listOf(
+            Pair("Meeting Notes", "Discuss Q3 sprint plans"),
+            Pair("Grocery List", "Milk, Eggs, Apples"),
+            Pair("Ideas for Aura", "Add offline first ledger syncing")
+        )
+        val query = "aura"
+        val results = notes.filter { (title, content) ->
+            title.contains(query, ignoreCase = true) || content.contains(query, ignoreCase = true)
+        }
+
+        assertEquals(1, results.size)
+        assertEquals("Ideas for Aura", results[0].first)
+    }
+
+    @Test
+    fun testSingleMemberExpenseSplit_fullAmount() {
+        val bill = 350.0
+        val members = listOf("Alice")
+        val partitionCount = members.size.coerceAtLeast(1)
+        val mapSplits = members.associateWith { bill / partitionCount }
+
+        assertEquals(1, mapSplits.size)
+        assertEquals(350.0, mapSplits["Alice"] ?: 0.0, 0.001)
+    }
+
+    @Test
+    fun testMultipleCategoryTags_csvParsing() {
+        val rawTags = "Fintech, Savings , 2026 , Budget "
+        val parsed = rawTags.split(",").map { it.trim() }.filter { it.isNotBlank() }
+
+        assertEquals(4, parsed.size)
+        assertEquals("Fintech", parsed[0])
+        assertEquals("Savings", parsed[1])
+        assertEquals("2026", parsed[2])
+        assertEquals("Budget", parsed[3])
+    }
 }
