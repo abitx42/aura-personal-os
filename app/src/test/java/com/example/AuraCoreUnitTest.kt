@@ -256,4 +256,37 @@ class AuraCoreUnitTest {
         assertEquals("2026", parsed[2])
         assertEquals("Budget", parsed[3])
     }
+
+    @Test
+    fun testAmountParsing_validDoubleStrings() {
+        val input1 = "1500"
+        val input2 = " 250.75 "
+        val input3 = "0.99"
+
+        assertEquals(1500.0, input1.trim().toDoubleOrNull() ?: 0.0, 0.001)
+        assertEquals(250.75, input2.trim().toDoubleOrNull() ?: 0.0, 0.001)
+        assertEquals(0.99, input3.trim().toDoubleOrNull() ?: 0.0, 0.001)
+    }
+
+    @Test
+    fun testAmountParsing_invalidStrings() {
+        val invalid1 = "abc"
+        val invalid2 = "$120"
+        val invalid3 = ""
+
+        assertEquals(0.0, invalid1.toDoubleOrNull() ?: 0.0, 0.001)
+        assertEquals(0.0, invalid2.toDoubleOrNull() ?: 0.0, 0.001)
+        assertEquals(0.0, invalid3.toDoubleOrNull() ?: 0.0, 0.001)
+    }
+
+    @Test
+    fun testNetWorthCalculation_withZeroDebts() {
+        val accountsTotal = 75000.0
+        val investmentsTotal = 25000.0
+        val toReceive = 0.0
+        val youOwe = 0.0
+
+        val net = accountsTotal + investmentsTotal + toReceive - youOwe
+        assertEquals(100000.0, net, 0.001)
+    }
 }
