@@ -913,6 +913,14 @@ fun TransactionLedgerView(
                     onValueChange = { searchQuery = it },
                     placeholder = { Text("Search transactions...", color = AuraTheme.colors.textMuted, fontSize = 12.sp) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = AuraTheme.colors.textMuted) },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(Icons.Default.Close, contentDescription = "Clear search", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
+                            }
+                        }
+                    },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = AuraTheme.colors.accentBrand,
