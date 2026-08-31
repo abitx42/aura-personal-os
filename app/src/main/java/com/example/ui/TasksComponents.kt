@@ -307,11 +307,11 @@ fun TasksScreen(
 
                                 OutlinedButton(
                                     onClick = { viewModel.resetTaskTimer() },
-                                    border = BorderStroke(1.dp, AuraSlateLight),
+                                    border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                 ) {
-                                    Text("RESET", fontSize = 9.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text("RESET", fontSize = 9.sp, color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -336,7 +336,7 @@ fun TasksScreen(
                                 .fillMaxHeight(),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text(col, color = AuraWhiteMuted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(col, color = AuraTheme.colors.textMuted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                             repeat(3) {
                                 ShimmerKanbanCard()
                             }
@@ -371,7 +371,7 @@ fun TasksScreen(
                             title = "No Objectives Found",
                             description = "No tasks match your selected filter criteria. Create a new objective to get started.",
                             icon = Icons.Default.HourglassDisabled,
-                            iconTint = MaterialTheme.colorScheme.secondary
+                            iconTint = AuraTheme.colors.accentBrand
                         )
                     }
                 } else {
@@ -665,7 +665,7 @@ fun TaskRowItem(
                         )
                     }
                 }
-                Text(task.category, fontSize = 9.sp, color = AuraWhiteMuted, fontWeight = FontWeight.SemiBold)
+                Text(task.category, fontSize = 9.sp, color = AuraTheme.colors.textMuted, fontWeight = FontWeight.SemiBold)
             }
         }
     }
