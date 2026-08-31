@@ -529,13 +529,22 @@ fun KanbanBoardLayout(
             }
 
             if (columnTasks.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Duo, contentDescription = "None", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(48.dp))
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text("No objectives in this cycle", fontSize = 13.sp, color = AuraTheme.colors.textMuted)
-                    }
+                val emptyTitle = when (currentColumnSelected) {
+                    0 -> "No Pending Tasks"
+                    1 -> "Nothing In Progress"
+                    else -> "No Completed Tasks"
                 }
+                val emptyDesc = when (currentColumnSelected) {
+                    0 -> "All planned tasks are moved or finished. Add a new objective above."
+                    1 -> "Move tasks here from To Do to track your active focus workflow."
+                    else -> "Complete tasks to see your finished achievements archived here."
+                }
+                AuraEmptyState(
+                    title = emptyTitle,
+                    description = emptyDesc,
+                    icon = Icons.Outlined.CheckCircleOutline,
+                    iconTint = AuraTheme.colors.accentBrand
+                )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
                     items(columnTasks, key = { it.id }) { task ->
