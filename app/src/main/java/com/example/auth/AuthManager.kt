@@ -2,8 +2,10 @@ package com.example.auth
 
 import android.content.Context
 import android.content.Intent
+import com.example.AuraApplication
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -13,34 +15,22 @@ class AuthManager(private val context: Context) {
 
     private val auth: FirebaseAuth? by lazy {
         try {
-            val isInitialized = try {
-                com.google.firebase.FirebaseApp.getInstance() != null
-            } catch (e: IllegalStateException) {
-                false
+            AuraApplication.ensureFirebaseInitialized(context)
+            if (FirebaseApp.getApps(context).isNotEmpty()) {
+                FirebaseAuth.getInstance()
+            } else {
+                null
             }
-            if (!isInitialized) {
-                try {
-                    com.google.firebase.FirebaseApp.initializeApp(context)
-                } catch (e: Exception) {
-                    val options = com.google.firebase.FirebaseOptions.Builder()
-                        .setApiKey("AIzaSyDummyKeyForAuraNotesInitOnly")
-                        .setApplicationId("1:1234567890:android:abcdef123456")
-                        .setProjectId("aura-notes-placeholder")
-                        .build()
-                    com.google.firebase.FirebaseApp.initializeApp(context, options)
-                }
-            }
-            FirebaseAuth.getInstance()
-        } catch (e: Exception) {
-            android.util.Log.e("AuthManager", "Firebase is not initialized or configured", e)
+        } catch (e: Throwable) {
+            android.util.Log.w("AuthManager", "Firebase Auth unavailable: ${e.message}")
             null
         }
     }
 
     // Current signed-in user (null if not signed in)
-    val currentUser: FirebaseUser? get() = auth?.currentUser
-    val userId: String? get() = auth?.currentUser?.uid
-    val isSignedIn: Boolean get() = auth?.currentUser != null
+    val currentUser: FirebaseUser? get() = try { auth?.currentUser } catch (e: Throwable) { null }
+    val userId: String? get() = try { auth?.currentUser?.uid } catch (e: Throwable) { null }
+    val isSignedIn: Boolean get() = try { auth?.currentUser != null } catch (e: Throwable) { false }
 
     // Build the Google Sign-In intent — launch this from your Activity
     fun getSignInIntent(): Intent {
@@ -81,3 +71,4 @@ class AuthManager(private val context: Context) {
         } catch (_: Exception) {}
     }
 }
+

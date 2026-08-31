@@ -1062,7 +1062,6 @@ fun TransactionLedgerView(
         }
     }
 }
-}
 
 // ===================================================
 // SUB-MODULE: PORTFOLIO INVESTMENTS TRACKER

@@ -20,8 +20,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import com.example.data.*
+import com.example.ui.AuraHaptics
 import com.example.ui.theme.*
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.anim.ShimmerTaskRow
@@ -44,6 +47,7 @@ fun TasksScreen(
     viewModel: AppViewModel,
     onOpenTaskComposer: (Task?) -> Unit
 ) {
+    val view = LocalView.current
     val tasksList by viewModel.allTasks.collectAsState()
     val filterCategory by viewModel.tasksFilterCategory.collectAsState()
     val filterPriority by viewModel.tasksFilterPriority.collectAsState()
@@ -155,7 +159,7 @@ fun TasksScreen(
                         onClick = { catMenuExpanded = true },
                         label = { Text("Label: $filterCategory", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
                         colors = AssistChipDefaults.assistChipColors(containerColor = AuraTheme.colors.cardBackground),
-                        border = AssistChipDefaults.assistChipBorder(borderColor = AuraTheme.colors.cardBorder)
+                        border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                     )
                     DropdownMenu(
                         expanded = catMenuExpanded,
@@ -181,7 +185,7 @@ fun TasksScreen(
                         onClick = { priorityMenuExpanded = true },
                         label = { Text("Priority: $filterPriority", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
                         colors = AssistChipDefaults.assistChipColors(containerColor = AuraTheme.colors.cardBackground),
-                        border = AssistChipDefaults.assistChipBorder(borderColor = AuraTheme.colors.cardBorder)
+                        border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                     )
                     DropdownMenu(
                         expanded = priorityMenuExpanded,
@@ -280,7 +284,7 @@ fun TasksScreen(
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Button(
                                     onClick = {
-                                        com.example.ui.anim.AuraHaptics.triggerSelection(context)
+                                        AuraHaptics.triggerSelection(view)
                                         if (isTimerRunning) {
                                             viewModel.pauseTaskTimer()
                                         } else {
@@ -308,7 +312,7 @@ fun TasksScreen(
 
                                 OutlinedButton(
                                     onClick = {
-                                        com.example.ui.anim.AuraHaptics.triggerSelection(context)
+                                        AuraHaptics.triggerSelection(view)
                                         viewModel.resetTaskTimer()
                                     },
                                     border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
@@ -546,7 +550,7 @@ fun KanbanBoardLayout(
                 AuraEmptyState(
                     title = emptyTitle,
                     description = emptyDesc,
-                    icon = Icons.Outlined.CheckCircleOutline,
+                    icon = Icons.Outlined.CheckCircle,
                     iconTint = AuraTheme.colors.accentBrand
                 )
             } else {

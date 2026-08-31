@@ -26,29 +26,9 @@ class MainActivity : ComponentActivity() {
     AuraErrorHandler.install(this)
     // Configure optimized image loader
     Coil.setImageLoader(AuraImageLoader.getInstance(this))
+    // Initialize Firebase if not already initialized
+    AuraApplication.ensureFirebaseInitialized(this)
 
-    try {
-      val isInitialized = try {
-        com.google.firebase.FirebaseApp.getInstance() != null
-      } catch (e: IllegalStateException) {
-        false
-      }
-      if (!isInitialized) {
-        try {
-          com.google.firebase.FirebaseApp.initializeApp(this)
-        } catch (e: Exception) {
-          // Fall back to programmatic initialization using a dummy config
-          val options = com.google.firebase.FirebaseOptions.Builder()
-            .setApiKey("AIzaSyDummyKeyForAuraNotesInitOnly")
-            .setApplicationId("1:1234567890:android:abcdef123456")
-            .setProjectId("aura-notes-placeholder")
-            .build()
-          com.google.firebase.FirebaseApp.initializeApp(this, options)
-        }
-      }
-    } catch (e: Exception) {
-      AuraErrorHandler.report("MainActivity.FirebaseInit", e)
-    }
     enableEdgeToEdge()
     setContent {
       val viewModel: AppViewModel = viewModel()

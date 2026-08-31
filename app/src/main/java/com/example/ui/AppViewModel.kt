@@ -158,7 +158,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val _themePalette = MutableStateFlow(
-        prefs.getString("theme_palette", "CYAN_GLOW") ?: "CYAN_GLOW"
+        prefs.getString("theme_palette", "RADIANT_SUNSET") ?: "RADIANT_SUNSET"
     )
     val themePalette: StateFlow<String> = _themePalette
 
@@ -214,6 +214,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     val captureButtonColor = MutableStateFlow(prefs.getString("capture_button_color", "DEFAULT") ?: "DEFAULT")
     val captureButtonAnimationType = MutableStateFlow(prefs.getString("capture_button_animation", "SPRING") ?: "SPRING")
+    val isRobotCompanionEnabled = MutableStateFlow(prefs.getBoolean("robot_companion_enabled", true))
 
     fun setCaptureButtonColor(color: String) {
         prefs.edit().putString("capture_button_color", color).apply()
@@ -223,6 +224,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun setCaptureButtonAnimationType(animation: String) {
         prefs.edit().putString("capture_button_animation", animation).apply()
         captureButtonAnimationType.value = animation
+    }
+
+    fun setRobotCompanionEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean("robot_companion_enabled", enabled).apply()
+        isRobotCompanionEnabled.value = enabled
     }
 
     val defaultAboutUs = "hi myself Aditya bodake i am cse student of 1st year pursuing engineering through this is one of my first app built with ai and promt enginnering so please support this app rate it share it use it send suggestions and bugs to me at moreaboutastram@gmail.com"
@@ -513,6 +519,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // NOTES SECTION STATES
     // ==========================================
     val activeNotes: StateFlow<List<Note>> = repository.activeNotesFlow
+        .onStart { repository.autoPopulateDefaultNotesIfEmpty() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val archivedNotes: StateFlow<List<Note>> = repository.archivedNotesFlow
@@ -741,6 +748,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // TASKS SECTION STATES
     // ==========================================
     val allTasks: StateFlow<List<Task>> = repository.allTasksFlow
+        .onStart { repository.autoPopulateDefaultTasksIfEmpty() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _selectedTaskDate = MutableStateFlow(todayString)

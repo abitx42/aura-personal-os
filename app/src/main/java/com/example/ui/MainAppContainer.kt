@@ -174,7 +174,8 @@ fun MainAppContainer(
                     }
                 },
                 floatingActionButton = {
-                    if (activeTab != Section.RichNoteEditor && activeTab != Section.DrawingWorkspace && !isDrawingWorkspaceOpen) {
+                    val isRobotCompanionEnabled by viewModel.isRobotCompanionEnabled.collectAsState()
+                    if (!isRobotCompanionEnabled && activeTab != Section.RichNoteEditor && activeTab != Section.DrawingWorkspace && !isDrawingWorkspaceOpen) {
                         val quickCaptureIconUri by viewModel.quickCaptureIconUri.collectAsState()
                         val haptic = LocalHapticFeedback.current
 
@@ -219,13 +220,14 @@ fun MainAppContainer(
                         )
 
                         val buttonBrush = when (captureColorId) {
-                            "CYAN" -> Brush.radialGradient(listOf(AuraCyanNeon, Color(0xFF00B0FF)))
-                            "PURPLE" -> Brush.radialGradient(listOf(AuraPurpleAccent, Color(0xFFD500F9)))
-                            "EMERALD" -> Brush.radialGradient(listOf(Color(0xFF00FF87), Color(0xFF00C853)))
+                            "CYAN" -> Brush.radialGradient(listOf(Color(0xFF00E5FF), Color(0xFF00B0FF)))
+                            "PURPLE" -> Brush.radialGradient(listOf(Color(0xFFBB86FC), Color(0xFFD500F9)))
+                            "EMERALD" -> Brush.radialGradient(listOf(Color(0xFF00D287), Color(0xFF00C853)))
                             "PINK" -> Brush.radialGradient(listOf(Color(0xFFFF2A85), Color(0xFFFF1744)))
                             "RED" -> Brush.radialGradient(listOf(Color(0xFFFF3E3E), Color(0xFFD50000)))
                             "AMBER" -> Brush.radialGradient(listOf(Color(0xFFFFC107), Color(0xFFFF6D00)))
-                            else -> Brush.radialGradient(listOf(AuraCyanNeon, AuraPurpleAccent))
+                            "LIME" -> Brush.radialGradient(listOf(AxioElectricLime, Color(0xFF00D287)))
+                            else -> Brush.radialGradient(listOf(AuraTheme.colors.accentBrand, Color(0xFFFF7A50)))
                         }
 
                         Column(
@@ -820,6 +822,33 @@ fun MainAppContainer(
                             }
                         }
                     }
+
+                    // Interactive Autonomous AI Companion Robot ("Aura Bot")
+                    val isRobotCompanionEnabled by viewModel.isRobotCompanionEnabled.collectAsState()
+                    AuraRobotCompanion(
+                        isVisible = isRobotCompanionEnabled && activeTab != Section.RichNoteEditor && activeTab != Section.DrawingWorkspace && !isDrawingWorkspaceOpen,
+                        activeTab = activeTab,
+                        onNavigateTab = { section -> viewModel.navigateTo(section) },
+                        onQuickNote = {
+                            viewModel.selectNote(null)
+                            viewModel.navigateTo(Section.RichNoteEditor)
+                        },
+                        onVoiceMemo = {
+                            showAudioRecordDialog = true
+                        },
+                        onSnapImage = {
+                            showImageCaptureDialog = true
+                        },
+                        onIncome = {
+                            showGlobalQuickTransactionType = "RECEIVED"
+                        },
+                        onExpense = {
+                            showGlobalQuickTransactionType = "SENT"
+                        },
+                        onStyleFab = {
+                            showCustomIconDialog = true
+                        }
+                    )
                 }
 
                 // --- AUDIO RECORDING DIALOG BEGIN ---
@@ -1336,6 +1365,868 @@ fun MainAppContainer(
     }
 }
 
+fun getNoteCategoryColor(category: String): Color {
+    return when (category.trim().lowercase()) {
+        "work", "business", "project" -> Color(0xFF38BDF8)
+        "ideas", "brainstorm", "creative" -> Color(0xFFA78BFA)
+        "personal", "life" -> RadiantOrange
+        "voice", "audio", "recording" -> Color(0xFF34D399)
+        "finance", "money" -> SemanticGreen
+        "study", "education" -> Color(0xFFFBBF24)
+        else -> RadiantOrange
+    }
+}
+
+fun formatNoteRelativeDate(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+    val seconds = diff / 1000
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    val days = hours / 24
+
+    return when {
+        diff < 60_000 -> "Just now"
+        minutes < 60 -> "${minutes}m ago"
+        hours < 24 -> "${hours}h ago"
+        days == 1L -> "Yesterday"
+        days < 7 -> "${days}d ago"
+        else -> SimpleDateFormat("MMM dd", Locale.getDefault()).format(Date(timestamp))
+    }
+}
+
+@Composable
+fun AuraQuickActionStarterChip(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(AuraTheme.colors.cardBackground)
+            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AuraTheme.colors.textPrimary
+        )
+    }
+}
+
+@Composable
+fun AuraHomeScreenNoteCard(
+    note: Note,
+    isPlayingThis: Boolean,
+    onOpen: () -> Unit,
+    onToggleBookmark: () -> Unit,
+    onTogglePin: () -> Unit,
+    onPlayVoice: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val haptic = LocalHapticFeedback.current
+    val shape = RoundedCornerShape(16.dp)
+    val catColor = getNoteCategoryColor(note.category)
+    val wordCount = remember(note.content) {
+        note.content.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.size
+    }
+    val timeAgo = remember(note.lastModified) {
+        formatNoteRelativeDate(note.lastModified)
+    }
+
+    Card(
+        modifier = modifier
+            .auraSpringPress(
+                cornerRadius = 16.dp,
+                onClick = onOpen,
+                onLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onTogglePin()
+                }
+            )
+            .border(
+                width = if (note.isPinned) 1.5.dp else 1.dp,
+                color = if (note.isPinned) AuraTheme.colors.accentBrand.copy(alpha = 0.6f) else AuraTheme.colors.cardBorder,
+                shape = shape
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (note.isPinned) AuraTheme.colors.cardBackground.copy(alpha = 0.95f) else AuraTheme.colors.cardBackground
+        ),
+        shape = shape
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                // Top Row: Category Squircle Badge + Action Badges (Pin, Star)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(catColor.copy(alpha = 0.15f))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = note.category.uppercase(),
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = catColor,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        if (note.isPinned) {
+                            Icon(
+                                Icons.Default.PushPin,
+                                contentDescription = "Pinned",
+                                tint = AuraTheme.colors.badgeGold,
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onToggleBookmark()
+                            },
+                            modifier = Modifier.size(20.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (note.isBookmarked || note.isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                                contentDescription = "Bookmark",
+                                tint = if (note.isBookmarked || note.isFavorite) AuraTheme.colors.gold else AuraTheme.colors.textMuted,
+                                modifier = Modifier.size(13.dp)
+                            )
+                        }
+                    }
+                }
+
+                // Note Title
+                Text(
+                    text = note.title.ifBlank { "Untitled Note" },
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AuraTheme.colors.textPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                // Note Content Excerpt
+                Text(
+                    text = note.content.ifBlank { "Tap to add rich notes..." },
+                    fontSize = 11.sp,
+                    color = AuraTheme.colors.textSecondary,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 15.sp
+                )
+
+                // Media Attachment Previews if any
+                if (!note.voicePath.isNullOrBlank() || !note.drawingData.isNullOrBlank() || !note.photoPath.isNullOrBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (!note.voicePath.isNullOrBlank()) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(AuraTheme.colors.positiveGreen.copy(alpha = 0.14f))
+                                    .clickable { onPlayVoice() }
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = if (isPlayingThis) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                        contentDescription = "Play Voice Note",
+                                        tint = AuraTheme.colors.positiveGreen,
+                                        modifier = Modifier.size(11.dp)
+                                    )
+                                    Text(
+                                        text = if (isPlayingThis) "PLAYING" else "VOICE",
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AuraTheme.colors.positiveGreen
+                                    )
+                                }
+                            }
+                        }
+
+                        if (!note.drawingData.isNullOrBlank()) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(AuraTheme.colors.accentBrand.copy(alpha = 0.12f))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Draw,
+                                        contentDescription = "Canvas",
+                                        tint = AuraTheme.colors.accentBrand,
+                                        modifier = Modifier.size(10.dp)
+                                    )
+                                    Text(
+                                        text = "SKETCH",
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AuraTheme.colors.accentBrand
+                                    )
+                                }
+                            }
+                        }
+
+                        if (!note.photoPath.isNullOrBlank()) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF38BDF8).copy(alpha = 0.12f))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Image,
+                                        contentDescription = "Photo",
+                                        tint = Color(0xFF38BDF8),
+                                        modifier = Modifier.size(10.dp)
+                                    )
+                                    Text(
+                                        text = "IMAGE",
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF38BDF8)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Bottom metadata row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = timeAgo,
+                    fontSize = 9.sp,
+                    color = AuraTheme.colors.textMuted
+                )
+                if (wordCount > 0) {
+                    Text(
+                        text = "$wordCount words",
+                        fontSize = 9.sp,
+                        color = AuraTheme.colors.textMuted
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AuraHomeScreenNoteRowItem(
+    note: Note,
+    isPlayingThis: Boolean,
+    onOpen: () -> Unit,
+    onToggleBookmark: () -> Unit,
+    onTogglePin: () -> Unit,
+    onPlayVoice: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val haptic = LocalHapticFeedback.current
+    val shape = RoundedCornerShape(14.dp)
+    val catColor = getNoteCategoryColor(note.category)
+    val timeAgo = remember(note.lastModified) {
+        formatNoteRelativeDate(note.lastModified)
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .auraSpringPress(
+                cornerRadius = 14.dp,
+                onClick = onOpen,
+                onLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onTogglePin()
+                }
+            )
+            .border(
+                width = if (note.isPinned) 1.5.dp else 1.dp,
+                color = if (note.isPinned) AuraTheme.colors.accentBrand.copy(alpha = 0.5f) else AuraTheme.colors.cardBorder,
+                shape = shape
+            ),
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
+        shape = shape
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(catColor.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = when {
+                        !note.voicePath.isNullOrBlank() -> Icons.Default.Mic
+                        !note.drawingData.isNullOrBlank() -> Icons.Default.Draw
+                        !note.photoPath.isNullOrBlank() -> Icons.Default.Image
+                        else -> Icons.Default.Description
+                    },
+                    contentDescription = null,
+                    tint = catColor,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = note.title.ifBlank { "Untitled Note" },
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AuraTheme.colors.textPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (note.isPinned) {
+                        Icon(
+                            Icons.Default.PushPin,
+                            contentDescription = "Pinned",
+                            tint = AuraTheme.colors.badgeGold,
+                            modifier = Modifier.size(11.dp)
+                        )
+                    }
+                }
+
+                Text(
+                    text = note.content.ifBlank { "No content description." },
+                    fontSize = 11.sp,
+                    color = AuraTheme.colors.textSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = note.category.uppercase(),
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = catColor
+                    )
+                    Text(
+                        text = "•",
+                        fontSize = 8.sp,
+                        color = AuraTheme.colors.textMuted
+                    )
+                    Text(
+                        text = timeAgo,
+                        fontSize = 9.sp,
+                        color = AuraTheme.colors.textMuted
+                    )
+                }
+            }
+
+            // Quick Play Voice or Bookmark
+            if (!note.voicePath.isNullOrBlank()) {
+                IconButton(
+                    onClick = onPlayVoice,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isPlayingThis) Icons.Default.PauseCircleFilled else Icons.Default.PlayCircleFilled,
+                        contentDescription = "Play Voice Note",
+                        tint = AuraTheme.colors.positiveGreen,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = onToggleBookmark,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        imageVector = if (note.isBookmarked || note.isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = "Bookmark",
+                        tint = if (note.isBookmarked || note.isFavorite) AuraTheme.colors.gold else AuraTheme.colors.textMuted,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeScreenAuraNotesPreview(
+    viewModel: AppViewModel,
+    notesList: List<Note>,
+    onOpenNote: (Note) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var selectedFilterTag by remember { mutableStateOf("All") }
+    var previewLayoutMode by remember { mutableStateOf("CAROUSEL") } // "CAROUSEL", "GRID", "LIST"
+    val playbackState by viewModel.playbackState.collectAsState()
+    val isPlaying = playbackState is PlaybackState.Playing
+    val currentHeader by viewModel.playbackHeader.collectAsState()
+    val haptic = LocalHapticFeedback.current
+
+    // Extract dynamic categories and filter options
+    val filterOptions = remember(notesList) {
+        val baseFilters = mutableListOf("All", "📌 Pinned", "🔖 Starred", "🎙️ Voice", "🎨 Canvas")
+        val uniqueCats = notesList.map { it.category.trim() }.filter { it.isNotBlank() && it !in listOf("General", "All") }.distinct()
+        baseFilters.addAll(uniqueCats)
+        baseFilters
+    }
+
+    val filteredNotes = remember(notesList, selectedFilterTag) {
+        when (selectedFilterTag) {
+            "All" -> notesList
+            "📌 Pinned" -> notesList.filter { it.isPinned }
+            "🔖 Starred" -> notesList.filter { it.isBookmarked || it.isFavorite }
+            "🎙️ Voice" -> notesList.filter { !it.voicePath.isNullOrBlank() }
+            "🎨 Canvas" -> notesList.filter { !it.drawingData.isNullOrBlank() }
+            else -> notesList.filter { it.category.equals(selectedFilterTag, ignoreCase = true) }
+        }
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        // 1. SECTION HEADER WITH ACTIONS & LAYOUT TOGGLE
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.clickable { viewModel.navigateTo(Section.Notes) }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Feed,
+                        contentDescription = null,
+                        tint = AuraTheme.colors.accentBrand,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+
+                Text(
+                    "AURA NOTES",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = AuraTheme.colors.textPrimary,
+                    letterSpacing = 1.2.sp
+                )
+
+                if (notesList.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f))
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            "${notesList.size}",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.accentBrand
+                        )
+                    }
+                }
+            }
+
+            // Right side: Layout Switcher & Action Buttons
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                // Layout Mode Switcher Box
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(AuraTheme.colors.cardBackground)
+                        .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { previewLayoutMode = "CAROUSEL" },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ViewCarousel,
+                                contentDescription = "Carousel View",
+                                tint = if (previewLayoutMode == "CAROUSEL") AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = { previewLayoutMode = "GRID" },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.GridView,
+                                contentDescription = "Grid View",
+                                tint = if (previewLayoutMode == "GRID") AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = { previewLayoutMode = "LIST" },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.FormatListBulleted,
+                                contentDescription = "List View",
+                                tint = if (previewLayoutMode == "LIST") AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                    }
+                }
+
+                // Quick Add Note Button
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(AuraTheme.colors.accentBrand.copy(alpha = 0.14f))
+                        .clickable {
+                            viewModel.selectNote(null)
+                            viewModel.navigateTo(Section.RichNoteEditor)
+                        }
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "New Note",
+                            tint = AuraTheme.colors.accentBrand,
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Text(
+                            "NEW",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.accentBrand,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+
+                // View All Button
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable { viewModel.navigateTo(Section.Notes) }
+                        .padding(horizontal = 6.dp, vertical = 5.dp)
+                ) {
+                    Text(
+                        "ALL",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AuraTheme.colors.textSecondary
+                    )
+                    Icon(
+                        Icons.Default.ArrowForward,
+                        contentDescription = "View all notes",
+                        tint = AuraTheme.colors.textSecondary,
+                        modifier = Modifier.size(10.dp)
+                    )
+                }
+            }
+        }
+
+        // 2. QUICK FILTER CHIPS (Scrollable)
+        if (notesList.isNotEmpty()) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(filterOptions) { filter ->
+                    val isSelected = selectedFilterTag == filter
+                    val chipCount = when (filter) {
+                        "All" -> notesList.size
+                        "📌 Pinned" -> notesList.count { it.isPinned }
+                        "🔖 Starred" -> notesList.count { it.isBookmarked || it.isFavorite }
+                        "🎙️ Voice" -> notesList.count { !it.voicePath.isNullOrBlank() }
+                        "🎨 Canvas" -> notesList.count { !it.drawingData.isNullOrBlank() }
+                        else -> notesList.count { it.category.equals(filter, ignoreCase = true) }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(
+                                if (isSelected) AuraTheme.colors.accentBrand
+                                else AuraTheme.colors.cardBackground
+                            )
+                            .border(
+                                1.dp,
+                                if (isSelected) AuraTheme.colors.accentBrand
+                                else AuraTheme.colors.cardBorder,
+                                RoundedCornerShape(20.dp)
+                            )
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                selectedFilterTag = filter
+                            }
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = filter,
+                                fontSize = 10.sp,
+                                fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                                color = if (isSelected) Color.White else AuraTheme.colors.textPrimary
+                            )
+                            if (chipCount > 0) {
+                                Text(
+                                    text = "($chipCount)",
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSelected) Color.White.copy(alpha = 0.8f) else AuraTheme.colors.textMuted
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. NOTES PREVIEW CONTENT
+        if (notesList.isEmpty() || filteredNotes.isEmpty()) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(18.dp)),
+                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(CircleShape)
+                                .background(AuraTheme.colors.accentBrand.copy(alpha = 0.15f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.DriveFileRenameOutline,
+                                contentDescription = null,
+                                tint = AuraTheme.colors.accentBrand,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (notesList.isEmpty()) "Aura Notebook is Ready" else "No matching notes found",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AuraTheme.colors.textPrimary
+                            )
+                            Text(
+                                text = if (notesList.isEmpty()) "Capture thoughts, voice recordings, and sketches." else "Try choosing another filter tab above.",
+                                fontSize = 11.sp,
+                                color = AuraTheme.colors.textSecondary
+                            )
+                        }
+                    }
+
+                    // 3 Quick Action Starter Buttons
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        AuraQuickActionStarterChip(
+                            label = "💡 Note",
+                            onClick = {
+                                viewModel.selectNote(null)
+                                viewModel.navigateTo(Section.RichNoteEditor)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AuraQuickActionStarterChip(
+                            label = "🎙️ Voice",
+                            onClick = {
+                                viewModel.selectNote(null)
+                                viewModel.navigateTo(Section.RichNoteEditor)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AuraQuickActionStarterChip(
+                            label = "🎨 Sketch",
+                            onClick = {
+                                viewModel.navigateTo(Section.DrawingWorkspace)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        } else {
+            when (previewLayoutMode) {
+                "CAROUSEL" -> {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(filteredNotes.take(10), key = { it.id }) { note ->
+                            AuraHomeScreenNoteCard(
+                                note = note,
+                                isPlayingThis = (isPlaying && currentHeader == note.title),
+                                onOpen = { onOpenNote(note) },
+                                onToggleBookmark = { viewModel.toggleNoteBookmark(note) },
+                                onTogglePin = { viewModel.toggleNotePinned(note) },
+                                onPlayVoice = {
+                                    if (!note.voicePath.isNullOrBlank()) {
+                                        if (isPlaying && currentHeader == note.title) {
+                                            viewModel.pauseVoiceNote()
+                                        } else {
+                                            viewModel.startPlayingVoiceNote(note.voicePath, note.title)
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.width(200.dp)
+                            )
+                        }
+                    }
+                }
+                "GRID" -> {
+                    // 2-column stacked rows for Home Screen
+                    val chunkedNotes = filteredNotes.take(6).chunked(2)
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        chunkedNotes.forEach { pair ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                pair.forEach { note ->
+                                    AuraHomeScreenNoteCard(
+                                        note = note,
+                                        isPlayingThis = (isPlaying && currentHeader == note.title),
+                                        onOpen = { onOpenNote(note) },
+                                        onToggleBookmark = { viewModel.toggleNoteBookmark(note) },
+                                        onTogglePin = { viewModel.toggleNotePinned(note) },
+                                        onPlayVoice = {
+                                            if (!note.voicePath.isNullOrBlank()) {
+                                                if (isPlaying && currentHeader == note.title) {
+                                                    viewModel.pauseVoiceNote()
+                                                } else {
+                                                    viewModel.startPlayingVoiceNote(note.voicePath, note.title)
+                                                }
+                                            }
+                                        },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (pair.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                }
+                "LIST" -> {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        filteredNotes.take(5).forEach { note ->
+                            AuraHomeScreenNoteRowItem(
+                                note = note,
+                                isPlayingThis = (isPlaying && currentHeader == note.title),
+                                onOpen = { onOpenNote(note) },
+                                onToggleBookmark = { viewModel.toggleNoteBookmark(note) },
+                                onTogglePin = { viewModel.toggleNotePinned(note) },
+                                onPlayVoice = {
+                                    if (!note.voicePath.isNullOrBlank()) {
+                                        if (isPlaying && currentHeader == note.title) {
+                                            viewModel.pauseVoiceNote()
+                                        } else {
+                                            viewModel.startPlayingVoiceNote(note.voicePath, note.title)
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // ==========================================
 // CENTRAL IMMERSIVE DASHBOARD SCREEN
 // ==========================================
@@ -1551,57 +2442,15 @@ fun DashboardScreen(
             }
         }
 
-        // RECENT NOTES HORIZONTAL CAROUSEL SLIDER (Header clickable to navigate)
+        // ======================================================================
+        // AURA NOTES PREVIEW SECTION (INTERACTIVE & MULTI-VIEW HOME COMPONENT)
+        // ======================================================================
         item {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable { viewModel.navigateTo(Section.Notes) },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "RECENT NOTEBOOK REVISIONS",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AuraTheme.colors.textMuted,
-                        letterSpacing = 1.sp
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("VIEW ALL", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.accentBrand)
-                        Icon(Icons.Default.ArrowForward, contentDescription = "Notes", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(10.dp))
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                if (notesList.isEmpty()) {
-                    Text("Draft digital text tabs or scribble drawings in notes.", fontSize = 11.sp, color = AuraTheme.colors.textMuted)
-                } else {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(notesList.take(6)) { note ->
-                            Card(
-                                modifier = Modifier
-                                    .width(160.dp)
-                                    .height(110.dp)
-                                    .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(14.dp))
-                                    .clickable { onOpenNote(note) },
-                                colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                                    Column {
-                                        Text(note.title.ifBlank { "Untitled" }, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(note.content, fontSize = 10.sp, color = AuraTheme.colors.textSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                                    }
-                                    Text(note.category.uppercase(), fontSize = 8.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            HomeScreenAuraNotesPreview(
+                viewModel = viewModel,
+                notesList = notesList,
+                onOpenNote = onOpenNote
+            )
         }
 
         // TODAY'S TASKS LIST QUICK PREVIEW (Header clickable to navigate)
@@ -1651,7 +2500,6 @@ fun DashboardScreen(
                     onStartTimer = { viewModel.startTaskTimer(task.id, 25) }
                 )
             }
-        }
         }
     }
 }
@@ -2008,9 +2856,9 @@ fun AuraBottomNavRow(
 ) {
     val navItems = listOf(
         NavigationTabItem(Section.Dashboard, "Home", Icons.Filled.Home, Icons.Outlined.Home),
-        NavigationTabItem(Section.Notes, "Personal", Icons.Filled.Person, Icons.Outlined.Person),
-        NavigationTabItem(Section.Tasks, "Txn", Icons.Filled.ReceiptLong, Icons.Outlined.ReceiptLong),
-        NavigationTabItem(Section.Money, "Accounts", Icons.Filled.CreditCard, Icons.Outlined.CreditCard),
+        NavigationTabItem(Section.Notes, "Notes", Icons.Filled.StickyNote2, Icons.Outlined.StickyNote2),
+        NavigationTabItem(Section.Tasks, "Tasks", Icons.Filled.CheckCircle, Icons.Outlined.CheckCircleOutline),
+        NavigationTabItem(Section.Money, "Money", Icons.Filled.AccountBalanceWallet, Icons.Outlined.AccountBalanceWallet),
         NavigationTabItem(Section.Day, "More", Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz)
     )
 
@@ -2926,9 +3774,10 @@ fun AppSecuritySettingsScreen(
                 Text("Color Accent Palette", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     val palettes = listOf(
-                        "CYAN_GLOW" to Pair("Aura Neon Accent", AuraTheme.colors.accentBrand),
-                        "EMERALD_GARDEN" to Pair("Mint Emerald", AuraTheme.colors.positiveGreen),
-                        "RADIANT_SUNSET" to Pair("Radiant Sunset", AuraTheme.colors.gold),
+                        "RADIANT_SUNSET" to Pair("Fintech Sunset Coral (Default)", RadiantOrange),
+                        "AXIO_LIME" to Pair("Axio Electric Lime", AxioElectricLime),
+                        "CYAN_GLOW" to Pair("Aura Neon Cyan", Color(0xFF00E5FF)),
+                        "EMERALD_GARDEN" to Pair("Mint Emerald", SemanticGreen),
                         "ROYAL_AMETHYST" to Pair("Royal Amethyst", Color(0xFFBB86FC)),
                         "OCEAN_BREEZE" to Pair("Ocean Breeze", Color(0xFF00B0FF))
                     )
@@ -2963,7 +3812,120 @@ fun AppSecuritySettingsScreen(
             }
         }
 
-        // 2. QUICK SENT TARGET CARD
+        // 2. AURA ROBOT COMPANION CARD
+        val isRobotCompanionEnabled by viewModel.isRobotCompanionEnabled.collectAsState()
+        Card(
+            modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
+        ) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "🤖 AURA ROBOT COMPANION",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AuraTheme.colors.accentBrand,
+                            letterSpacing = 1.sp
+                        )
+                        Text(
+                            "Interactive walking mini buddy with physics & speech",
+                            fontSize = 11.sp,
+                            color = AuraTheme.colors.textSecondary
+                        )
+                    }
+                    Switch(
+                        checked = isRobotCompanionEnabled,
+                        onCheckedChange = { viewModel.setRobotCompanionEnabled(it) },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = AuraTheme.colors.accentBrand
+                        )
+                    )
+                }
+
+                HorizontalDivider(color = AuraTheme.colors.cardBorder, thickness = 0.8.dp)
+
+                Text(
+                    "Interactive Gestures & Physics:",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AuraTheme.colors.textPrimary
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("👆", fontSize = 16.sp)
+                        Column {
+                            Text("Push & Stumble", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                            Text("Single tap him to push him back with cute dizzy eyes and wobble animation", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("⚡", fontSize = 16.sp)
+                        Column {
+                            Text("Sturdy Power Shield", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.badgeGold)
+                            Text("Double-tap him to activate super strong stance with glowing energy shield", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("🪂", fontSize = 16.sp)
+                        Column {
+                            Text("Drag, Fling & Bouncing Gravity", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF00E5FF))
+                            Text("Drag anywhere on screen, throw him, and watch him bounce and squash elastically", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("💬", fontSize = 16.sp)
+                        Column {
+                            Text("Friendly Speech & Quick Hub", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.positiveGreen)
+                            Text("He speaks to you periodically. Tap his speech bubble or long-press him to open Quick Hub", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. QUICK SENT TARGET CARD
         Card(
             modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
             colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
@@ -3422,7 +4384,7 @@ fun GlobalMiniFloatingPlayer(
             // Wave progress slider bar
             Slider(
                 value = progress,
-                onSeek = onSeek,
+                onValueChange = onSeek,
                 colors = SliderDefaults.colors(
                     thumbColor = AuraTheme.colors.accentBrand,
                     activeTrackColor = AuraTheme.colors.accentBrand,

@@ -387,6 +387,59 @@ class AppRepository(val db: AppDatabase) {
     val allSavingsGoalsFlow: Flow<List<SavingsGoal>> = moneyDao.getAllSavingsGoals()
     val allRemindersFlow: Flow<List<MoneyReminder>> = moneyDao.getAllReminders()
 
+    suspend fun autoPopulateDefaultNotesIfEmpty() = withContext(Dispatchers.IO) {
+        val existing = noteDao.getAllActiveNotes().firstOrNull() ?: emptyList()
+        if (existing.isEmpty()) {
+            createNote(
+                title = "Welcome to AURA Notes 🚀",
+                content = "Aura Notes is your secure, offline-first workspace for capturing ideas, thoughts, voice memos, and sketches.\n\n✨ Features:\n• Rich markdown & tag organization\n• Vector sketching canvas\n• High-fidelity voice notes\n• Instant search and revision history",
+                category = "Personal",
+                tags = "Aura, Welcome, Guide"
+            )
+            createNote(
+                title = "Project Roadmap & Strategy 💡",
+                content = "Key priorities for Q3:\n1. Mobile experience and preview optimization\n2. Real-time synchronisation with Firestore\n3. Biometric and PIN authentication\n4. Dark and Light adaptive theme tokens",
+                category = "Work",
+                tags = "Work, Strategy, Planning"
+            )
+            createNote(
+                title = "Daily Ideas & Brainstorm 📝",
+                content = "Exploring minimalist UI concepts, micro-interactions with spring physics, and seamless offline data persistence.",
+                category = "Ideas",
+                tags = "Design, Creative, Concepts"
+            )
+        }
+    }
+
+    suspend fun autoPopulateDefaultTasksIfEmpty() = withContext(Dispatchers.IO) {
+        val existing = taskDao.getAllTasks().firstOrNull() ?: emptyList()
+        if (existing.isEmpty()) {
+            val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
+            createTask(
+                Task(
+                    title = "Explore AURA Notes & Features",
+                    description = "Try creating a rich note, sketching a drawing, and capturing a voice memo.",
+                    priority = "High",
+                    energy = "High Energy",
+                    date = todayStr,
+                    category = "General"
+                ),
+                listOf("Create first note", "Try drawing canvas", "Review dashboard stats")
+            )
+            createTask(
+                Task(
+                    title = "Review Weekly Budget & Expenses",
+                    description = "Track accounts, income, and friend split settlements.",
+                    priority = "Medium",
+                    energy = "Medium Energy",
+                    date = todayStr,
+                    category = "Finance"
+                ),
+                listOf("Check account balances", "Log recurring subscriptions")
+            )
+        }
+    }
+
     suspend fun autoPopulateDefaultAccountsIfEmpty() = withContext(Dispatchers.IO) {
         val existing = moneyDao.getAllAccounts().firstOrNull() ?: emptyList()
         if (existing.isEmpty()) {

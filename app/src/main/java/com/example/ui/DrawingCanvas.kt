@@ -238,14 +238,19 @@ fun DrawingCanvas(
             }
         }
 
+        val gridBorderColor = AuraTheme.colors.cardBorder
+        val marginRedColor = AuraTheme.colors.negativeRed
+        val accentBrandColor = AuraTheme.colors.accentBrand
+        val canvasBgColor = AuraTheme.colors.cardBackground
+
         // Draw Blackboard surface
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(16.dp)
-                .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp))
-                .background(AuraTheme.colors.cardBackground, RoundedCornerShape(16.dp))
+                .border(1.dp, gridBorderColor, RoundedCornerShape(16.dp))
+                .background(canvasBgColor, RoundedCornerShape(16.dp))
                 .pointerInteropFilter { motionEvent ->
                     val x = motionEvent.x
                     val y = motionEvent.y
@@ -288,7 +293,7 @@ fun DrawingCanvas(
                     var currentY = lineSpacing
                     while (currentY < canvasHeight) {
                         drawLine(
-                            color = AuraTheme.colors.cardBorder.copy(alpha = 0.6f),
+                            color = gridBorderColor.copy(alpha = 0.6f),
                             start = Offset(0f, currentY),
                             end = Offset(canvasWidth, currentY),
                             strokeWidth = 1f
@@ -297,7 +302,7 @@ fun DrawingCanvas(
                     }
                     // Vertical margin rule list
                     drawLine(
-                        color = AuraTheme.colors.negativeRed.copy(alpha = 0.4f),
+                        color = marginRedColor.copy(alpha = 0.4f),
                         start = Offset(60.dp.toPx(), 0f),
                         end = Offset(60.dp.toPx(), canvasHeight),
                         strokeWidth = 1.5f
@@ -318,7 +323,7 @@ fun DrawingCanvas(
                         val strokeColor = try {
                             Color(android.graphics.Color.parseColor(stroke.colorHex))
                         } catch (e: Exception) {
-                            AuraTheme.colors.accentBrand
+                            accentBrandColor
                         }
 
                         drawPath(
@@ -342,12 +347,12 @@ fun DrawingCanvas(
                     }
                     
                     val activeColor = if (isEraserActive) {
-                        AuraTheme.colors.cardBackground
+                        canvasBgColor
                     } else {
                         try {
                             Color(android.graphics.Color.parseColor(selectedColorHex))
                         } catch (e: Exception) {
-                            AuraTheme.colors.accentBrand
+                            accentBrandColor
                         }
                     }
 

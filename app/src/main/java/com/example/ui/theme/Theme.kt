@@ -22,6 +22,7 @@ data class AuraCustomColors(
     val badgeGold: Color,
     val badgeGoldContainer: Color,
     val accentBrand: Color,
+    val screenBackground: Color,
     val cardBackground: Color,
     val cardBorder: Color,
     val textPrimary: Color,
@@ -31,7 +32,6 @@ data class AuraCustomColors(
     val bottomNavActivePill: Color
 ) {
     val gold: Color get() = badgeGold
-    val screenBackground: Color get() = cardBackground
 }
 
 val LocalAuraColors = staticCompositionLocalOf {
@@ -43,13 +43,14 @@ val LocalAuraColors = staticCompositionLocalOf {
         badgeGold = SemanticGold,
         badgeGoldContainer = SemanticGoldContainer,
         accentBrand = RadiantOrange,
+        screenBackground = DarkBackground,
         cardBackground = DarkCard,
         cardBorder = DarkCardBorder,
         textPrimary = TextWhitePrimary,
         textSecondary = TextBoneSecondary,
         textMuted = TextMutedSteel,
         bottomNavBackground = DarkSurface,
-        bottomNavActivePill = RadiantOrange.copy(alpha = 0.15f)
+        bottomNavActivePill = DarkPillActive
     )
 }
 
@@ -62,29 +63,34 @@ object AuraTheme {
 @Composable
 fun MyApplicationTheme(
     themeMode: String = "DARK",
-    themePalette: String = "RADIANT_SUNSET", // Default to Radiant Orange inspired by reference
+    themePalette: String = "RADIANT_SUNSET", // Default to Radiant Coral Sunset from reference
     content: @Composable () -> Unit
 ) {
     val isDark = themeMode != "LIGHT"
 
     // Backgrounds & Surface scale
-    val (bg, surface, card, cardBorder) = when (themeMode) {
-        "AMOLED" -> Quadruple(AmoledBackground, AmoledSurface, AmoledCard, AmoledCardBorder)
-        "LIGHT" -> Quadruple(LightBackground, LightSurface, LightCard, LightCardBorder)
-        else -> Quadruple(DarkBackground, DarkSurface, DarkCard, DarkCardBorder)
+    val (bg, surface, card, cardBorder, activePill) = when (themeMode) {
+        "AMOLED" -> Quintuple(AmoledBackground, AmoledSurface, AmoledCard, AmoledCardBorder, AmoledPillActive)
+        "LIGHT" -> Quintuple(LightBackground, LightSurface, LightCard, LightCardBorder, LightPillActive)
+        else -> Quintuple(DarkBackground, DarkSurface, DarkCard, DarkCardBorder, DarkPillActive)
     }
 
     // Palettes
     val (primary, secondary, tertiary) = when (themePalette) {
+        "AXIO_LIME" -> Triple(
+            AxioElectricLime,
+            SemanticGreen,
+            SemanticGold
+        )
         "CYAN_GLOW" -> Triple(
             Color(0xFF00E5FF), // Digital neon cyan
             Color(0xFF7C4DFF), // Tech purple
             Color(0xFFFFA726)  // Copper warm
         )
         "EMERALD_GARDEN" -> Triple(
-            Color(0xFF2ECD71), // Mint Emerald
+            SemanticGreen,     // Mint Emerald
             Color(0xFF00B0FF), // Ocean Indigo
-            Color(0xFFFFC300)  // Golden Plum
+            SemanticGold       // Golden Plum
         )
         "ROYAL_AMETHYST" -> Triple(
             Color(0xFFBB86FC), // Orchid Purple
@@ -96,9 +102,9 @@ fun MyApplicationTheme(
             Color(0xFF00E676), // Deep Green
             Color(0xFFFFD54F)  // Sand Yellow
         )
-        else -> Triple( // "RADIANT_SUNSET" - Default Signature Fintech
+        else -> Triple( // "RADIANT_SUNSET" - Default Signature Fintech Coral Orange
             RadiantOrange,
-            Color(0xFFE91E63),
+            Color(0xFFFF5252),
             SemanticGold
         )
     }
@@ -169,13 +175,14 @@ fun MyApplicationTheme(
         badgeGold = SemanticGold,
         badgeGoldContainer = SemanticGoldContainer,
         accentBrand = primary,
+        screenBackground = bg,
         cardBackground = card,
         cardBorder = cardBorder,
         textPrimary = textPrimary,
         textSecondary = textSecondary,
         textMuted = textMuted,
         bottomNavBackground = surface,
-        bottomNavActivePill = primary.copy(alpha = 0.15f)
+        bottomNavActivePill = activePill
     )
 
     val view = LocalView.current
@@ -199,4 +206,4 @@ fun MyApplicationTheme(
     }
 }
 
-private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+private data class Quintuple<A, B, C, D, E>(val first: A, val second: B, val third: C, val fourth: D, val fifth: E)

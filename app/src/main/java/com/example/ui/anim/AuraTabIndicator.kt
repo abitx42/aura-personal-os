@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,10 +40,10 @@ fun AuraAnimatedNavBar(
 ) {
     val navItems = remember {
         listOf(
-            NavItem(Section.Dashboard, Icons.Default.Home, "Home"),
-            NavItem(Section.Notes, Icons.Default.Person, "Personal"),
-            NavItem(Section.Tasks, Icons.Default.ReceiptLong, "Txn", "nav_tasks"),
-            NavItem(Section.Money, Icons.Default.CreditCard, "Accounts", "nav_money"),
+            NavItem(Section.Dashboard, Icons.Default.Home, "Home", "nav_home"),
+            NavItem(Section.Notes, Icons.Default.StickyNote2, "Notes", "nav_notes"),
+            NavItem(Section.Tasks, Icons.Default.CheckCircle, "Tasks", "nav_tasks"),
+            NavItem(Section.Money, Icons.Default.AccountBalanceWallet, "Money", "nav_money"),
             NavItem(Section.Day, Icons.Default.MoreHoriz, "More", "nav_more")
         )
     }

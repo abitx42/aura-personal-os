@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.auraSpringPress
+import com.example.ui.theme.AuraTheme
 
 /**
  * Modern numbered stat card matching reference pattern:
