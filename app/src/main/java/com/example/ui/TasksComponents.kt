@@ -280,6 +280,7 @@ fun TasksScreen(
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Button(
                                     onClick = {
+                                        com.example.ui.anim.AuraHaptics.triggerSelection(context)
                                         if (isTimerRunning) {
                                             viewModel.pauseTaskTimer()
                                         } else {
@@ -306,7 +307,10 @@ fun TasksScreen(
                                 }
 
                                 OutlinedButton(
-                                    onClick = { viewModel.resetTaskTimer() },
+                                    onClick = {
+                                        com.example.ui.anim.AuraHaptics.triggerSelection(context)
+                                        viewModel.resetTaskTimer()
+                                    },
                                     border = BorderStroke(1.dp, AuraTheme.colors.cardBorder),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
