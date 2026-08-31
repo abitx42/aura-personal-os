@@ -3638,11 +3638,12 @@ fun HabitsTabScreen(
 
         if (filteredHabits.isEmpty()) {
             Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.LocalFireDepartment, contentDescription = "Empty habits", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(56.dp))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("No local habits configured inside Aura matrix", color = AuraTheme.colors.textSecondary, fontSize = 13.sp)
-                }
+                AuraEmptyState(
+                    title = "No ${selectedTabFreq} Habits",
+                    description = "Build consistency with atomic daily or weekly routine habits.",
+                    icon = Icons.Default.LocalFireDepartment,
+                    iconTint = AuraTheme.colors.gold
+                )
             }
         } else {
             val todayString = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
