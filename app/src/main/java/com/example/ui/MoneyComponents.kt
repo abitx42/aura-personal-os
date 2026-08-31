@@ -1081,14 +1081,14 @@ fun InvestmentsPortfolioView(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("INVESTMENT PORTFOLIO", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon, letterSpacing = 1.sp)
+                Text("INVESTMENT PORTFOLIO", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand, letterSpacing = 1.sp)
                 Button(
                     onClick = onAddInvestmentClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                 ) {
-                    Text("+ ADD PORTF", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                    Text("+ ADD PORTF", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -1099,8 +1099,8 @@ fun InvestmentsPortfolioView(
                     modifier = Modifier.fillMaxWidth().padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(Icons.Default.Timeline, contentDescription = "No portfolio", tint = AuraWhiteMuted, modifier = Modifier.size(48.dp))
-                    Text("No investments logged. Track stocks, mutual funds, or gold.", color = AuraWhiteMuted, fontSize = 11.sp, textAlign = TextAlign.Center)
+                    Icon(Icons.Default.Timeline, contentDescription = "No portfolio", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(48.dp))
+                    Text("No investments logged. Track stocks, mutual funds, or gold.", color = AuraTheme.colors.textMuted, fontSize = 11.sp, textAlign = TextAlign.Center)
                 }
             } else {
                 investments.forEach { inv ->
@@ -1117,25 +1117,26 @@ fun InvestmentsPortfolioView(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(inv.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(inv.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.background(Color.Yellow, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 1.dp)) {
-                                    Text(inv.type.uppercase(), fontSize = 8.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Box(modifier = Modifier.background(AuraTheme.colors.gold.copy(alpha = 0.2f), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 1.dp)) {
+                                    Text(inv.type.uppercase(), fontSize = 8.sp, color = AuraTheme.colors.gold, fontWeight = FontWeight.Bold)
                                 }
-                                Text("Held: $daysHeld Days", fontSize = 10.sp, color = AuraWhiteMuted)
+                                Text("Held: $daysHeld Days", fontSize = 10.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text("₹${"%,.0f".format(inv.amount)}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.Yellow)
+                            Text("₹${"%,.0f".format(inv.amount)}", fontSize = 14.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.gold)
                             IconButton(onClick = { onDeleteInvestment(inv) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete investment", tint = AuraWhiteMuted, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete investment", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -1192,9 +1193,9 @@ fun FriendsAndSplitsModule(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 12.dp)
-                .border(1.dp, if (isSyncEnabled) AuraCyanNeon.copy(alpha = 0.5f) else AuraSlateLight, RoundedCornerShape(16.dp)),
+                .border(1.dp, if (isSyncEnabled) AuraTheme.colors.accentBrand.copy(alpha = 0.5f) else AuraTheme.colors.cardBorder, RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.6f))
+            colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
                 Row(
@@ -1206,28 +1207,28 @@ fun FriendsAndSplitsModule(
                         Icon(
                             imageVector = Icons.Default.CloudQueue, 
                             contentDescription = "Cloud Icon", 
-                            tint = if (isSyncEnabled) AuraCyanNeon else AuraPurpleAccent,
+                            tint = if (isSyncEnabled) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                             modifier = Modifier.size(20.dp)
                         )
                         Column {
-                            Text("AURA CLOUD BACKUP & SYNCHRONIZER", fontSize = 11.sp, fontWeight = FontWeight.Black, color = Color.White, letterSpacing = 0.5.sp)
+                            Text("AURA CLOUD BACKUP & SYNCHRONIZER", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.textPrimary, letterSpacing = 0.5.sp)
                             Text(
                                 text = if (isSyncEnabled) "Cloud Sync: Connected to Google" else "Offline Local Storage Only",
                                 fontSize = 9.sp,
-                                color = if (isSyncEnabled) MoodCalm else AuraWhiteMuted
+                                color = if (isSyncEnabled) AuraTheme.colors.positiveGreen else AuraTheme.colors.textMuted
                             )
                         }
                     }
 
                     // Syncing Spinner or Connected Indicator
                     if (isSyncing) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp), color = AuraCyanNeon, strokeWidth = 2.dp)
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp), color = AuraTheme.colors.accentBrand, strokeWidth = 2.dp)
                     } else {
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
                                 .background(
-                                    if (isSyncEnabled) MoodHappy else AuraCopperWarm, 
+                                    if (isSyncEnabled) AuraTheme.colors.positiveGreen else AuraTheme.colors.gold, 
                                     CircleShape
                                 )
                         )
@@ -1241,20 +1242,20 @@ fun FriendsAndSplitsModule(
                     Text(
                         text = "Sign in to activate encrypted Drive backups & synchronize shared transaction splits with friends in real time.",
                         fontSize = 10.sp,
-                        color = AuraWhiteMedium,
+                        color = AuraTheme.colors.textSecondary,
                         lineHeight = 14.sp
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         onClick = { showGoogleSignDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth().testTag("google_signin_trigger"),
-                        border = BorderStroke(1.dp, AuraCyanNeon.copy(alpha = 0.3f))
+                        border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("G", color = AuraCyanNeon, fontWeight = FontWeight.Black, fontSize = 14.sp)
-                            Text("Connect Google Workspace Account", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text("G", color = AuraTheme.colors.accentBrand, fontWeight = FontWeight.Black, fontSize = 14.sp)
+                            Text("Connect Google Workspace Account", color = AuraTheme.colors.textPrimary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 } else {
@@ -1262,7 +1263,7 @@ fun FriendsAndSplitsModule(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AuraTheme.colors.cardBackground, RoundedCornerShape(10.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(10.dp))
                             .padding(10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -1272,21 +1273,21 @@ fun FriendsAndSplitsModule(
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .background(AuraPurpleAccent, CircleShape),
+                                    .background(AuraTheme.colors.accentBrand.copy(alpha = 0.2f), CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("G", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text("G", color = AuraTheme.colors.accentBrand, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                             }
                             Column {
-                                Text(userEmail ?: "", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text("Mirror Last Sync: $lastSync", fontSize = 8.sp, color = AuraWhiteMuted)
+                                Text(userEmail ?: "", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
+                                Text("Mirror Last Sync: $lastSync", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
                             }
                         }
 
                         // Disconnect link
                         Text(
                             text = "Disconnect",
-                            color = Color.Red.copy(alpha = 0.7f),
+                            color = AuraTheme.colors.negativeRed.copy(alpha = 0.8f),
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -1303,33 +1304,33 @@ fun FriendsAndSplitsModule(
                     ) {
                         Button(
                             onClick = { viewModel.triggerSyncNow() },
-                            colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 4.dp)
                         ) {
-                            Icon(Icons.Default.Sync, contentDescription = "Sync icon", tint = Color.Black, modifier = Modifier.size(12.dp))
+                            Icon(Icons.Default.Sync, contentDescription = "Sync icon", tint = Color.White, modifier = Modifier.size(12.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("SYNC NOW", color = Color.Black, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text("SYNC NOW", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                         }
 
                         Button(
                             onClick = { viewModel.createGoogleDriveBackup() },
-                            colors = ButtonDefaults.buttonColors(containerColor = AuraSlateLight),
+                            colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 4.dp),
-                            border = BorderStroke(1.dp, AuraSlateLight)
+                            border = BorderStroke(1.dp, AuraTheme.colors.cardBorder)
                         ) {
-                            Icon(Icons.Default.CloudQueue, contentDescription = "Backup icon", tint = AuraCyanNeon, modifier = Modifier.size(12.dp))
+                            Icon(Icons.Default.CloudQueue, contentDescription = "Backup icon", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(12.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("BACKUP DRIVE", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text("BACKUP DRIVE", color = AuraTheme.colors.textPrimary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                         }
                     }
 
                     // Collapsible Backup List
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text("GOOGLE DRIVE RESTORE POINTS", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMuted, letterSpacing = 0.5.sp)
+                    Text("GOOGLE DRIVE RESTORE POINTS", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textMuted, letterSpacing = 0.5.sp)
                     Spacer(modifier = Modifier.height(4.dp))
                     
                     backups.take(2).forEach { bkp ->
@@ -1337,15 +1338,15 @@ fun FriendsAndSplitsModule(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 2.dp)
-                                .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(6.dp))
+                                .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(6.dp))
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(bkp, fontSize = 10.sp, color = AuraWhiteMedium)
+                            Text(bkp, fontSize = 10.sp, color = AuraTheme.colors.textSecondary)
                             Text(
                                 text = "RESTORE",
-                                color = AuraCyanNeon,
+                                color = AuraTheme.colors.accentBrand,
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
@@ -1370,7 +1371,8 @@ fun FriendsAndSplitsModule(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp)
-                .background(AuraSlateCard, RoundedCornerShape(12.dp))
+                .background(AuraTheme.colors.cardBackground, RoundedCornerShape(12.dp))
+                .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                 .padding(2.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -1381,7 +1383,12 @@ fun FriendsAndSplitsModule(
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            if (active) AuraSlateLight else Color.Transparent,
+                            if (active) AuraTheme.colors.bottomNavBackground else Color.Transparent,
+                            RoundedCornerShape(10.dp)
+                        )
+                        .border(
+                            1.dp,
+                            if (active) AuraTheme.colors.cardBorder else Color.Transparent,
                             RoundedCornerShape(10.dp)
                         )
                         .clickable { activeLedgerTab = key }
@@ -1390,7 +1397,7 @@ fun FriendsAndSplitsModule(
                 ) {
                     Text(
                         text = title,
-                        color = if (active) AuraCyanNeon else AuraWhiteMuted,
+                        color = if (active) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = 0.5.sp
@@ -1407,9 +1414,9 @@ fun FriendsAndSplitsModule(
         when (activeLedgerTab) {
             "1-ON-1" -> {
                 Card(
-                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+                    modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+                    colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
@@ -1417,35 +1424,35 @@ fun FriendsAndSplitsModule(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("1-ON-1 SPLITS LEDGER", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon)
+                            Text("1-ON-1 SPLITS LEDGER", fontSize = 11.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand)
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Button(
                                     onClick = onAddFriendClick,
-                                    colors = ButtonDefaults.buttonColors(containerColor = AuraSlateCard),
+                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.bottomNavBackground),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                                    border = BorderStroke(1.dp, AuraCyanNeon.copy(alpha = 0.5f))
+                                    border = BorderStroke(1.dp, AuraTheme.colors.accentBrand.copy(alpha = 0.5f))
                                 ) {
-                                    Text("+ FRIEND", color = AuraCyanNeon, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                    Text("+ FRIEND", color = AuraTheme.colors.accentBrand, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                                 }
                                 Button(
                                     onClick = onSplitBillClick,
-                                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
-                                    Text("SPLIT BILL", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                    Text("SPLIT BILL", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
 
                         Spacer(modifier = Modifier.height(14.dp))
 
-                        Text("FRIENDS & CLOUD PROFILE CONNECTIONS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
+                        Text("FRIENDS & CLOUD PROFILE CONNECTIONS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         if (friends.isEmpty()) {
-                            Text("No friends available.", color = AuraWhiteMuted, fontSize = 11.sp)
+                            Text("No friends available.", color = AuraTheme.colors.textMuted, fontSize = 11.sp)
                         } else {
                             friends.forEach { fri ->
                                 val friendDebts = debts.filter { it.friendId == fri.id && it.status == "PENDING" }
@@ -1457,24 +1464,25 @@ fun FriendsAndSplitsModule(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp)
-                                        .background(AuraSlateCard.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
+                                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                                        .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                                         .padding(horizontal = 12.dp, vertical = 8.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column {
                                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                            Text(fri.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                            Text(fri.name, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                                             // Tiny glowing connected indicator representing real-time state
-                                            Box(modifier = Modifier.size(6.dp).background(MoodHappy, CircleShape))
+                                            Box(modifier = Modifier.size(6.dp).background(AuraTheme.colors.positiveGreen, CircleShape))
                                         }
                                         if (fri.phone.isNotEmpty()) {
-                                            Text("Link ID: ${fri.phone}", fontSize = 8.sp, color = AuraWhiteMuted)
+                                            Text("Link ID: ${fri.phone}", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
                                         }
                                     }
 
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                        val netColor = if (netBal > 0) MoodHappy else if (netBal < 0) Color.Red else Color.White
+                                        val netColor = if (netBal > 0) AuraTheme.colors.positiveGreen else if (netBal < 0) AuraTheme.colors.negativeRed else AuraTheme.colors.textPrimary
                                         val netLabel = if (netBal > 0) "Owed: ₹${netBal.toInt()}" else if (netBal < 0) "Owe: ₹${(-netBal).toInt()}" else "Settled"
                                         
                                         Text(netLabel, fontSize = 11.sp, color = netColor, fontWeight = FontWeight.Bold)
@@ -1484,11 +1492,11 @@ fun FriendsAndSplitsModule(
                                             onClick = { inviteFriendItem = fri }, 
                                             modifier = Modifier.size(26.dp)
                                         ) {
-                                            Icon(Icons.Default.Share, contentDescription = "Invite friend code", tint = AuraCyanNeon, modifier = Modifier.size(13.dp))
+                                            Icon(Icons.Default.Share, contentDescription = "Invite friend code", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(13.dp))
                                         }
 
                                         IconButton(onClick = { onDeleteFriend(fri) }, modifier = Modifier.size(24.dp)) {
-                                            Icon(Icons.Default.PersonRemove, contentDescription = "Delete friend", tint = AuraWhiteMuted.copy(alpha=0.6f), modifier = Modifier.size(13.dp))
+                                            Icon(Icons.Default.PersonRemove, contentDescription = "Delete friend", tint = AuraTheme.colors.textMuted.copy(alpha=0.6f), modifier = Modifier.size(13.dp))
                                         }
                                     }
                                 }
@@ -1496,10 +1504,10 @@ fun FriendsAndSplitsModule(
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
-                        Divider(color = AuraSlateLight.copy(alpha = 0.2f))
+                        HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
                         Spacer(modifier = Modifier.height(14.dp))
 
-                        Text("OPEN BILL SPLITS (DEBTS)", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
+                        Text("OPEN BILL SPLITS (DEBTS)", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         val pendingDebts = debts.filter { it.status == "PENDING" }
@@ -1508,7 +1516,7 @@ fun FriendsAndSplitsModule(
                                 modifier = Modifier.fillMaxWidth().padding(12.dp),
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                Text("All individual splits settled! Great.", color = MoodHappy, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                                Text("All individual splits settled! Great.", color = AuraTheme.colors.positiveGreen, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                             }
                         } else {
                             pendingDebts.forEach { dbt ->
@@ -1516,22 +1524,22 @@ fun FriendsAndSplitsModule(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp)
-                                        .border(1.dp, AuraSlateLight.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
-                                        .background(AuraObsidian.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
+                                        .border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(12.dp))
+                                        .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
                                         .padding(10.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(dbt.title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                        Text(dbt.title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textPrimary)
                                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                             Text(
                                                 text = "${if (dbt.isYouOwe) "You owe" else "Owes you"} ${dbt.friendName}",
                                                 fontSize = 9.sp,
-                                                color = AuraWhiteMuted
+                                                color = AuraTheme.colors.textMuted
                                             )
                                             if (dbt.isSynced) {
-                                                Icon(Icons.Default.CheckCircle, contentDescription = "Synced", tint = MoodHappy, modifier = Modifier.size(10.dp))
+                                                Icon(Icons.Default.CheckCircle, contentDescription = "Synced", tint = AuraTheme.colors.positiveGreen, modifier = Modifier.size(10.dp))
                                             }
                                         }
                                     }
@@ -1544,16 +1552,16 @@ fun FriendsAndSplitsModule(
                                             "₹${dbt.remainingAmount.toInt()}",
                                             fontSize = 12.sp,
                                             fontWeight = FontWeight.Black,
-                                            color = if (dbt.isYouOwe) Color.Red else MoodHappy
+                                            color = if (dbt.isYouOwe) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen
                                         )
 
                                         Button(
                                             onClick = { onQuickSettle(dbt) },
-                                            colors = ButtonDefaults.buttonColors(containerColor = if (dbt.isYouOwe) Color.Red else MoodHappy),
+                                            colors = ButtonDefaults.buttonColors(containerColor = if (dbt.isYouOwe) AuraTheme.colors.negativeRed else AuraTheme.colors.positiveGreen),
                                             shape = RoundedCornerShape(6.dp),
                                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                         ) {
-                                            Text("SETTLE", color = Color.Black, fontSize = 8.sp, fontWeight = FontWeight.Black)
+                                            Text("SETTLE", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Black)
                                         }
                                     }
                                 }
