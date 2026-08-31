@@ -42,10 +42,10 @@ fun AuraNumberedStat(
         modifier = modifier
             .then(pressModifier)
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(AuraTheme.colors.cardBackground)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                color = AuraTheme.colors.cardBorder,
                 shape = shape
             )
             .padding(14.dp),
@@ -73,7 +73,7 @@ fun AuraNumberedStat(
             Text(
                 text = label.uppercase(),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = AuraTheme.colors.textMuted,
                 letterSpacing = 1.2.sp
             )
         }
@@ -82,7 +82,7 @@ fun AuraNumberedStat(
         Text(
             text = value,
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AuraTheme.colors.textPrimary,
             fontWeight = FontWeight.Bold,
             maxLines = 1
         )
@@ -92,7 +92,7 @@ fun AuraNumberedStat(
             Text(
                 text = caption,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                color = AuraTheme.colors.textSecondary,
                 maxLines = 1
             )
         }
