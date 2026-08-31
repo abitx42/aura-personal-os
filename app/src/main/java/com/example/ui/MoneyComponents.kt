@@ -759,26 +759,26 @@ fun QuickEngagementToolbar(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val actions = listOf(
-            Triple("+ Sent", MaterialTheme.colorScheme.secondary, onSentClick),
-            Triple("+ Recv", MoodHappy, onReceivedClick),
-            Triple("+ Portf", MaterialTheme.colorScheme.tertiary, onInvestedClick),
-            Triple("+ Cash", MaterialTheme.colorScheme.primary, onAddedCashClick)
+            Triple("+ Sent", AuraTheme.colors.negativeRed, onSentClick),
+            Triple("+ Recv", AuraTheme.colors.positiveGreen, onReceivedClick),
+            Triple("+ Portf", AuraTheme.colors.gold, onInvestedClick),
+            Triple("+ Cash", AuraTheme.colors.accentBrand, onAddedCashClick)
         )
 
-        actions.forEach { (label, colorScheme, callback) ->
+        actions.forEach { (label, actionColor, callback) ->
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(50.dp))
                     .auraSpringPress(cornerRadius = 50.dp, onClick = callback)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .border(BorderStroke(1.dp, colorScheme.copy(alpha = 0.5f)), RoundedCornerShape(50.dp))
+                    .background(AuraTheme.colors.cardBackground)
+                    .border(BorderStroke(1.dp, actionColor.copy(alpha = 0.4f)), RoundedCornerShape(50.dp))
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = label,
-                    color = colorScheme,
+                    color = actionColor,
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold
                 )
