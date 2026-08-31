@@ -27,8 +27,6 @@ import androidx.compose.ui.unit.sp
 import com.example.ui.anim.AuraCornerRadius
 import com.example.ui.anim.auraSpringPress
 import com.example.ui.theme.AuraTheme
-import com.example.ui.theme.SemanticGold
-import com.example.ui.theme.RadiantOrange
 
 /**
  * Primary filled pill action button with spring feedback and haptics.
