@@ -2374,9 +2374,9 @@ fun SavingsGoalsView(
     onDeleteGoal: (SavingsGoal) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+        modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -2384,14 +2384,14 @@ fun SavingsGoalsView(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("SAVINGS GOALS & PLANS", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon, letterSpacing = 1.sp)
+                Text("SAVINGS GOALS & PLANS", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand, letterSpacing = 1.sp)
                 Button(
                     onClick = onAddGoalClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                 ) {
-                    Text("+ ADD GOAL", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                    Text("+ ADD GOAL", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -2402,7 +2402,7 @@ fun SavingsGoalsView(
                     title = "No Savings Goals Set",
                     description = "Create target plans and track milestones for gadgets, trips, or emergency funds.",
                     icon = Icons.Default.EmojiEvents,
-                    iconTint = MaterialTheme.colorScheme.primary
+                    iconTint = AuraTheme.colors.gold
                 )
             } else {
                 goals.forEach { gol ->
@@ -2416,7 +2416,7 @@ fun SavingsGoalsView(
                             .fillMaxWidth()
                             .padding(vertical = 6.dp)
                             .clip(shape)
-                            .background(AuraTheme.colors.cardBackground)
+                            .background(AuraTheme.colors.bottomNavBackground)
                             .border(1.dp, AuraTheme.colors.cardBorder, shape)
                             .padding(14.dp)
                     ) {
@@ -2434,7 +2434,7 @@ fun SavingsGoalsView(
                                     .fillMaxWidth()
                                     .height(6.dp)
                                     .clip(RoundedCornerShape(3.dp))
-                                    .background(AuraTheme.colors.bottomNavBackground)
+                                    .background(AuraTheme.colors.cardBackground)
                             ) {
                                 Box(
                                     modifier = Modifier
@@ -2464,14 +2464,14 @@ fun SavingsGoalsView(
                                         },
                                         modifier = Modifier.size(24.dp)
                                     ) {
-                                        Icon(Icons.Default.AddCircleOutline, contentDescription = "Add savings", tint = AuraCyanNeon, modifier = Modifier.size(16.dp))
+                                        Icon(Icons.Default.AddCircleOutline, contentDescription = "Add savings", tint = AuraTheme.colors.accentBrand, modifier = Modifier.size(16.dp))
                                     }
                                     
                                     IconButton(
                                         onClick = { onDeleteGoal(gol) },
                                         modifier = Modifier.size(24.dp)
                                     ) {
-                                        Icon(Icons.Default.DeleteOutline, contentDescription = "Delete target", tint = AuraWhiteMuted, modifier = Modifier.size(16.dp))
+                                        Icon(Icons.Default.DeleteOutline, contentDescription = "Delete target", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                                     }
                                 }
                             }
@@ -2494,9 +2494,9 @@ fun AccountRemindersTimeline(
     onDeleteClick: (MoneyReminder) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+        modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -2504,28 +2504,29 @@ fun AccountRemindersTimeline(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("RECURRING REMINDERS & EMIs", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon, letterSpacing = 1.sp)
+                Text("RECURRING REMINDERS & EMIs", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand, letterSpacing = 1.sp)
                 Button(
                     onClick = onAddReminderClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = AuraCyanNeon),
+                    colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
                 ) {
-                    Text("+ EMIs / BILLS", color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                    Text("+ EMIs / BILLS", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             if (reminders.isEmpty()) {
-                Text("No EMIs, rent, subscriptions, or split schedules set.", color = AuraWhiteMuted, fontSize = 11.sp)
+                Text("No EMIs, rent, subscriptions, or split schedules set.", color = AuraTheme.colors.textMuted, fontSize = 11.sp)
             } else {
                 reminders.forEach { rem ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
-                            .background(AuraSlateCard.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.cardBorder.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -2534,20 +2535,20 @@ fun AccountRemindersTimeline(
                             Checkbox(
                                 checked = rem.isCompleted,
                                 onCheckedChange = { onToggleDone(rem) },
-                                colors = CheckboxDefaults.colors(checkedColor = AuraCyanNeon)
+                                colors = CheckboxDefaults.colors(checkedColor = AuraTheme.colors.accentBrand)
                             )
                             Column {
                                 Text(
                                     text = rem.title,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (rem.isCompleted) AuraWhiteMuted else Color.White,
+                                    color = if (rem.isCompleted) AuraTheme.colors.textMuted else AuraTheme.colors.textPrimary,
                                     textDecoration = if (rem.isCompleted) androidx.compose.ui.text.style.TextDecoration.LineThrough else null
                                 )
                                 Text(
                                     text = "${if (rem.isRecurring) "Recurring ${rem.recurrence}" else "One-time"} • Due: ${rem.dueDate}",
                                     fontSize = 10.sp,
-                                    color = AuraWhiteMuted
+                                    color = AuraTheme.colors.textMuted
                                 )
                             }
                         }
@@ -2557,10 +2558,10 @@ fun AccountRemindersTimeline(
                                 text = "₹${"%,.0f".format(rem.amount)}",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Black,
-                                color = if (rem.isCompleted) AuraWhiteMuted else AuraPurpleAccent
+                                color = if (rem.isCompleted) AuraTheme.colors.textMuted else AuraTheme.colors.gold
                             )
                             IconButton(onClick = { onDeleteClick(rem) }, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete alarm", tint = AuraWhiteMuted, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.DeleteOutline, contentDescription = "Delete alarm", tint = AuraTheme.colors.textMuted, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -2591,12 +2592,12 @@ fun VisualAnalyticsDashboard(
     val totalSentimentExpenses = categoryTotals.sumOf { it.second }
 
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, AuraSlateLight, RoundedCornerShape(20.dp)),
+        modifier = Modifier.fillMaxWidth().border(1.dp, AuraTheme.colors.cardBorder, RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = AuraSlateCard.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = AuraTheme.colors.cardBackground)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("FINTECH VISUAL ANALYTICS", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraCyanNeon, letterSpacing = 1.sp)
+            Text("FINTECH VISUAL ANALYTICS", fontSize = 12.sp, fontWeight = FontWeight.Black, color = AuraTheme.colors.accentBrand, letterSpacing = 1.sp)
             Spacer(modifier = Modifier.height(16.dp))
 
             if (categoryTotals.isEmpty()) {
@@ -2604,10 +2605,10 @@ fun VisualAnalyticsDashboard(
                     title = "No Analytics Data Yet",
                     description = "Add more transactions or investments to visualize spending share and portfolio distribution.",
                     icon = Icons.Default.Analytics,
-                    iconTint = MaterialTheme.colorScheme.secondary
+                    iconTint = AuraTheme.colors.accentBrand
                 )
             } else {
-                Text("COGNITIVE SPENDING CATEGORY SHARE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
+                Text("COGNITIVE SPENDING CATEGORY SHARE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Custom Drawing Pie Category Share Chart (Clicking opens Category Ledger search)
@@ -2618,7 +2619,15 @@ fun VisualAnalyticsDashboard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    val colors = listOf(AuraPurpleAccent, AuraCyanNeon, Color.Yellow, MoodHappy, Color.Red, Color.Green, Color.Magenta)
+                    val colors = listOf(
+                        AuraTheme.colors.accentBrand,
+                        AuraTheme.colors.gold,
+                        AuraTheme.colors.positiveGreen,
+                        AuraTheme.colors.negativeRed,
+                        Color(0xFF7C4DFF),
+                        Color(0xFF29B6F6),
+                        Color(0xFFBA68C8)
+                    )
                     
                     Canvas(
                         modifier = Modifier
@@ -2648,12 +2657,13 @@ fun VisualAnalyticsDashboard(
                         categoryTotals.take(5).forEachIndexed { idx, pair ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                androidx.compose.foundation.layout.Box(modifier = Modifier.size(8.dp).background(colors[idx % colors.size], RoundedCornerShape(2.dp)))
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Box(modifier = Modifier.size(8.dp).background(colors[idx % colors.size], RoundedCornerShape(2.dp)))
                                 Text(
                                     text = "${pair.first}: ${if (totalSentimentExpenses > 0) ((pair.second / totalSentimentExpenses) * 100).roundToInt() else 0}%",
                                     fontSize = 11.sp,
-                                    color = Color.White
+                                    color = AuraTheme.colors.textPrimary
                                 )
                             }
                         }
@@ -2661,7 +2671,7 @@ fun VisualAnalyticsDashboard(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-                Divider(color = AuraSlateLight.copy(alpha = 0.2f))
+                HorizontalDivider(color = AuraTheme.colors.cardBorder.copy(alpha = 0.5f))
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Income vs Expenses custom layout (Clicking opens Bank Passbook details)
@@ -2669,7 +2679,7 @@ fun VisualAnalyticsDashboard(
                 val recvAmt = transactions.filter { it.type == "RECEIVED" || it.type == "CASH_ADDED" }.sumOf { it.amount }
                 val savingsRate = if (recvAmt > 0) ((recvAmt - sentAmt) / recvAmt * 100).coerceIn(0.0..100.0) else 0.0
 
-                Text("NET CASHFLOW INSIGHTS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraWhiteMedium)
+                Text("NET CASHFLOW INSIGHTS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textSecondary)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
@@ -2681,23 +2691,25 @@ fun VisualAnalyticsDashboard(
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .background(MoodHappy.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.positiveGreen.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                             .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("TOTAL RECORDED INCOME", fontSize = 8.sp, color = AuraWhiteMuted)
-                        Text("₹${"%,.0f".format(recvAmt)}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MoodHappy)
+                        Text("TOTAL RECORDED INCOME", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
+                        Text("₹${"%,.0f".format(recvAmt)}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.positiveGreen)
                     }
 
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .background(AuraPurpleAccent.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                            .background(AuraTheme.colors.bottomNavBackground, RoundedCornerShape(12.dp))
+                            .border(1.dp, AuraTheme.colors.negativeRed.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                             .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("TOTAL RECORDED DEBITS", fontSize = 8.sp, color = AuraWhiteMuted)
-                        Text("₹${"%,.0f".format(sentAmt)}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraPurpleAccent)
+                        Text("TOTAL RECORDED DEBITS", fontSize = 8.sp, color = AuraTheme.colors.textMuted)
+                        Text("₹${"%,.0f".format(sentAmt)}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.negativeRed)
                     }
                 }
 
@@ -2705,7 +2717,7 @@ fun VisualAnalyticsDashboard(
                 Text(
                     text = "Your net savings rate this month is ${savingsRate.roundToInt()}%. Keep it up!",
                     fontSize = 11.sp,
-                    color = AuraCyanNeon,
+                    color = AuraTheme.colors.accentBrand,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
