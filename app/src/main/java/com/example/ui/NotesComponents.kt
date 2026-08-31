@@ -940,6 +940,7 @@ fun NoteEditorScreen(
                     value = title,
                     onValueChange = { title = it },
                     placeholder = { Text("Title", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AuraTheme.colors.textMuted) },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth().testTag("note_title_input"),
                     textStyle = MaterialTheme.typography.titleMedium.copy(color = AuraTheme.colors.textPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp),
                     colors = TextFieldDefaults.colors(
