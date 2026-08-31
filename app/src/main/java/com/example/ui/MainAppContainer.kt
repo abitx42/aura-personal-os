@@ -2060,7 +2060,7 @@ fun AuraBottomNavRow(
                                 modifier = Modifier.size(20.dp)
                             )
                             Text(
-                                text = label,
+                                text = item.label,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = if (isSelected) AuraTheme.colors.accentBrand else AuraTheme.colors.textMuted,
                                 fontSize = 10.sp,
@@ -2292,10 +2292,10 @@ fun AppSecuritySettingsScreen(
         var tempEmailInput by remember { mutableStateOf(userEmail ?: "moreaboutastram@gmail.com") }
         AlertDialog(
             onDismissRequest = { showGoogleSignDialogInSettings = false },
-            title = { Text("CONNECT GOOGLE WORKSPACE ACCOUNT", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
+            title = { Text("CONNECT GOOGLE WORKSPACE ACCOUNT", color = AuraTheme.colors.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Select your authorization pathway for secure Cloud database synchronization & multi-device backup indexing:", color = AuraWhiteMedium, fontSize = 11.sp, lineHeight = 15.sp)
+                    Text("Select your authorization pathway for secure Cloud database synchronization & multi-device backup indexing:", color = AuraTheme.colors.textSecondary, fontSize = 11.sp, lineHeight = 15.sp)
                     
                     // Real Connection Button
                     Button(
@@ -2308,7 +2308,7 @@ fun AppSecuritySettingsScreen(
                                 // fall back to standard text field input if services not loaded
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                        colors = ButtonDefaults.buttonColors(containerColor = AuraTheme.colors.accentBrand),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
